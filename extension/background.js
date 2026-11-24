@@ -11,7 +11,7 @@ const DEV_BLOCKED_SITES = [
     hostname: 'example.com',
     durationMinutes: 1,
     notesEnabled: true,
-    habitsEnabled: false,
+    habitsEnabled: true,
   },
 ];
 
@@ -51,6 +51,7 @@ async function redirectIfBlocked(details) {
   wall.searchParams.set('site', site.hostname);
   wall.searchParams.set('duration', String(site.durationMinutes ?? settings.defaultDurationMinutes));
   wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');
+  wall.searchParams.set('habits', site.habitsEnabled ? '1' : '0');
 
   await chrome.tabs.update(details.tabId, { url: wall.href });
 }

@@ -5,6 +5,7 @@ import {
   recordWallStart,
 } from '../shared/storage.js';
 import { formatClock, parseHttpUrl } from '../shared/utils.js';
+import { setupHabitBox } from './habit.js';
 import { setupNoteBox } from './note.js';
 
 const params = new URLSearchParams(window.location.search);
@@ -21,6 +22,18 @@ const noteBox = document.querySelector('#note-box');
 const noteCountdown = document.querySelector('#note-countdown');
 const noteText = document.querySelector('#note-text');
 const saveNote = document.querySelector('#save-note');
+const habitButton = document.querySelector('#habit-button');
+const habitBox = document.querySelector('#habit-box');
+const habitForm = document.querySelector('#habit-form');
+const habitSelect = document.querySelector('#habit-select');
+const habitFields = document.querySelector('#habit-fields');
+const habitTitle = document.querySelector('#habit-title');
+const habitTrigger = document.querySelector('#habit-trigger');
+const habitAction = document.querySelector('#habit-action');
+const habitReward = document.querySelector('#habit-reward');
+const habitCounterPlan = document.querySelector('#habit-counter');
+const habitCounterUsed = document.querySelector('#habit-counter-used');
+const cancelHabit = document.querySelector('#cancel-habit');
 
 const durationSeconds = durationMinutes * 60;
 const startedAt = Date.now();
@@ -40,6 +53,26 @@ if (target && params.get('notes') === '1') {
     countdown: noteCountdown,
     textarea: noteText,
     saveButton: saveNote,
+  });
+}
+
+if (target && params.get('habits') === '1') {
+  tools.hidden = false;
+  habitButton.hidden = false;
+  setupHabitBox({
+    site: target.hostname,
+    button: habitButton,
+    box: habitBox,
+    form: habitForm,
+    select: habitSelect,
+    fields: habitFields,
+    title: habitTitle,
+    trigger: habitTrigger,
+    action: habitAction,
+    reward: habitReward,
+    counterPlan: habitCounterPlan,
+    counterUsed: habitCounterUsed,
+    cancelButton: cancelHabit,
   });
 }
 

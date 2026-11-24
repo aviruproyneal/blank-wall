@@ -18,6 +18,14 @@
             <path d="M13 7l4 4"></path>
           </svg>
         </button>
+        <button class="wall__tool" id="habit-button" type="button" aria-label="Log habit" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 12a8 8 0 0 1 14-5"></path>
+            <path d="M18 4v4h-4"></path>
+            <path d="M20 12a8 8 0 0 1-14 5"></path>
+            <path d="M6 20v-4h4"></path>
+          </svg>
+        </button>
       </div>
 
       <section class="wall__decision" id="decision" hidden>
@@ -38,6 +46,48 @@
       <div class="note-box__actions">
         <button id="save-note" type="button" disabled>Save</button>
       </div>
+    </section>
+
+    <section class="habit-box" id="habit-box" aria-label="Log habit" hidden>
+      <form id="habit-form">
+        <div class="habit-box__header">
+          <span>Log habit</span>
+          <select id="habit-select" aria-label="Habit"></select>
+        </div>
+
+        <div class="habit-box__fields" id="habit-fields">
+          <label>
+            <span>Title</span>
+            <input id="habit-title" type="text" placeholder="Short title" required>
+          </label>
+          <label>
+            <span>Trigger</span>
+            <input id="habit-trigger" type="text" required>
+          </label>
+          <label>
+            <span>Action</span>
+            <input id="habit-action" type="text" required>
+          </label>
+          <label>
+            <span>Reward</span>
+            <input id="habit-reward" type="text" required>
+          </label>
+          <label>
+            <span>Counter-plan</span>
+            <textarea id="habit-counter" rows="2" required></textarea>
+          </label>
+        </div>
+
+        <label class="habit-box__checkbox">
+          <input id="habit-counter-used" type="checkbox">
+          <span>Counter plan used</span>
+        </label>
+
+        <div class="habit-box__actions">
+          <button id="cancel-habit" type="button">Cancel</button>
+          <button id="save-habit" type="submit">Save</button>
+        </div>
+      </form>
     </section>
 
     <script type="module" src="wall.js"></script>

@@ -101,6 +101,53 @@ export async function addNote(text, site) {
   await chrome.storage.local.set({ notes });
 }
 
+export async function getHabits() {
+  const { habits = [] } = await chrome.storage.local.get('habits');
+  return habits;
+}
+
+export async function addHabit(details, occurrence) {
+  const habits = await getHabits();
+  const habit = {
+    id: nextHabitId(habits),
+    title: details.title,
+    trigger: details.trigger,
+    action: details.action,
+    reward: details.reward,
+    counterPlan: details.counterPlan,
+    occurrences: [createOccurrence(occurrence)],
+  };
+  habits.push(habit);
+  await chrome.storage.local.set({ habits });
+  return habit;
+}
+
+export async function addOccurrence(id, occurrence) {
+  const habits = await getHabits();
+  const habit = habits.find((candidate) => candidate.id === id);
+
+  if (habit) {
+    habit.occurrences.push(createOccurrence(occurrence));
+    await chrome.storage.local.set({ habits });
+  }
+}
+
+function nextHabitId(habits) {
+  const highest = habits.reduce((max, habit) => {
+    const number = Number(habit.id);
+    return Number.isInteger(number) && number > max ? number : max;
+  }, 0);
+  return String(highest + 1).padStart(3, '0');
+}
+
+function createOccurrence({ site, counterUsed }) {
+  return {
+    timestamp: new Date().toISOString(),
+    site,
+    counterUsed: Boolean(counterUsed),
+  };
+}
+
 export async function hasAllowance(hostname) {
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');
