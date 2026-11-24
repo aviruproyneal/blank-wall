@@ -21,9 +21,22 @@ toggleButton.addEventListener('click', () => {
   });
 });
 
+document.querySelector('#quick-note').addEventListener('click', () => {
+  openDashboard('notes');
+});
+
+document.querySelector('#log-habit').addEventListener('click', () => {
+  openDashboard('habits');
+});
+
 document.querySelector('#open-dashboard').addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
 });
+
+function openDashboard(section) {
+  const url = chrome.runtime.getURL('dashboard/dashboard.html');
+  chrome.tabs.create({ url: `${url}#${section}` });
+}
 
 renderStats().catch((error) => {
   console.error('Blank Wall popup statistics failed:', error);

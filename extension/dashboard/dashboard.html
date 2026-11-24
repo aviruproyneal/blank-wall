@@ -15,6 +15,7 @@
           <a href="#today">Today</a>
           <a href="#blocked-sites" class="is-active">Blocked sites</a>
           <a href="#habits">Habits</a>
+          <a href="#notes">Notes</a>
         </nav>
       </aside>
 
@@ -130,6 +131,40 @@
               <button class="danger-button" id="delete-habit" type="button">Delete</button>
             </div>
           </div>
+        </section>
+
+        <section class="panel" id="notes">
+          <h2>Notes</h2>
+
+          <div id="notes-list-view">
+            <div class="notes__toolbar">
+              <input id="note-search" type="search" placeholder="Search notes" aria-label="Search notes">
+              <button class="primary-button" id="new-note" type="button">New note</button>
+            </div>
+            <p class="empty-notes" id="empty-notes">No notes yet.</p>
+            <p class="empty-notes" id="no-note-results" hidden>No matching notes.</p>
+            <ul class="note-list" id="note-list"></ul>
+          </div>
+
+          <form class="note-editor" id="note-editor" hidden>
+            <h3 id="note-editor-title">New note</h3>
+            <label>
+              <span>Note</span>
+              <textarea id="note-editor-text" rows="5" required></textarea>
+            </label>
+            <label>
+              <span>Site</span>
+              <input id="note-editor-site" type="text">
+            </label>
+            <label>
+              <span>Linked habit</span>
+              <select id="note-editor-habit"></select>
+            </label>
+            <div class="form-actions">
+              <button id="cancel-note-editor" type="button">Cancel</button>
+              <button class="primary-button" type="submit">Save note</button>
+            </div>
+          </form>
         </section>
       </main>
     </div>

@@ -91,15 +91,45 @@ export async function getTodayStats() {
   return { walls: 0, wallSeconds: 0, skips: 0, ...stats[todayKey()] };
 }
 
-export async function addNote(text, site) {
+export async function getNotes() {
   const { notes = [] } = await chrome.storage.local.get('notes');
-  notes.push({
+  return notes;
+}
+
+export async function addNote(text, site, habitId = null) {
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  const note = {
     id: crypto.randomUUID(),
     timestamp: new Date().toISOString(),
     site,
     text,
-  });
+  };
+
+  if (habitId) {
+    note.habitId = habitId;
+  }
+
+  notes.push(note);
   await chrome.storage.local.set({ notes });
+  return note;
+}
+
+export async function updateNote(id, patch) {
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  const note = notes.find((candidate) => candidate.id === id);
+
+  if (note) {
+    Object.assign(note, patch);
+    if (!note.habitId) {
+      delete note.habitId;
+    }
+    await chrome.storage.local.set({ notes });
+  }
+}
+
+export async function deleteNote(id) {
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  await chrome.storage.local.set({ notes: notes.filter((note) => note.id !== id) });
 }
 
 export async function getHabits() {
