@@ -5,6 +5,7 @@ function defaultState() {
     notes: [],
     stats: {},
     allowances: {},
+    nextHabitNumber: 1,
     settings: {
       defaultDurationMinutes: 5,
       allowanceMinutes: 15,
@@ -106,20 +107,47 @@ export async function getHabits() {
   return habits;
 }
 
-export async function addHabit(details, occurrence) {
+export async function addHabit(details, occurrence = null) {
   const habits = await getHabits();
+  const { nextHabitNumber = 1 } = await chrome.storage.local.get('nextHabitNumber');
+  const { id, nextNumber } = nextHabitId(habits, nextHabitNumber);
   const habit = {
-    id: nextHabitId(habits),
+    id,
     title: details.title,
     trigger: details.trigger,
     action: details.action,
     reward: details.reward,
     counterPlan: details.counterPlan,
-    occurrences: [createOccurrence(occurrence)],
+    occurrences: occurrence ? [createOccurrence(occurrence)] : [],
   };
   habits.push(habit);
-  await chrome.storage.local.set({ habits });
+  await chrome.storage.local.set({ habits, nextHabitNumber: nextNumber });
   return habit;
+}
+
+export async function updateHabit(id, patch) {
+  const habits = await getHabits();
+  const habit = habits.find((candidate) => candidate.id === id);
+
+  if (habit) {
+    Object.assign(habit, patch);
+    await chrome.storage.local.set({ habits });
+  }
+}
+
+export async function deleteHabit(id) {
+  const habits = await getHabits();
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  const remaining = habits.filter((habit) => habit.id !== id);
+  const updatedNotes = notes.map((note) => {
+    if (note.habitId !== id) {
+      return note;
+    }
+    const updated = { ...note };
+    delete updated.habitId;
+    return updated;
+  });
+  await chrome.storage.local.set({ habits: remaining, notes: updatedNotes });
 }
 
 export async function addOccurrence(id, occurrence) {
@@ -132,12 +160,13 @@ export async function addOccurrence(id, occurrence) {
   }
 }
 
-function nextHabitId(habits) {
+function nextHabitId(habits, nextNumber) {
   const highest = habits.reduce((max, habit) => {
     const number = Number(habit.id);
     return Number.isInteger(number) && number > max ? number : max;
   }, 0);
-  return String(highest + 1).padStart(3, '0');
+  const number = Math.max(nextNumber, highest + 1);
+  return { id: String(number).padStart(3, '0'), nextNumber: number + 1 };
 }
 
 function createOccurrence({ site, counterUsed }) {

@@ -122,11 +122,6 @@
   background: var(--bg-hover);
 }
 
-.empty-sites {
-  margin: var(--space-4) 0 0;
-  color: var(--text-muted);
-}
-
 .site-list {
   margin: var(--space-4) 0 0;
   padding: 0;
@@ -184,6 +179,194 @@
 
 .control input[type='checkbox'] {
   accent-color: var(--accent);
+}
+
+.empty-sites,
+.empty-habits {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+}
+
+.primary-button {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: var(--bg-hover);
+}
+
+.danger-button {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.danger-button:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.habit-list {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.habit-list button {
+  width: 100%;
+  padding: var(--space-3);
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.habit-list li:first-child button {
+  border-top: 0;
+}
+
+.habit-list button:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+.habit-editor,
+.habit-detail {
+  margin-top: var(--space-4);
+}
+
+.habit-editor h3,
+.habit-detail h3 {
+  margin: 0 0 var(--space-3);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.habit-editor label {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.habit-editor label > span {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.habit-editor input[type='text'],
+.habit-editor textarea,
+.add-occurrence input[type='text'] {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.habit-editor textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.form-actions button,
+.add-occurrence button,
+#back-to-habits {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: pointer;
+}
+
+.form-actions button:hover,
+.add-occurrence button:hover,
+#back-to-habits:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.habit-fields {
+  margin: 0 0 var(--space-4);
+}
+
+.habit-fields div {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+}
+
+.habit-fields dt {
+  min-width: 90px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.habit-fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.habit-counts {
+  display: flex;
+  gap: var(--space-5);
+  margin: 0 0 var(--space-4);
+}
+
+.habit-counts div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.habit-counts dt {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.habit-counts dd {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.add-occurrence__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.inline-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.inline-checkbox input {
+  accent-color: var(--accent);
+}
+
+.occurrence-list {
+  margin: var(--space-4) 0 0;
+  padding-left: var(--space-4);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.occurrence-list li {
+  padding: var(--space-1) 0;
 }
 
 [hidden] {

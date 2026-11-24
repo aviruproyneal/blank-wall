@@ -14,6 +14,7 @@
         <nav class="sidebar__nav" aria-label="Dashboard sections">
           <a href="#today">Today</a>
           <a href="#blocked-sites" class="is-active">Blocked sites</a>
+          <a href="#habits">Habits</a>
         </nav>
       </aside>
 
@@ -55,6 +56,80 @@
 
           <p class="empty-sites" id="empty-sites">No blocked sites yet.</p>
           <ul class="site-list" id="site-list"></ul>
+        </section>
+
+        <section class="panel" id="habits">
+          <h2>Habits</h2>
+
+          <div id="habit-list-view">
+            <button class="primary-button" id="new-habit" type="button">New habit</button>
+            <p class="empty-habits" id="empty-habits">No habits yet.</p>
+            <ul class="habit-list" id="habit-list"></ul>
+          </div>
+
+          <form class="habit-editor" id="habit-editor" hidden>
+            <h3 id="habit-editor-title">New habit</h3>
+            <label>
+              <span>Title</span>
+              <input id="habit-title" type="text" placeholder="Short title" required>
+            </label>
+            <label>
+              <span>Trigger</span>
+              <input id="habit-trigger" type="text" required>
+            </label>
+            <label>
+              <span>Action</span>
+              <input id="habit-action" type="text" required>
+            </label>
+            <label>
+              <span>Reward</span>
+              <input id="habit-reward" type="text" required>
+            </label>
+            <label>
+              <span>Counter-plan</span>
+              <textarea id="habit-counter" rows="2" required></textarea>
+            </label>
+            <div class="form-actions">
+              <button id="cancel-habit-editor" type="button">Cancel</button>
+              <button class="primary-button" type="submit">Save habit</button>
+            </div>
+          </form>
+
+          <div class="habit-detail" id="habit-detail" hidden>
+            <button id="back-to-habits" type="button">← All habits</button>
+            <h3 id="habit-detail-title"></h3>
+
+            <dl class="habit-fields" id="habit-detail-fields"></dl>
+
+            <dl class="habit-counts">
+              <div>
+                <dt>Occurrences</dt>
+                <dd id="habit-occurrences">0</dd>
+              </div>
+              <div>
+                <dt>Counter used</dt>
+                <dd id="habit-counter-used-count">0</dd>
+              </div>
+            </dl>
+
+            <form class="add-occurrence" id="add-occurrence">
+              <div class="add-occurrence__row">
+                <input id="occurrence-site" type="text" placeholder="Site (optional)">
+                <label class="inline-checkbox">
+                  <input id="occurrence-counter-used" type="checkbox">
+                  Counter used
+                </label>
+                <button type="submit">Log occurrence</button>
+              </div>
+            </form>
+
+            <ol class="occurrence-list" id="occurrence-list"></ol>
+
+            <div class="form-actions">
+              <button id="edit-habit" type="button">Edit</button>
+              <button class="danger-button" id="delete-habit" type="button">Delete</button>
+            </div>
+          </div>
         </section>
       </main>
     </div>

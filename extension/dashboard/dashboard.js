@@ -6,6 +6,7 @@ import {
   updateBlockedSite,
 } from '../shared/storage.js';
 import { normalizeHostname } from '../shared/utils.js';
+import { setupHabitsPage } from './habits.js';
 
 const addForm = document.querySelector('#add-site');
 const hostnameInput = document.querySelector('#new-hostname');
@@ -14,6 +15,8 @@ const emptySites = document.querySelector('#empty-sites');
 const walls = document.querySelector('#walls');
 const wallTime = document.querySelector('#wall-time');
 const skips = document.querySelector('#skips');
+
+setupHabitsPage();
 
 addForm.addEventListener('submit', (event) => {
   event.preventDefault();
