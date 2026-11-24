@@ -6,7 +6,7 @@ This repository is a monorepo for the prototype. The Chrome extension lives in [
 
 ## Status
 
-The extension is built in small milestones so every change can be reviewed and committed on its own. The current milestone adds the repository scaffolding only; the loadable extension starts in milestone 2.
+The extension is built in small milestones so every change can be reviewed and committed on its own. The Chrome extension now has a loadable MV3 skeleton with shared theme and storage; blocking and the user-facing pages come in later milestones.
 
 ## Roadmap
 
@@ -25,12 +25,10 @@ The extension is built in small milestones so every change can be reviewed and c
 
 ## Run the extension in Chrome
 
-Once the extension files are present:
-
 1. Open `chrome://extensions`.
 2. Enable **Developer mode**.
 3. Choose **Load unpacked** and select the `extension/` directory.
-4. Open the popup from the toolbar to check the current state.
+4. Confirm that Blank Wall appears with no errors. Its service worker initializes local storage on install.
 
 There is no build step and no dependency install: the extension is plain HTML, CSS, and vanilla JavaScript ES modules.
 
