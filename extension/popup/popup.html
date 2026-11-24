@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blank Wall</title>
+    <link rel="stylesheet" href="../shared/theme.css">
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup__header">
+        <h1>Blank Wall</h1>
+        <p class="popup__hostname" id="hostname">Reading this tab…</p>
+      </header>
+
+      <button id="toggle-site" type="button" disabled>Block this site</button>
+
+      <section class="popup__section">
+        <h2>Today</h2>
+        <dl class="stats">
+          <div>
+            <dt>Walls faced</dt>
+            <dd id="walls">0</dd>
+          </div>
+          <div>
+            <dt>On the wall</dt>
+            <dd id="wall-time">0 min</dd>
+          </div>
+          <div>
+            <dt>Skips</dt>
+            <dd id="skips">0</dd>
+          </div>
+        </dl>
+      </section>
+
+      <div class="popup__nav">
+        <button id="open-dashboard" type="button">Open dashboard</button>
+      </div>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

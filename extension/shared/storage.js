@@ -48,6 +48,35 @@ export async function getBlockedSites() {
   return blockedSites;
 }
 
+export async function addBlockedSite(hostname) {
+  const host = hostname.toLowerCase();
+  const sites = await getBlockedSites();
+  const settings = await getSettings();
+
+  if (!sites.some((site) => site.hostname.toLowerCase() === host)) {
+    sites.push({
+      hostname: host,
+      durationMinutes: settings.defaultDurationMinutes,
+      notesEnabled: true,
+      habitsEnabled: true,
+    });
+    await chrome.storage.local.set({ blockedSites: sites });
+  }
+
+  await revokeAllowance(host);
+}
+
+export async function removeBlockedSite(hostname) {
+  const host = hostname.toLowerCase();
+  const sites = (await getBlockedSites()).filter((site) => site.hostname.toLowerCase() !== host);
+  await chrome.storage.local.set({ blockedSites: sites });
+}
+
+export async function getTodayStats() {
+  const { stats = {} } = await chrome.storage.local.get('stats');
+  return { walls: 0, wallSeconds: 0, skips: 0, ...stats[todayKey()] };
+}
+
 export async function hasAllowance(hostname) {
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');
@@ -58,8 +87,7 @@ export async function hasAllowance(hostname) {
   }
 
   if (expiresAt <= Date.now()) {
-    delete allowances[host];
-    await chrome.storage.local.set({ allowances });
+    await revokeAllowance(host);
     return false;
   }
 
@@ -71,6 +99,16 @@ export async function grantAllowance(hostname, minutes) {
   const { allowances = {} } = await chrome.storage.local.get('allowances');
   allowances[host] = Date.now() + minutes * 60_000;
   await chrome.storage.local.set({ allowances });
+}
+
+export async function revokeAllowance(hostname) {
+  const host = hostname.toLowerCase();
+  const { allowances = {} } = await chrome.storage.local.get('allowances');
+
+  if (allowances[host] !== undefined) {
+    delete allowances[host];
+    await chrome.storage.local.set({ allowances });
+  }
 }
 
 async function updateTodayStats(update) {
