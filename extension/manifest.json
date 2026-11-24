@@ -3,7 +3,7 @@
   "name": "Blank Wall",
   "version": "0.1.0",
   "description": "A calm pause before you open the sites you have blocked.",
-  "permissions": ["storage", "unlimitedStorage"],
+  "permissions": ["storage", "unlimitedStorage", "tabs", "webNavigation"],
   "background": {
     "service_worker": "background.js",
     "type": "module"

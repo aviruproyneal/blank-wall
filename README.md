@@ -6,7 +6,7 @@ This repository is a monorepo for the prototype. The Chrome extension lives in [
 
 ## Status
 
-The extension is built in small milestones so every change can be reviewed and committed on its own. The Chrome extension now has a loadable MV3 skeleton with shared theme and storage; blocking and the user-facing pages come in later milestones.
+The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking and the basic wall are in place, using a temporary hard-coded `example.com` entry; the popup, dashboard, and note/habit tools come later.
 
 ## Roadmap
 
@@ -29,6 +29,9 @@ The extension is built in small milestones so every change can be reviewed and c
 2. Enable **Developer mode**.
 3. Choose **Load unpacked** and select the `extension/` directory.
 4. Confirm that Blank Wall appears with no errors. Its service worker initializes local storage on install.
+5. Visit `http://example.com`. It should redirect to the wall and show a one-minute countdown.
+6. After the countdown, use **Continue** to return to the site or **Leave** to open a blank tab. **Continue** grants a 15-minute allowance so the site is not blocked again immediately.
+7. To test another site, edit `DEV_BLOCKED_SITES` in `extension/background.js` and reload the extension from `chrome://extensions`.
 
 There is no build step and no dependency install: the extension is plain HTML, CSS, and vanilla JavaScript ES modules.
 

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blank Wall</title>
+    <link rel="stylesheet" href="../shared/theme.css">
+    <link rel="stylesheet" href="wall.css">
+  </head>
+  <body>
+    <main class="wall">
+      <p class="wall__timer" id="timer" aria-live="polite">05:00</p>
+
+      <section class="wall__decision" id="decision" hidden>
+        <p>Still want to go in?</p>
+        <div class="wall__actions">
+          <button id="continue" type="button">Continue</button>
+          <button id="leave" type="button">Leave</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="wall.js"></script>
+  </body>
+</html>
