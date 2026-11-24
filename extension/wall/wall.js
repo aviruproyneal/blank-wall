@@ -4,7 +4,8 @@ import {
   recordWallSeconds,
   recordWallStart,
 } from '../shared/storage.js';
-import { parseHttpUrl } from '../shared/utils.js';
+import { formatClock, parseHttpUrl } from '../shared/utils.js';
+import { setupNoteBox } from './note.js';
 
 const params = new URLSearchParams(window.location.search);
 const target = parseHttpUrl(params.get('target'));
@@ -14,6 +15,12 @@ const timer = document.querySelector('#timer');
 const decision = document.querySelector('#decision');
 const continueButton = document.querySelector('#continue');
 const leaveButton = document.querySelector('#leave');
+const tools = document.querySelector('#tools');
+const noteButton = document.querySelector('#note-button');
+const noteBox = document.querySelector('#note-box');
+const noteCountdown = document.querySelector('#note-countdown');
+const noteText = document.querySelector('#note-text');
+const saveNote = document.querySelector('#save-note');
 
 const durationSeconds = durationMinutes * 60;
 const startedAt = Date.now();
@@ -22,6 +29,19 @@ let finished = false;
 let intervalId;
 
 continueButton.disabled = target === null;
+
+if (target && params.get('notes') === '1') {
+  tools.hidden = false;
+  noteButton.hidden = false;
+  setupNoteBox({
+    site: target.hostname,
+    button: noteButton,
+    box: noteBox,
+    countdown: noteCountdown,
+    textarea: noteText,
+    saveButton: saveNote,
+  });
+}
 
 recordWallStart().catch((error) => {
   console.error('Blank Wall wall statistics failed:', error);
@@ -57,7 +77,7 @@ function readDuration(raw) {
 
 function render() {
   const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-  timer.textContent = formatTime(remaining);
+  timer.textContent = formatClock(remaining);
 
   if (remaining === 0) {
     finish().catch((error) => {
@@ -78,10 +98,4 @@ async function finish() {
 
   const elapsed = Math.min(durationSeconds, Math.floor((Date.now() - startedAt) / 1000));
   await recordWallSeconds(elapsed);
-}
-
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60);
-  const remainder = seconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
 }

@@ -11,6 +11,15 @@
     <main class="wall">
       <p class="wall__timer" id="timer" aria-live="polite">05:00</p>
 
+      <div class="wall__tools" id="tools" hidden>
+        <button class="wall__tool" id="note-button" type="button" aria-label="Take a note" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 20h4l11-11-4-4L4 16v4z"></path>
+            <path d="M13 7l4 4"></path>
+          </svg>
+        </button>
+      </div>
+
       <section class="wall__decision" id="decision" hidden>
         <p>Still want to go in?</p>
         <div class="wall__actions">
@@ -19,6 +28,17 @@
         </div>
       </section>
     </main>
+
+    <section class="note-box" id="note-box" aria-label="Quick note" hidden>
+      <div class="note-box__header">
+        <span>Quick note</span>
+        <span id="note-countdown">01:00</span>
+      </div>
+      <textarea id="note-text" rows="5" placeholder="What are you reaching for?" spellcheck="true"></textarea>
+      <div class="note-box__actions">
+        <button id="save-note" type="button" disabled>Save</button>
+      </div>
+    </section>
 
     <script type="module" src="wall.js"></script>
   </body>

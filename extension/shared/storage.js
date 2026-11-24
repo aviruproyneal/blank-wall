@@ -90,6 +90,17 @@ export async function getTodayStats() {
   return { walls: 0, wallSeconds: 0, skips: 0, ...stats[todayKey()] };
 }
 
+export async function addNote(text, site) {
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  notes.push({
+    id: crypto.randomUUID(),
+    timestamp: new Date().toISOString(),
+    site,
+    text,
+  });
+  await chrome.storage.local.set({ notes });
+}
+
 export async function hasAllowance(hostname) {
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');

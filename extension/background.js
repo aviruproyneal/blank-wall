@@ -7,7 +7,12 @@ import {
 import { parseHttpUrl } from './shared/utils.js';
 
 const DEV_BLOCKED_SITES = [
-  { hostname: 'example.com', durationMinutes: 1 },
+  {
+    hostname: 'example.com',
+    durationMinutes: 1,
+    notesEnabled: true,
+    habitsEnabled: false,
+  },
 ];
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -45,6 +50,7 @@ async function redirectIfBlocked(details) {
   wall.searchParams.set('target', target.href);
   wall.searchParams.set('site', site.hostname);
   wall.searchParams.set('duration', String(site.durationMinutes ?? settings.defaultDurationMinutes));
+  wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');
 
   await chrome.tabs.update(details.tabId, { url: wall.href });
 }
