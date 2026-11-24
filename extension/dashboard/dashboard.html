@@ -8,32 +8,56 @@
     <link rel="stylesheet" href="dashboard.css">
   </head>
   <body>
-    <main class="dashboard">
-      <h1>Dashboard</h1>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <h1>Blank Wall</h1>
+        <nav class="sidebar__nav" aria-label="Dashboard sections">
+          <a href="#today">Today</a>
+          <a href="#blocked-sites" class="is-active">Blocked sites</a>
+        </nav>
+      </aside>
 
-      <section class="panel">
-        <h2>Today</h2>
-        <dl class="stats">
-          <div>
-            <dt>Walls faced</dt>
-            <dd id="walls">0</dd>
-          </div>
-          <div>
-            <dt>On the wall</dt>
-            <dd id="wall-time">0 min</dd>
-          </div>
-          <div>
-            <dt>Skips</dt>
-            <dd id="skips">0</dd>
-          </div>
-        </dl>
-      </section>
+      <main class="content">
+        <section class="panel" id="today">
+          <h2>Today</h2>
+          <dl class="stats">
+            <div>
+              <dt>Walls faced</dt>
+              <dd id="walls">0</dd>
+            </div>
+            <div>
+              <dt>On the wall</dt>
+              <dd id="wall-time">0 min</dd>
+            </div>
+            <div>
+              <dt>Skips</dt>
+              <dd id="skips">0</dd>
+            </div>
+          </dl>
+        </section>
 
-      <section class="panel">
-        <h2>Blocked sites</h2>
-        <p><strong id="site-count">0</strong> sites blocked</p>
-      </section>
-    </main>
+        <section class="panel" id="blocked-sites">
+          <h2>Blocked sites</h2>
+
+          <form class="add-site" id="add-site">
+            <label for="new-hostname">Add a site</label>
+            <div class="add-site__row">
+              <input
+                id="new-hostname"
+                type="text"
+                placeholder="example.com"
+                autocomplete="off"
+                spellcheck="false"
+                required>
+              <button type="submit">Add</button>
+            </div>
+          </form>
+
+          <p class="empty-sites" id="empty-sites">No blocked sites yet.</p>
+          <ul class="site-list" id="site-list"></ul>
+        </section>
+      </main>
+    </div>
 
     <script type="module" src="dashboard.js"></script>
   </body>

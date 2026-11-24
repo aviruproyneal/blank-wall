@@ -6,3 +6,14 @@ export function parseHttpUrl(value) {
     return null;
   }
 }
+
+export function normalizeHostname(value) {
+  const raw = value.trim().toLowerCase();
+  const url = parseHttpUrl(raw) ?? parseHttpUrl(`https://${raw}`);
+
+  if (!url) {
+    return null;
+  }
+
+  return url.hostname.replace(/^\.+|\.+$/g, '') || null;
+}

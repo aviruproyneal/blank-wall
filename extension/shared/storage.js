@@ -66,6 +66,19 @@ export async function addBlockedSite(hostname) {
   await revokeAllowance(host);
 }
 
+export async function updateBlockedSite(hostname, patch) {
+  const host = hostname.toLowerCase();
+  const sites = await getBlockedSites();
+  const index = sites.findIndex((site) => site.hostname.toLowerCase() === host);
+
+  if (index === -1) {
+    return;
+  }
+
+  sites[index] = { ...sites[index], ...patch };
+  await chrome.storage.local.set({ blockedSites: sites });
+}
+
 export async function removeBlockedSite(hostname) {
   const host = hostname.toLowerCase();
   const sites = (await getBlockedSites()).filter((site) => site.hostname.toLowerCase() !== host);
