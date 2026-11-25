@@ -4,7 +4,7 @@ A Manifest V3 browser extension that replaces a blocked site with a quiet countd
 
 ## Install
 
-Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` directory — the folder containing `manifest.json` — as an unpacked extension. There is no build step or dependency install. Full per-browser steps are in [`docs/installation.md`](../docs/installation.md).
+Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` directory — the folder containing `manifest.json` — as an unpacked extension. Firefox needs the documented `manifest.firefox.json` copy step instead. There is no build step or dependency install. Full per-browser steps are in [`docs/installation.md`](../docs/installation.md).
 
 | Browser | Status |
 | --- | --- |
@@ -13,7 +13,7 @@ Blank Wall is not published in an extension store. Download the ZIP from GitHub 
 | Brave | Expected to work; not runtime tested here. |
 | Opera | Expected to work; not runtime tested here. |
 | Vivaldi | Expected to work; not runtime tested here. |
-| Firefox | Best-effort temporary load; folder backup unavailable; not runtime tested here. |
+| Firefox | Best-effort temporary load with `manifest.firefox.json`; folder backup unavailable; not runtime tested here. |
 | Safari | Out of scope. |
 
 Mobile browsers are out of scope.

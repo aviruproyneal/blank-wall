@@ -5,7 +5,6 @@
   "description": "A calm pause before you open the sites you have blocked.",
   "permissions": ["storage", "unlimitedStorage", "tabs", "webNavigation"],
   "background": {
-    "scripts": ["background.js"],
     "service_worker": "background.js",
     "type": "module"
   },

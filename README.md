@@ -10,7 +10,7 @@ The extension is built in small milestones so every change can be reviewed and c
 
 ## Install
 
-Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` folder — the folder containing `manifest.json` — as an unpacked extension. There is no build step or dependency install. See [`docs/installation.md`](docs/installation.md) for per-browser steps and troubleshooting.
+Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` folder — the folder containing `manifest.json` — as an unpacked extension. Firefox needs the documented `manifest.firefox.json` copy step instead. There is no build step or dependency install. See [`docs/installation.md`](docs/installation.md) for per-browser steps and troubleshooting.
 
 | Browser | Status |
 | --- | --- |
@@ -19,7 +19,7 @@ Blank Wall is not published in an extension store. Download the ZIP from GitHub 
 | Brave | Expected to work; not runtime tested here. |
 | Opera | Expected to work; not runtime tested here. |
 | Vivaldi | Expected to work; not runtime tested here. |
-| Firefox | Best-effort temporary load; folder backup unavailable; not runtime tested here. |
+| Firefox | Best-effort temporary load with `manifest.firefox.json`; folder backup unavailable; not runtime tested here. |
 | Safari | Out of scope. |
 
 Mobile browsers are out of scope.

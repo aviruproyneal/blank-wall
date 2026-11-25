@@ -2,7 +2,7 @@
 
 Blank Wall is not published in any extension store yet. Download a ZIP from GitHub Releases (or from the repository), extract it, and load the `extension/` folder as an unpacked extension. There is no build step, dependency install, or network access.
 
-Use a current desktop browser. The shared manifest requires Chromium 121 or newer and Firefox 121 or newer.
+Use a current desktop browser. Chromium browsers use `manifest.json`; Firefox uses `manifest.firefox.json` as described below. Chrome/Chromium 121 or newer and Firefox 121 or newer are the declared minimums.
 
 ## Get the code
 
@@ -21,7 +21,7 @@ If you cloned the repository instead, select the repository's `extension/` folde
 | Brave | Expected to work | Brave documents support for Chromium-compatible extensions. Not runtime tested here. |
 | Opera | Expected to work | Same Chromium MV3 build. Not runtime tested here. |
 | Vivaldi | Expected to work | Same Chromium MV3 build. Not runtime tested here. |
-| Firefox | Best effort, temporary only | Manifest and APIs were audited for Firefox 121+. Not runtime tested here. Folder backup is unavailable. |
+| Firefox | Best effort, temporary only | Uses `manifest.firefox.json`. Manifest and APIs were audited for Firefox 121+. Not runtime tested here. Folder backup is unavailable. |
 | Safari | Out of scope | Not supported or tested. |
 
 Mobile browsers are out of scope on every platform.
@@ -47,13 +47,14 @@ Use the same unpacked `extension/` folder in Chrome, Edge, Brave, Opera, and Viv
 
 ## Firefox
 
-Firefox uses an event page instead of a service worker for this Manifest V3 extension. The manifest declares both forms, and Firefox needs version 121 or newer.
+Firefox uses an event page instead of a service worker for this Manifest V3 extension. Use `manifest.firefox.json` there; it differs from `manifest.json` only in the background declaration. Firefox needs version 121 or newer.
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Select **This Firefox**.
-3. Choose **Load Temporary Add-on**.
-4. Select `extension/manifest.json` inside the extracted folder. Firefox asks for a file here, not the whole folder.
-5. Confirm that Blank Wall appears in the temporary extensions list.
+3. In a copy of the extracted folder, replace `manifest.json` with `manifest.firefox.json`. Keep the name `manifest.json` when you load it; no build step is involved.
+4. Choose **Load Temporary Add-on**.
+5. Select `extension/manifest.json` inside that copied folder. Firefox asks for a file here, not the whole folder.
+6. Confirm that Blank Wall appears in the temporary extensions list.
 
 A temporary add-on stays installed only until you remove it or restart Firefox. Reload it after every Firefox restart; browser storage may remain, but the extension itself is not installed permanently.
 
@@ -69,12 +70,13 @@ Unsigned installs are limited to Firefox Developer Edition, Nightly, and ESR wit
 | --- | --- |
 | Folder backup | Automatic Markdown mirroring needs the File System Access API. Firefox does not provide it, so the folder controls are hidden and the popup reads `Backup: export only`. Use **Export everything** and **Import JSON file** there. |
 | Firefox installation | Temporary add-ons disappear on restart. There is no signed build in this repository. |
-| Chromium version | `background.scripts` and `background.service_worker` are both declared, so Chrome versions before 121 refuse to load the manifest. |
+| Manifest split | Chrome warns about `background.scripts` in Manifest V3, so Chromium uses `manifest.json` with `service_worker` only. Firefox uses `manifest.firefox.json` with `scripts` only. |
 | Folder permission | Chromium can lapse folder access after a restart. The dashboard then shows `Needs reconnect` and offers **Reconnect backup folder**. |
 | Runtime verification | Chrome was used for development checks. Edge, Brave, Opera, Vivaldi, and Firefox were checked against official documentation and code only; they have not been run here. |
 
 ## Troubleshooting
 
+- **Chrome reports "'background.scripts' requires manifest version of 2 or lower":** you loaded the Firefox manifest in Chrome. Reload using the original `manifest.json`; do not use `manifest.firefox.json` in Chromium browsers.
 - **The extension does not appear after loading it:** make sure **Developer mode** is on, then try **Load unpacked** again.
 - **"Manifest file is missing or unreadable":** select `extension/`, the folder containing `manifest.json` directly. Unzip the archive first; browsers do not load a ZIP in place.
 - **Nothing changes after editing files:** reload the extension from its extensions page. In Firefox, use **Reload** on the temporary add-on card.
