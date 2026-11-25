@@ -327,7 +327,8 @@ function parseHabit(text, fileName) {
   while (index < lines.length && lines[index] !== '---') {
     const separator = lines[index].indexOf(':');
     if (separator > 0) {
-      front[lines[index].slice(0, separator).trim()] = parseFrontMatterValue(lines[index].slice(separator + 1).trim());
+      const key = lines[index].slice(0, separator).trim();
+      front[key] = parseFrontMatterValue(lines[index].slice(separator + 1).trim());
     }
     index += 1;
   }

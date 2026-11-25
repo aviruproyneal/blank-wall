@@ -1,6 +1,21 @@
 import { addHabit, addOccurrence, getHabits } from '../shared/storage.js';
 
-export function setupHabitBox({ site, button, box, form, select, fields, title, trigger, action, reward, counterPlan, counterUsed, cancelButton, onHabitSaved }) {
+export function setupHabitBox({
+  site,
+  button,
+  box,
+  form,
+  select,
+  fields,
+  title,
+  trigger,
+  action,
+  reward,
+  counterPlan,
+  counterUsed,
+  cancelButton,
+  onHabitSaved,
+}) {
   const detailInputs = [title, trigger, action, reward, counterPlan];
   let open = false;
 
