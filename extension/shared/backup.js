@@ -192,6 +192,7 @@ function renderHabit(habit) {
   const lines = [
     '---',
     `id: ${frontMatterValue(habit.id)}`,
+    `title: ${frontMatterValue(habit.title)}`,
     `trigger: ${frontMatterValue(habit.trigger)}`,
     `action: ${frontMatterValue(habit.action)}`,
     `reward: ${frontMatterValue(habit.reward)}`,
@@ -232,4 +233,184 @@ async function removeFile(directory, name) {
       throw error;
     }
   }
+}
+
+export async function readBackupFolder() {
+  const directory = await getWritableDirectory();
+
+  if (!directory) {
+    return null;
+  }
+
+  const root = await getOptionalDirectory(directory, 'BlankWall');
+
+  if (!root) {
+    return null;
+  }
+
+  const [blockedSites, habits, notes] = await Promise.all([
+    readJson(root, 'blocked-sites.json'),
+    readHabits(root),
+    readNotes(root),
+  ]);
+  return { blockedSites, habits, notes };
+}
+
+async function getOptionalDirectory(directory, name) {
+  try {
+    return await directory.getDirectoryHandle(name);
+  } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+async function readJson(directory, name) {
+  try {
+    const file = await directory.getFileHandle(name);
+    return JSON.parse(await (await file.getFile()).text());
+  } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return [];
+    }
+    throw error;
+  }
+}
+
+async function readHabits(root) {
+  const directory = await getOptionalDirectory(root, 'habits');
+
+  if (!directory) {
+    return [];
+  }
+
+  const habits = [];
+  for await (const [name, entry] of directory.entries()) {
+    if (entry.kind !== 'file' || !name.endsWith('.md')) {
+      continue;
+    }
+    const habit = parseHabit(await (await entry.getFile()).text(), name);
+    if (habit) {
+      habits.push(habit);
+    }
+  }
+  return habits.sort((first, second) => Number(first.id) - Number(second.id));
+}
+
+async function readNotes(root) {
+  const directory = await getOptionalDirectory(root, 'notes');
+
+  if (!directory) {
+    return [];
+  }
+
+  const notes = [];
+  for await (const [name, entry] of directory.entries()) {
+    if (entry.kind !== 'file' || !name.endsWith('.md')) {
+      continue;
+    }
+    notes.push(...parseNotes(await (await entry.getFile()).text()));
+  }
+  return notes.sort((first, second) => new Date(first.timestamp) - new Date(second.timestamp));
+}
+
+function parseHabit(text, fileName) {
+  const lines = text.split(/\r?\n/);
+  if (lines[0] !== '---') {
+    return null;
+  }
+
+  const front = {};
+  let index = 1;
+  while (index < lines.length && lines[index] !== '---') {
+    const separator = lines[index].indexOf(':');
+    if (separator > 0) {
+      front[lines[index].slice(0, separator).trim()] = parseFrontMatterValue(lines[index].slice(separator + 1).trim());
+    }
+    index += 1;
+  }
+
+  const id = front.id || fileName.match(/^(\d+)-/)?.[1];
+  if (!id) {
+    return null;
+  }
+
+  const occurrences = [];
+  for (const line of lines.slice(index + 1)) {
+    const match = line.match(/^- (\d{4}-\d{2}-\d{2} \d{2}:\d{2}), counter used: (yes|no)$/);
+    if (match) {
+      occurrences.push({
+        timestamp: parseLocalTimestamp(match[1]),
+        site: '',
+        counterUsed: match[2] === 'yes',
+      });
+    }
+  }
+
+  return {
+    id: String(id),
+    title: front.title || fileName.replace(/^\d+-/, '').replace(/\.md$/, '').replace(/-/g, ' '),
+    trigger: front.trigger || '',
+    action: front.action || '',
+    reward: front.reward || '',
+    counterPlan: front.counter || '',
+    occurrences,
+  };
+}
+
+function parseNotes(text) {
+  const lines = text.split(/\r?\n/);
+  const notes = [];
+  let current = null;
+
+  for (const line of lines.slice(1)) {
+    const heading = line.match(/^## (\d{4}-\d{2}-\d{2} \d{2}:\d{2}) · (.+?)(?: · (#\d+))?$/);
+    if (heading) {
+      if (current) {
+        notes.push(current);
+      }
+      const [, timestamp, source, habitId] = heading;
+      current = {
+        id: crypto.randomUUID(),
+        timestamp: parseLocalTimestamp(timestamp),
+        site: source === 'Wall' ? '' : source,
+        text: '',
+      };
+      if (habitId) {
+        current.habitId = habitId.slice(1);
+      }
+      continue;
+    }
+    if (current) {
+      current.text += `${line}\n`;
+    }
+  }
+
+  if (current) {
+    notes.push(current);
+  }
+
+  return notes.filter((note) => note.text.trim()).map((note) => ({ ...note, text: note.text.trim() }));
+}
+
+function parseLocalTimestamp(value) {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/);
+  if (!match) {
+    return new Date().toISOString();
+  }
+  const [, year, month, day, hour, minute] = match;
+  return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)).toISOString();
+}
+
+function parseFrontMatterValue(raw) {
+  if (raw.startsWith('"') && raw.endsWith('"')) {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
+  }
+  return raw;
 }

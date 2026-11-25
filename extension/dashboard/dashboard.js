@@ -7,6 +7,7 @@ import {
 } from '../shared/storage.js';
 import { normalizeHostname } from '../shared/utils.js';
 import { setupBackupUI } from './backup.js';
+import { setupDataTransferUI } from './data-transfer.js';
 import { setupHabitsPage } from './habits.js';
 import { setupNotesPage } from './notes.js';
 import { setupSettingsPage } from './settings.js';
@@ -20,6 +21,7 @@ const wallTime = document.querySelector('#wall-time');
 const skips = document.querySelector('#skips');
 
 setupBackupUI();
+setupDataTransferUI();
 setupHabitsPage();
 setupNotesPage();
 setupSettingsPage();

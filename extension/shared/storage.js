@@ -321,3 +321,21 @@ export function recordWallSeconds(seconds) {
 export function recordSkip() {
   return updateTodayStats((day) => ({ ...day, skips: day.skips + 1 }));
 }
+
+export function getAllData() {
+  return chrome.storage.local.get(null);
+}
+
+export async function importBackupData({ blockedSites, habits, notes }) {
+  const highest = habits.reduce((max, habit) => {
+    const number = Number(habit.id);
+    return Number.isInteger(number) && number > max ? number : max;
+  }, 0);
+
+  await chrome.storage.local.set({
+    blockedSites: blockedSites ?? [],
+    habits: habits ?? [],
+    notes: notes ?? [],
+    nextHabitNumber: highest + 1,
+  });
+}
