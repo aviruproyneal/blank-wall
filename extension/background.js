@@ -38,6 +38,14 @@ chrome.runtime.onInstalled.addListener((details) => {
     });
 });
 
+chrome.runtime.onMessage.addListener((message, sender) => {
+  if (message?.type === 'close-tab' && sender.tab?.id !== undefined) {
+    chrome.tabs.remove(sender.tab.id).catch((error) => {
+      console.error('Blank Wall tab close failed:', error);
+    });
+  }
+});
+
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {
   redirectIfBlocked(details).catch((error) => {
     console.error('Blank Wall navigation check failed:', error);
@@ -66,6 +74,9 @@ async function redirectIfBlocked(details) {
   const wall = new URL(chrome.runtime.getURL('wall/wall.html'));
   wall.searchParams.set('target', target.href);
   wall.searchParams.set('site', site.hostname);
+  wall.searchParams.set('allow', site.allowContinue === false ? '0' : '1');
+  wall.searchParams.set('counter', parseHttpUrl(site.counterSite ?? '')?.href ?? '');
+  wall.searchParams.set('note', typeof site.note === 'string' ? site.note.slice(0, 200) : '');
   wall.searchParams.set('duration', String(site.durationMinutes ?? settings.defaultDurationMinutes));
   wall.searchParams.set('allowance', String(site.allowanceMinutes ?? 15));
   wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');

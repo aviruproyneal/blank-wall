@@ -14,9 +14,14 @@ const target = parseHttpUrl(params.get('target'));
 const allowanceHost = (params.get('site') || target?.hostname || '').toLowerCase();
 const durationMinutes = readMinutes(params.get('duration'), 5);
 const allowanceMinutes = readMinutes(params.get('allowance'), 15);
+const allowContinue = params.get('allow') !== '0';
+const counterSite = parseHttpUrl(params.get('counter'));
+const reminderNote = (params.get('note') ?? '').trim().slice(0, 200);
 const timer = document.querySelector('#timer');
+const note = document.querySelector('#note');
 const decision = document.querySelector('#decision');
 const continueButton = document.querySelector('#continue');
+const counterButton = document.querySelector('#counter-site');
 const leaveButton = document.querySelector('#leave');
 const tools = document.querySelector('#tools');
 const noteButton = document.querySelector('#note-button');
@@ -50,7 +55,13 @@ let skipRule = 'none';
 let habitLogged = false;
 let secondsRecorded = false;
 
-continueButton.disabled = target === null;
+if (reminderNote) {
+  note.textContent = reminderNote;
+  note.hidden = false;
+}
+
+continueButton.hidden = !(target && allowContinue);
+counterButton.hidden = counterSite === null;
 
 if (target && params.get('notes') === '1') {
   tools.hidden = false;
@@ -115,12 +126,20 @@ continueButton.addEventListener('click', () => {
   });
 });
 
+counterButton.addEventListener('click', () => {
+  if (counterSite) {
+    window.location.assign(counterSite.href);
+  }
+});
+
 leaveButton.addEventListener('click', () => {
-  window.location.replace('about:blank');
+  chrome.runtime.sendMessage({ type: 'close-tab' }).catch((error) => {
+    console.error('Blank Wall tab close failed:', error);
+  });
 });
 
 async function continueToTarget() {
-  if (!target) {
+  if (!target || !allowContinue) {
     return;
   }
 
@@ -158,7 +177,7 @@ async function finish() {
 }
 
 async function skipWall() {
-  if (!target || skipRule !== 'after-habit' || !habitLogged) {
+  if (!target || !allowContinue || skipRule !== 'after-habit' || !habitLogged) {
     return;
   }
 
@@ -176,7 +195,7 @@ function markHabitLogged() {
 }
 
 function renderSkip() {
-  skipButton.hidden = !(target && skipRule === 'after-habit' && habitLogged);
+  skipButton.hidden = !(target && allowContinue && skipRule === 'after-habit' && habitLogged);
 }
 
 async function recordElapsedOnce() {

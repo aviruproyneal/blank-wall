@@ -18,6 +18,21 @@
   opacity: 0.6;
 }
 
+.wall__note {
+  position: fixed;
+  top: var(--page-padding);
+  left: var(--page-padding);
+  max-width: 280px;
+  margin: 0;
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .wall__decision {
   position: fixed;
   bottom: var(--page-padding);
@@ -45,7 +60,7 @@
   cursor: pointer;
 }
 
-.wall__actions button:hover:not(:disabled) {
+.wall__actions button:hover {
   border-color: var(--accent);
   background: var(--bg-hover);
 }
@@ -53,11 +68,6 @@
 .wall__actions #continue {
   border-color: var(--accent);
   color: var(--accent);
-}
-
-.wall__actions button:disabled {
-  cursor: default;
-  opacity: 0.4;
 }
 
 .wall__tools {
