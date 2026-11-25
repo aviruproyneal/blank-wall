@@ -6,7 +6,7 @@ This repository is a monorepo for the prototype. The Chrome extension lives in [
 
 ## Status
 
-The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking, the basic wall, the popup, dashboard site management, wall notes and habits, the dashboard Habits/Notes pages, settings with skip rules, backup folder setup, Markdown mirroring, and JSON export/import are in place. Existing data is migrated automatically on update. Until a site is added, a temporary hard-coded `example.com` entry is used for testing.
+The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking, the basic wall, the popup, dashboard site management, wall notes and habits, the dashboard Habits/Notes pages, settings with skip rules, a short in-extension Guide linked from the popup and dashboard, backup folder setup, Markdown mirroring, and JSON export/import are in place. Existing data is migrated automatically on update. Until a site is added, a temporary hard-coded `example.com` entry is used for testing.
 
 ## Install
 
@@ -45,7 +45,7 @@ Mobile browsers are out of scope.
 2. Enable **Developer mode**.
 3. Choose **Load unpacked** and select the `extension/` directory.
 4. Confirm that Blank Wall appears with no errors. Its service worker initializes local storage on install.
-5. Click the toolbar icon. The popup shows the current hostname, today's stats, a backup status line, a **Block this site** button, and **Quick note** / **Log habit** / **Open dashboard** buttons.
+5. Click the toolbar icon. The popup shows the current hostname, today's stats, a backup status line, a **Block this site** button, and **Quick note** / **Log habit** / **Open dashboard** / **Guide** buttons.
 6. Click **Block this site**; the label becomes **Unblock this site**. Reload that page to see the wall and its five-minute countdown. **Unblock this site** removes the block immediately.
 7. On a blocked site, wait for the countdown to finish. A configured reminder note appears in the top-left corner. **Continue** appears only when that site allows continuing, and it grants that site's allowance; a configured **Counter site** button opens the alternative destination without granting an allowance. **Leave** closes the tab.
 8. Click **Open dashboard** in the popup. Manage sites there by hostname: change a site's wall duration, reminder note, counter site, and allowance, toggle notes and habits, or remove it. A counter site accepts a hostname or full http(s) URL; Blank Wall warns if that site is also blocked. Changes apply to the next wall.
