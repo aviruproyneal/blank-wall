@@ -41,6 +41,10 @@ document.querySelector('#open-dashboard').addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
 });
 
+document.querySelector('#open-guide').addEventListener('click', () => {
+  chrome.tabs.create({ url: chrome.runtime.getURL('guide/guide.html') });
+});
+
 function openDashboard(section) {
   const url = chrome.runtime.getURL('dashboard/dashboard.html');
   chrome.tabs.create({ url: `${url}#${section}` });

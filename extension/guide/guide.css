@@ -1,0 +1,43 @@
+.guide {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--page-padding);
+}
+
+.guide h1 {
+  margin: 0 0 var(--space-5);
+  font-size: 1.25rem;
+}
+
+.guide section {
+  margin: 0 0 var(--space-5);
+}
+
+.guide h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+}
+
+.guide p,
+.guide ol {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.guide ol {
+  padding: 0;
+  list-style-position: inside;
+}
+
+.guide li + li {
+  margin-top: var(--space-1);
+}
+
+.guide a {
+  color: var(--accent);
+}
+
+.guide__back {
+  display: inline-block;
+  margin-top: var(--space-2);
+}
