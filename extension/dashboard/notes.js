@@ -28,7 +28,7 @@ export function setupNotesPage() {
   searchInput.addEventListener('input', renderList);
 
   newButton.addEventListener('click', () => {
-    openEditor().catch(logError('open note editor'));
+    openEditor();
   });
 
   cancelEditor.addEventListener('click', showList);
@@ -90,7 +90,7 @@ export function setupNotesPage() {
     edit.type = 'button';
     edit.textContent = 'Edit';
     edit.addEventListener('click', () => {
-      openEditor(note).catch(logError('open note editor'));
+      openEditor(note);
     });
 
     const remove = document.createElement('button');

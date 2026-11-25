@@ -14,7 +14,7 @@ On first install, the dashboard opens with a short welcome step for choosing a b
 ## Surfaces
 
 - **Popup:** current hostname, block/unblock, today's stats, backup status, and links to the dashboard.
-- **Dashboard:** blocked sites with per-site duration and note/habit toggles, habits with occurrence logs, searchable notes, settings, backup folder controls, export, and import.
+- **Dashboard:** blocked sites with per-site duration and note/habit toggles, habits with Trigger/Response/Reward/Counter-plan details and occurrence logs, searchable notes, settings, backup folder controls, export, and import.
 - **Wall:** a countdown shown instead of a blocked site. Notes and habits can be opened while it runs, and an optional skip appears after a habit entry.
 
 See the [root README](../README.md) for a feature-by-feature test walkthrough.
@@ -34,7 +34,7 @@ No host permissions, accounts, analytics, or network access are requested. The F
 
 The chosen folder receives a Markdown copy under `BlankWall/` whenever notes, habits, or blocked sites change. If folder access is unavailable, changes are queued in IndexedDB and written when access returns. Chrome can lapse the folder permission after a restart; in that case the dashboard and popup show `Needs reconnect` and a **Reconnect backup folder** button appears in Settings.
 
-**Export everything** downloads a JSON snapshot of all local storage. **Import from backup folder** rebuilds notes, habits, and blocked sites from the Markdown files after a reinstall. Browser storage remains the source of truth; the folder is a safety copy and import source. The exact file formats are documented in [`docs/data-format.md`](../docs/data-format.md).
+**Export everything** downloads a JSON snapshot of all local storage. **Import from backup folder** rebuilds notes, habits, and blocked sites from the Markdown files after a reinstall, including older files that used `action:` instead of `response:`. Browser storage remains the source of truth; the folder is a safety copy and import source. The exact file formats are documented in [`docs/data-format.md`](../docs/data-format.md).
 
 ## Privacy
 

@@ -30,7 +30,7 @@ export function setupHabitsPage() {
   const fields = {
     title: document.querySelector('#habit-title'),
     trigger: document.querySelector('#habit-trigger'),
-    action: document.querySelector('#habit-action'),
+    response: document.querySelector('#habit-response'),
     reward: document.querySelector('#habit-reward'),
     counterPlan: document.querySelector('#habit-counter'),
   };
@@ -140,7 +140,7 @@ export function setupHabitsPage() {
 
     for (const [label, value] of [
       ['Trigger', habit.trigger],
-      ['Action', habit.action],
+      ['Response', habit.response],
       ['Reward', habit.reward],
       ['Counter-plan', habit.counterPlan],
     ]) {

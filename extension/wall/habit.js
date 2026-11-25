@@ -9,14 +9,14 @@ export function setupHabitBox({
   fields,
   title,
   trigger,
-  action,
+  response,
   reward,
   counterPlan,
   counterUsed,
   cancelButton,
   onHabitSaved,
 }) {
-  const detailInputs = [title, trigger, action, reward, counterPlan];
+  const detailInputs = [title, trigger, response, reward, counterPlan];
   let open = false;
 
   button.addEventListener('click', () => {
@@ -82,7 +82,7 @@ export function setupHabitBox({
       await addHabit({
         title: title.value.trim(),
         trigger: trigger.value.trim(),
-        action: action.value.trim(),
+        response: response.value.trim(),
         reward: reward.value.trim(),
         counterPlan: counterPlan.value.trim(),
       }, occurrence);

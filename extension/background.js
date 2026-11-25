@@ -3,6 +3,7 @@ import {
   getSettings,
   hasAllowance,
   initializeStorage,
+  migrateStorage,
 } from './shared/storage.js';
 import { parseHttpUrl } from './shared/utils.js';
 
@@ -16,7 +17,10 @@ const DEV_BLOCKED_SITES = [
 ];
 
 chrome.runtime.onInstalled.addListener((details) => {
-  initializeStorage()
+  const ready = details.reason === 'update' ? migrateStorage() : Promise.resolve();
+
+  ready
+    .then(() => initializeStorage())
     .then(() => {
       if (details.reason === 'install') {
         return chrome.tabs.create({

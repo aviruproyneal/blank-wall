@@ -1,8 +1,12 @@
 import { enqueueChange, flushPendingChanges } from './backup.js';
 import { formatTimestamp } from './utils.js';
 
+const CURRENT_SCHEMA_VERSION = 2;
+let migration;
+
 function defaultState() {
   return {
+    schemaVersion: CURRENT_SCHEMA_VERSION,
     blockedSites: [],
     habits: [],
     notes: [],
@@ -15,6 +19,36 @@ function defaultState() {
       skipRule: 'none',
     },
   };
+}
+
+export function migrateStorage() {
+  migration ??= applyMigration().catch((error) => {
+    migration = null;
+    throw error;
+  });
+  return migration;
+}
+
+async function applyMigration() {
+  const { schemaVersion = 0, habits = [] } = await chrome.storage.local.get(['schemaVersion', 'habits']);
+
+  if (schemaVersion >= CURRENT_SCHEMA_VERSION) {
+    return;
+  }
+
+  const storedHabits = Array.isArray(habits) ? habits : [];
+  await chrome.storage.local.set({
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    habits: storedHabits.map(migrateHabit),
+  });
+}
+
+function migrateHabit(habit) {
+  if (!habit || typeof habit !== 'object') {
+    return habit;
+  }
+  const { action, response, ...rest } = habit;
+  return { ...rest, response: response || action || '' };
 }
 
 function todayKey() {
@@ -55,6 +89,7 @@ export async function initializeStorage() {
 }
 
 export async function getSettings() {
+  await migrateStorage();
   const defaults = defaultState();
   const { settings = {} } = await chrome.storage.local.get('settings');
   return { ...defaults.settings, ...settings };
@@ -66,6 +101,7 @@ export async function updateSettings(patch) {
 }
 
 export async function getBlockedSites() {
+  await migrateStorage();
   const { blockedSites = [] } = await chrome.storage.local.get('blockedSites');
   return blockedSites;
 }
@@ -111,11 +147,13 @@ export async function removeBlockedSite(hostname) {
 }
 
 export async function getTodayStats() {
+  await migrateStorage();
   const { stats = {} } = await chrome.storage.local.get('stats');
   return { walls: 0, wallSeconds: 0, skips: 0, ...stats[todayKey()] };
 }
 
 export async function getNotes() {
+  await migrateStorage();
   const { notes = [] } = await chrome.storage.local.get('notes');
   return notes;
 }
@@ -130,6 +168,7 @@ async function mirrorNotes(notes, timestamp) {
 }
 
 export async function addNote(text, site, habitId = null) {
+  await migrateStorage();
   const { notes = [] } = await chrome.storage.local.get('notes');
   const note = {
     id: crypto.randomUUID(),
@@ -149,6 +188,7 @@ export async function addNote(text, site, habitId = null) {
 }
 
 export async function updateNote(id, patch) {
+  await migrateStorage();
   const { notes = [] } = await chrome.storage.local.get('notes');
   const note = notes.find((candidate) => candidate.id === id);
 
@@ -163,6 +203,7 @@ export async function updateNote(id, patch) {
 }
 
 export async function deleteNote(id) {
+  await migrateStorage();
   const { notes = [] } = await chrome.storage.local.get('notes');
   const removed = notes.find((note) => note.id === id);
   const remaining = notes.filter((note) => note.id !== id);
@@ -174,6 +215,7 @@ export async function deleteNote(id) {
 }
 
 export async function getHabits() {
+  await migrateStorage();
   const { habits = [] } = await chrome.storage.local.get('habits');
   return habits;
 }
@@ -186,7 +228,7 @@ export async function addHabit(details, occurrence = null) {
     id,
     title: details.title,
     trigger: details.trigger,
-    action: details.action,
+    response: details.response,
     reward: details.reward,
     counterPlan: details.counterPlan,
     occurrences: occurrence ? [createOccurrence(occurrence)] : [],
@@ -264,6 +306,7 @@ function createOccurrence({ site, counterUsed }) {
 }
 
 export async function hasAllowance(hostname) {
+  await migrateStorage();
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');
   const expiresAt = allowances[host];
@@ -281,6 +324,7 @@ export async function hasAllowance(hostname) {
 }
 
 export async function grantAllowance(hostname, minutes) {
+  await migrateStorage();
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');
   allowances[host] = Date.now() + minutes * 60_000;
@@ -288,6 +332,7 @@ export async function grantAllowance(hostname, minutes) {
 }
 
 export async function revokeAllowance(hostname) {
+  await migrateStorage();
   const host = hostname.toLowerCase();
   const { allowances = {} } = await chrome.storage.local.get('allowances');
 
@@ -298,6 +343,7 @@ export async function revokeAllowance(hostname) {
 }
 
 async function updateTodayStats(update) {
+  await migrateStorage();
   const { stats = {} } = await chrome.storage.local.get('stats');
   const key = todayKey();
   const day = { walls: 0, wallSeconds: 0, skips: 0, ...stats[key] };
@@ -322,11 +368,13 @@ export function recordSkip() {
   return updateTodayStats((day) => ({ ...day, skips: day.skips + 1 }));
 }
 
-export function getAllData() {
+export async function getAllData() {
+  await migrateStorage();
   return chrome.storage.local.get(null);
 }
 
 export async function importBackupData({ blockedSites, habits, notes }) {
+  await migrateStorage();
   const highest = habits.reduce((max, habit) => {
     const number = Number(habit.id);
     return Number.isInteger(number) && number > max ? number : max;

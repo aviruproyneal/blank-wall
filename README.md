@@ -1,12 +1,12 @@
 # Blank Wall
 
-Blank Wall is a de-stimulation tool for the browser. When you open a site you have blocked, you get a blank dark wall and a short pause instead of the site itself. While you wait you can write a note or record a habit pattern (Trigger, Action, Reward, counter-plan). Over time this builds a private map of the habits you want to change.
+Blank Wall is a de-stimulation tool for the browser. When you open a site you have blocked, you get a blank dark wall and a short pause instead of the site itself. While you wait you can write a note or record a habit pattern (Trigger, Response, Reward, counter-plan). Over time this builds a private map of the habits you want to change.
 
 This repository is a monorepo for the prototype. The Chrome extension lives in [`extension/`](extension/); Android and desktop apps are out of scope for now but may be added later at the root.
 
 ## Status
 
-The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking, the basic wall, the popup, dashboard site management, wall notes and habits, the dashboard Habits/Notes pages, settings with skip rules, backup folder setup, Markdown mirroring, and JSON export/import are in place. Until a site is added, a temporary hard-coded `example.com` entry is used for testing.
+The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking, the basic wall, the popup, dashboard site management, wall notes and habits, the dashboard Habits/Notes pages, settings with skip rules, backup folder setup, Markdown mirroring, and JSON export/import are in place. Existing data is migrated automatically on update. Until a site is added, a temporary hard-coded `example.com` entry is used for testing.
 
 ## Roadmap
 
@@ -34,8 +34,8 @@ The extension is built in small milestones so every change can be reviewed and c
 7. On a blocked site, wait for the countdown to finish, then use **Continue** to return or **Leave** to open a blank tab. **Continue** grants the configured allowance so the site is not blocked again immediately.
 8. Click **Open dashboard** in the popup. Manage sites there by hostname: change a site's wall duration, toggle notes and habits, or remove it. Changes apply to the next wall.
 9. On a wall where notes are enabled, click the small note icon at bottom-left. The wall timer keeps counting while a separate one-minute note box is open. Save manually, or let the note timer end to save non-empty text automatically. Turning **Notes** off for a site in the dashboard hides the icon.
-10. On a wall where habits are enabled, click the habit icon at bottom-left. Create a habit with a title, Trigger, Action, Reward, and counter-plan, or choose an existing `#001`-style habit to log another occurrence. Check **Counter plan used** when applicable; the wall timer keeps running.
-11. In the dashboard sidebar, open **Habits**. Create a habit, then click its `#001`-style entry to see Trigger, Action, Reward, counter-plan, occurrence log, and counts. Log an occurrence from the detail view, edit the habit, and delete it.
+10. On a wall where habits are enabled, click the habit icon at bottom-left. Create a habit with a title, Trigger, Response, Reward, and counter-plan, or choose an existing `#001`-style habit to log another occurrence. Check **Counter plan used** when applicable; the wall timer keeps running.
+11. In the dashboard sidebar, open **Habits**. Create a habit, then click its `#001`-style entry to see Trigger, Response, Reward, counter-plan, occurrence log, and counts. Log an occurrence from the detail view, edit the habit, and delete it.
 12. In the dashboard sidebar, open **Notes**. Notes appear newest first with timestamp and source site. Search by text, site, or linked habit; add or edit a note and link it to a habit; delete notes you no longer need. **Quick note** in the popup opens this page.
 13. In the dashboard sidebar, open **Settings** to change the default wall duration, temporary allowance length, and skip rule. **Skip** appears on the wall only with “Allow skip after a habit entry” selected and a habit entry written during that wall; it records a skip in today's stats.
 14. On first install the dashboard opens with a welcome step. Click **Choose backup folder**, pick any local folder, and the Settings → Backup folder status should read **Connected** while the popup reads `Backup: connected`. To test the step again without reinstalling, open `chrome-extension://<extension-id>/dashboard/dashboard.html?welcome=1` in a tab. **Skip for now** closes the step and leaves a reminder in the dashboard and popup.

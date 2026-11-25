@@ -31,7 +31,7 @@ const habitSelect = document.querySelector('#habit-select');
 const habitFields = document.querySelector('#habit-fields');
 const habitTitle = document.querySelector('#habit-title');
 const habitTrigger = document.querySelector('#habit-trigger');
-const habitAction = document.querySelector('#habit-action');
+const habitResponse = document.querySelector('#habit-response');
 const habitReward = document.querySelector('#habit-reward');
 const habitCounterPlan = document.querySelector('#habit-counter');
 const habitCounterUsed = document.querySelector('#habit-counter-used');
@@ -73,7 +73,7 @@ if (target && params.get('habits') === '1') {
     fields: habitFields,
     title: habitTitle,
     trigger: habitTrigger,
-    action: habitAction,
+    response: habitResponse,
     reward: habitReward,
     counterPlan: habitCounterPlan,
     counterUsed: habitCounterUsed,
