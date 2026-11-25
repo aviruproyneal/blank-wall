@@ -13,11 +13,14 @@ export function setupHabitBox({
   response,
   reward,
   counterPlan,
+  counterPlanText,
   counterUsed,
+  counterUsedLabel,
   cancelButton,
   onHabitSaved,
 }) {
   const detailInputs = [title, trigger, response, reward, counterPlan];
+  let habits = [];
   let open = false;
 
   button.addEventListener('click', () => {
@@ -29,6 +32,12 @@ export function setupHabitBox({
 
   select.addEventListener('change', toggleFields);
   cancelButton.addEventListener('click', closeHabitBox);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && open) {
+      closeHabitBox();
+    }
+  });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -59,7 +68,8 @@ export function setupHabitBox({
     newOption.textContent = 'New habit';
     select.append(newOption);
 
-    for (const habit of await getHabits()) {
+    habits = await getHabits();
+    for (const habit of habits) {
       const option = document.createElement('option');
       option.value = habit.id;
       option.textContent = `${formatHabitNumber(habit.id)}. ${habit.title}`;
@@ -69,7 +79,16 @@ export function setupHabitBox({
 
   function toggleFields() {
     const isNew = select.value === 'new';
+    const habit = habits.find((candidate) => candidate.id === select.value);
+
     fields.hidden = !isNew;
+    counterUsedLabel.hidden = isNew;
+    counterPlanText.hidden = isNew || !habit?.counterPlan;
+    counterPlanText.textContent = isNew || !habit ? '' : habit.counterPlan;
+
+    if (isNew) {
+      counterUsed.checked = false;
+    }
 
     for (const input of detailInputs) {
       input.disabled = !isNew;
@@ -77,9 +96,10 @@ export function setupHabitBox({
   }
 
   async function saveHabit() {
-    const occurrence = { site, counterUsed: counterUsed.checked };
+    const isNew = select.value === 'new';
+    const occurrence = { site, counterUsed: !isNew && counterUsed.checked };
 
-    if (select.value === 'new') {
+    if (isNew) {
       await addHabit({
         title: title.value.trim(),
         trigger: trigger.value.trim(),

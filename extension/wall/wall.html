@@ -18,7 +18,7 @@
             <path d="M13 7l4 4"></path>
           </svg>
         </button>
-        <button class="wall__tool" id="habit-button" type="button" aria-label="Log habit" hidden>
+        <button class="wall__tool" id="habit-button" type="button" aria-label="Log habit pattern" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 12a8 8 0 0 1 14-5"></path>
             <path d="M18 4v4h-4"></path>
@@ -45,14 +45,15 @@
       </div>
       <textarea id="note-text" rows="5" placeholder="What are you reaching for?" spellcheck="true"></textarea>
       <div class="note-box__actions">
+        <button id="cancel-note" type="button">Cancel</button>
         <button id="save-note" type="button" disabled>Save</button>
       </div>
     </section>
 
-    <section class="habit-box" id="habit-box" aria-label="Log habit" hidden>
+    <section class="habit-box" id="habit-box" aria-label="Log habit pattern" hidden>
       <form id="habit-form">
         <div class="habit-box__header">
-          <span>Log habit</span>
+          <span>Log habit pattern</span>
           <select id="habit-select" aria-label="Habit"></select>
         </div>
 
@@ -79,9 +80,11 @@
           </label>
         </div>
 
-        <label class="habit-box__checkbox">
+        <p class="habit-box__counter-plan" id="habit-counter-plan-text" hidden></p>
+
+        <label class="habit-box__checkbox" id="habit-counter-used-label">
           <input id="habit-counter-used" type="checkbox">
-          <span>Counter plan used</span>
+          <span>I used my counter-plan</span>
         </label>
 
         <div class="habit-box__actions">

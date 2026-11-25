@@ -3,7 +3,7 @@ import { formatClock } from '../shared/utils.js';
 
 const NOTE_DURATION_SECONDS = 60;
 
-export function setupNoteBox({ site, button, box, countdown, textarea, saveButton }) {
+export function setupNoteBox({ site, button, box, countdown, textarea, cancelButton, saveButton }) {
   let deadline = 0;
   let intervalId;
   let open = false;
@@ -14,10 +14,24 @@ export function setupNoteBox({ site, button, box, countdown, textarea, saveButto
     saveButton.disabled = textarea.value.trim().length === 0;
   });
 
-  saveButton.addEventListener('click', () => {
+  cancelButton.addEventListener('click', () => {
     closeNoteBox().catch((error) => {
       console.error('Blank Wall note close failed:', error);
     });
+  });
+
+  saveButton.addEventListener('click', () => {
+    closeNoteBox(true).catch((error) => {
+      console.error('Blank Wall note close failed:', error);
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && open) {
+      closeNoteBox().catch((error) => {
+        console.error('Blank Wall note close failed:', error);
+      });
+    }
   });
 
   function openNoteBox() {
@@ -48,7 +62,7 @@ export function setupNoteBox({ site, button, box, countdown, textarea, saveButto
     }
   }
 
-  async function closeNoteBox() {
+  async function closeNoteBox(save = false) {
     if (!open) {
       return;
     }
@@ -57,7 +71,7 @@ export function setupNoteBox({ site, button, box, countdown, textarea, saveButto
     window.clearInterval(intervalId);
 
     const text = textarea.value.trim();
-    if (text) {
+    if (save && text) {
       try {
         await addNote(text, site);
       } catch (error) {

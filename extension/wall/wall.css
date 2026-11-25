@@ -6,13 +6,16 @@
 }
 
 .wall__timer {
+  position: fixed;
+  top: var(--page-padding);
+  right: var(--page-padding);
   margin: 0;
   color: var(--text-muted);
-  font-size: clamp(3rem, 12vw, 8rem);
+  font-size: clamp(1.25rem, 3vw, 2rem);
   font-variant-numeric: tabular-nums;
   font-weight: 300;
   letter-spacing: 0.08em;
-  opacity: 0.45;
+  opacity: 0.6;
 }
 
 .wall__decision {
@@ -133,6 +136,7 @@
 .habit-box__actions {
   display: flex;
   justify-content: flex-end;
+  gap: var(--space-2);
   margin-top: var(--space-3);
 }
 
@@ -144,6 +148,18 @@
   background: transparent;
   color: var(--accent);
   cursor: pointer;
+}
+
+.note-box__actions #cancel-note,
+.habit-box__actions #cancel-habit {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.note-box__actions #cancel-note:hover,
+.habit-box__actions #cancel-habit:hover {
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .note-box__actions button:disabled,
@@ -211,9 +227,13 @@
   accent-color: var(--accent);
 }
 
-.habit-box__actions {
-  gap: var(--space-2);
-  justify-content: flex-end;
+.habit-box__counter-plan {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .habit-box__actions #save-habit {

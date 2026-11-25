@@ -22,6 +22,7 @@ const noteButton = document.querySelector('#note-button');
 const noteBox = document.querySelector('#note-box');
 const noteCountdown = document.querySelector('#note-countdown');
 const noteText = document.querySelector('#note-text');
+const cancelNote = document.querySelector('#cancel-note');
 const saveNote = document.querySelector('#save-note');
 const habitButton = document.querySelector('#habit-button');
 const skipButton = document.querySelector('#skip-button');
@@ -34,7 +35,9 @@ const habitTrigger = document.querySelector('#habit-trigger');
 const habitResponse = document.querySelector('#habit-response');
 const habitReward = document.querySelector('#habit-reward');
 const habitCounterPlan = document.querySelector('#habit-counter');
+const habitCounterPlanText = document.querySelector('#habit-counter-plan-text');
 const habitCounterUsed = document.querySelector('#habit-counter-used');
+const habitCounterUsedLabel = document.querySelector('#habit-counter-used-label');
 const cancelHabit = document.querySelector('#cancel-habit');
 
 const durationSeconds = durationMinutes * 60;
@@ -57,6 +60,7 @@ if (target && params.get('notes') === '1') {
     box: noteBox,
     countdown: noteCountdown,
     textarea: noteText,
+    cancelButton: cancelNote,
     saveButton: saveNote,
   });
 }
@@ -76,7 +80,9 @@ if (target && params.get('habits') === '1') {
     response: habitResponse,
     reward: habitReward,
     counterPlan: habitCounterPlan,
+    counterPlanText: habitCounterPlanText,
     counterUsed: habitCounterUsed,
+    counterUsedLabel: habitCounterUsedLabel,
     cancelButton: cancelHabit,
     onHabitSaved: markHabitLogged,
   });
