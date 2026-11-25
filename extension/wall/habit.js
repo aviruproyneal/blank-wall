@@ -1,4 +1,5 @@
 import { addHabit, addOccurrence, getHabits } from '../shared/storage.js';
+import { formatHabitNumber } from '../shared/utils.js';
 
 export function setupHabitBox({
   site,
@@ -61,7 +62,7 @@ export function setupHabitBox({
     for (const habit of await getHabits()) {
       const option = document.createElement('option');
       option.value = habit.id;
-      option.textContent = `#${habit.id} ${habit.title}`;
+      option.textContent = `${formatHabitNumber(habit.id)}. ${habit.title}`;
       select.append(option);
     }
   }

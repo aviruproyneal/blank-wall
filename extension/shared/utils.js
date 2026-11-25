@@ -32,3 +32,27 @@ export function formatTimestamp(value) {
   const pad = (number) => String(number).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+
+const OCCURRENCE_DATE = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const OCCURRENCE_TIME = new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+});
+
+export function formatOccurrenceDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  return `${OCCURRENCE_DATE.format(date)}, ${OCCURRENCE_TIME.format(date)}`;
+}
+
+export function formatHabitNumber(id) {
+  const number = Number(id);
+  return Number.isInteger(number) && number > 0 ? String(number) : String(id);
+}

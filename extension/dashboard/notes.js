@@ -5,7 +5,7 @@ import {
   getNotes,
   updateNote,
 } from '../shared/storage.js';
-import { formatTimestamp } from '../shared/utils.js';
+import { formatHabitNumber, formatTimestamp } from '../shared/utils.js';
 
 export function setupNotesPage() {
   const listView = document.querySelector('#notes-list-view');
@@ -75,7 +75,7 @@ export function setupNotesPage() {
     meta.className = 'note__meta';
     const parts = [formatTimestamp(note.timestamp), note.site || 'Wall'];
     if (note.habitId && habitTitles.has(note.habitId)) {
-      parts.push(`#${note.habitId} ${habitTitles.get(note.habitId)}`);
+      parts.push(`${formatHabitNumber(note.habitId)}. ${habitTitles.get(note.habitId)}`);
     }
     meta.textContent = parts.join(' · ');
 
@@ -127,7 +127,7 @@ export function setupNotesPage() {
     for (const habit of habits) {
       const option = document.createElement('option');
       option.value = habit.id;
-      option.textContent = `#${habit.id} ${habit.title}`;
+      option.textContent = `${formatHabitNumber(habit.id)}. ${habit.title}`;
       habitSelect.append(option);
     }
 

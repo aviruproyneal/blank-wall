@@ -1,11 +1,10 @@
 import {
   addHabit,
-  addOccurrence,
   deleteHabit,
   getHabits,
   updateHabit,
 } from '../shared/storage.js';
-import { formatTimestamp } from '../shared/utils.js';
+import { formatHabitNumber, formatOccurrenceDate } from '../shared/utils.js';
 
 export function setupHabitsPage() {
   const listView = document.querySelector('#habit-list-view');
@@ -20,9 +19,6 @@ export function setupHabitsPage() {
   const detailFields = document.querySelector('#habit-detail-fields');
   const occurrenceCount = document.querySelector('#habit-occurrences');
   const counterCount = document.querySelector('#habit-counter-used-count');
-  const occurrenceForm = document.querySelector('#add-occurrence');
-  const occurrenceSite = document.querySelector('#occurrence-site');
-  const occurrenceCounterUsed = document.querySelector('#occurrence-counter-used');
   const occurrenceList = document.querySelector('#occurrence-list');
   const backButton = document.querySelector('#back-to-habits');
   const editButton = document.querySelector('#edit-habit');
@@ -59,11 +55,6 @@ export function setupHabitsPage() {
     removeHabit().catch(logError('delete habit'));
   });
 
-  occurrenceForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    logOccurrence().catch(logError('log occurrence'));
-  });
-
   refreshList().catch(logError('load habits'));
 
   async function refreshList() {
@@ -75,7 +66,14 @@ export function setupHabitsPage() {
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = `#${habit.id} ${habit.title}`;
+
+      const number = document.createElement('span');
+      number.className = 'habit-list__number';
+      number.textContent = `${formatHabitNumber(habit.id)}.`;
+      const title = document.createElement('span');
+      title.textContent = habit.title;
+      button.append(number, title);
+
       button.addEventListener('click', () => {
         openDetail(habit.id).catch(logError('open habit'));
       });
@@ -86,7 +84,7 @@ export function setupHabitsPage() {
 
   async function openEditor(id = null) {
     editingId = id;
-    editorTitle.textContent = id ? `Edit #${id}` : 'New habit';
+    editorTitle.textContent = id ? `Edit ${formatHabitNumber(id)}` : 'New habit';
 
     for (const input of Object.values(fields)) {
       input.value = '';
@@ -135,7 +133,13 @@ export function setupHabitsPage() {
     }
 
     currentId = id;
-    detailTitle.textContent = `#${habit.id} ${habit.title}`;
+    detailTitle.replaceChildren();
+    const number = document.createElement('span');
+    number.className = 'habit-detail__number';
+    number.textContent = `${formatHabitNumber(habit.id)}.`;
+    const title = document.createElement('span');
+    title.textContent = habit.title;
+    detailTitle.append(number, title);
     detailFields.replaceChildren();
 
     for (const [label, value] of [
@@ -159,29 +163,24 @@ export function setupHabitsPage() {
     occurrenceList.replaceChildren();
     for (const occurrence of [...habit.occurrences].reverse()) {
       const item = document.createElement('li');
-      const site = occurrence.site ? `, ${occurrence.site}` : '';
-      const counter = occurrence.counterUsed ? ', counter used' : '';
-      item.textContent = `${formatTimestamp(occurrence.timestamp)}${site}${counter}`;
+      const source = occurrence.site ? ` · ${occurrence.site}` : '';
+      const stamp = document.createElement('span');
+      stamp.textContent = `${formatOccurrenceDate(occurrence.timestamp)}${source}`;
+      item.append(stamp);
+
+      if (occurrence.counterUsed) {
+        const counter = document.createElement('span');
+        counter.className = 'occurrence__counter';
+        counter.textContent = 'Counter-plan used';
+        item.append(counter);
+      }
+
       occurrenceList.append(item);
     }
 
     listView.hidden = true;
     editor.hidden = true;
     detail.hidden = false;
-  }
-
-  async function logOccurrence() {
-    if (!currentId) {
-      return;
-    }
-
-    await addOccurrence(currentId, {
-      site: occurrenceSite.value.trim(),
-      counterUsed: occurrenceCounterUsed.checked,
-    });
-    occurrenceSite.value = '';
-    occurrenceCounterUsed.checked = false;
-    await openDetail(currentId);
   }
 
   async function removeHabit() {

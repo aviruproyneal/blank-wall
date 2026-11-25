@@ -252,6 +252,8 @@
 }
 
 .habit-list button {
+  display: flex;
+  gap: var(--space-2);
   width: 100%;
   padding: var(--space-3);
   border: 0;
@@ -259,6 +261,10 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
+}
+
+.habit-list__number {
+  color: var(--text-muted);
 }
 
 .habit-list li:first-child button {
@@ -282,6 +288,31 @@
   font-weight: 600;
 }
 
+.habit-detail h3 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.habit-detail__number {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.habit-detail #back-to-habits {
+  margin-bottom: var(--space-4);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.habit-detail #back-to-habits:hover {
+  color: var(--text);
+}
+
 .habit-editor label {
   display: block;
   margin-bottom: var(--space-3);
@@ -295,8 +326,7 @@
 }
 
 .habit-editor input[type='text'],
-.habit-editor textarea,
-.add-occurrence input[type='text'] {
+.habit-editor textarea {
   width: 100%;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
@@ -314,9 +344,7 @@
   margin-top: var(--space-4);
 }
 
-.form-actions button,
-.add-occurrence button,
-#back-to-habits {
+.form-actions button {
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -324,9 +352,7 @@
   cursor: pointer;
 }
 
-.form-actions button:hover,
-.add-occurrence button:hover,
-#back-to-habits:hover {
+.form-actions button:hover {
   border-color: var(--accent);
   background: var(--bg-hover);
 }
@@ -374,34 +400,24 @@
   font-size: 1.2rem;
 }
 
-.add-occurrence__row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.inline-checkbox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  white-space: nowrap;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-}
-
-.inline-checkbox input {
-  accent-color: var(--accent);
-}
-
 .occurrence-list {
   margin: var(--space-4) 0 0;
-  padding-left: var(--space-4);
+  padding: 0;
+  list-style: none;
   color: var(--text-muted);
   font-size: 0.85rem;
 }
 
 .occurrence-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
   padding: var(--space-1) 0;
+}
+
+.occurrence__counter {
+  color: var(--text-muted);
+  font-size: 0.75rem;
 }
 
 .notes__toolbar {
