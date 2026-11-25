@@ -2,7 +2,7 @@
   display: grid;
   min-height: 100vh;
   place-items: center;
-  padding: var(--space-4);
+  padding: var(--page-padding);
 }
 
 .wall__timer {
@@ -17,7 +17,7 @@
 
 .wall__decision {
   position: fixed;
-  bottom: var(--space-5);
+  bottom: var(--page-padding);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,8 +59,8 @@
 
 .wall__tools {
   position: fixed;
-  bottom: var(--space-5);
-  left: var(--space-4);
+  bottom: var(--page-padding);
+  left: var(--page-padding);
   display: flex;
   gap: var(--space-2);
 }
@@ -98,15 +98,15 @@
 .note-box,
 .habit-box {
   position: fixed;
-  right: var(--space-4);
-  bottom: var(--space-5);
+  right: var(--page-padding);
+  bottom: var(--page-padding);
   z-index: 1;
-  width: min(320px, calc(100vw - 2 * var(--space-4)));
+  width: min(320px, calc(100vw - 2 * var(--page-padding)));
   padding: var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg-raised);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.4);
+  box-shadow: 0 var(--space-3) var(--space-6) rgb(0 0 0 / 0.4);
 }
 
 .note-box__header,
