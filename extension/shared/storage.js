@@ -44,6 +44,11 @@ export async function getSettings() {
   return { ...defaults.settings, ...settings };
 }
 
+export async function updateSettings(patch) {
+  const settings = await getSettings();
+  await chrome.storage.local.set({ settings: { ...settings, ...patch } });
+}
+
 export async function getBlockedSites() {
   const { blockedSites = [] } = await chrome.storage.local.get('blockedSites');
   return blockedSites;
@@ -260,4 +265,8 @@ export function recordWallSeconds(seconds) {
     return Promise.resolve();
   }
   return updateTodayStats((day) => ({ ...day, wallSeconds: day.wallSeconds + rounded }));
+}
+
+export function recordSkip() {
+  return updateTodayStats((day) => ({ ...day, skips: day.skips + 1 }));
 }

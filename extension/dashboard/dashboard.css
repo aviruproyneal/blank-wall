@@ -467,6 +467,34 @@
   resize: vertical;
 }
 
+.settings-form label {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.settings-form label > span {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.settings-form input[type='number'],
+.settings-form select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.settings-status {
+  min-height: 1.2em;
+  margin: var(--space-3) 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
 [hidden] {
   display: none !important;
 }

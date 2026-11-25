@@ -1,6 +1,7 @@
 import {
   getSettings,
   grantAllowance,
+  recordSkip,
   recordWallSeconds,
   recordWallStart,
 } from '../shared/storage.js';
@@ -23,6 +24,7 @@ const noteCountdown = document.querySelector('#note-countdown');
 const noteText = document.querySelector('#note-text');
 const saveNote = document.querySelector('#save-note');
 const habitButton = document.querySelector('#habit-button');
+const skipButton = document.querySelector('#skip-button');
 const habitBox = document.querySelector('#habit-box');
 const habitForm = document.querySelector('#habit-form');
 const habitSelect = document.querySelector('#habit-select');
@@ -40,6 +42,9 @@ const startedAt = Date.now();
 const deadline = startedAt + durationSeconds * 1000;
 let finished = false;
 let intervalId;
+let skipRule = 'none';
+let habitLogged = false;
+let secondsRecorded = false;
 
 continueButton.disabled = target === null;
 
@@ -73,8 +78,22 @@ if (target && params.get('habits') === '1') {
     counterPlan: habitCounterPlan,
     counterUsed: habitCounterUsed,
     cancelButton: cancelHabit,
+    onHabitSaved: markHabitLogged,
   });
 }
+
+getSettings().then((settings) => {
+  skipRule = settings.skipRule;
+  renderSkip();
+}).catch((error) => {
+  console.error('Blank Wall settings load failed:', error);
+});
+
+skipButton.addEventListener('click', () => {
+  skipWall().catch((error) => {
+    console.error('Blank Wall skip failed:', error);
+  });
+});
 
 recordWallStart().catch((error) => {
   console.error('Blank Wall wall statistics failed:', error);
@@ -129,6 +148,37 @@ async function finish() {
   timer.textContent = '00:00';
   decision.hidden = false;
 
+  await recordElapsedOnce();
+}
+
+async function skipWall() {
+  if (!target || skipRule !== 'after-habit' || !habitLogged) {
+    return;
+  }
+
+  await recordElapsedOnce();
+  await recordSkip();
+
+  const settings = await getSettings();
+  await grantAllowance(allowanceHost, settings.allowanceMinutes);
+  window.location.assign(target.href);
+}
+
+function markHabitLogged() {
+  habitLogged = true;
+  renderSkip();
+}
+
+function renderSkip() {
+  skipButton.hidden = !(target && skipRule === 'after-habit' && habitLogged);
+}
+
+async function recordElapsedOnce() {
+  if (secondsRecorded) {
+    return;
+  }
+
+  secondsRecorded = true;
   const elapsed = Math.min(durationSeconds, Math.floor((Date.now() - startedAt) / 1000));
   await recordWallSeconds(elapsed);
 }

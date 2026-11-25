@@ -8,6 +8,7 @@ import {
 import { normalizeHostname } from '../shared/utils.js';
 import { setupHabitsPage } from './habits.js';
 import { setupNotesPage } from './notes.js';
+import { setupSettingsPage } from './settings.js';
 
 const addForm = document.querySelector('#add-site');
 const hostnameInput = document.querySelector('#new-hostname');
@@ -19,6 +20,7 @@ const skips = document.querySelector('#skips');
 
 setupHabitsPage();
 setupNotesPage();
+setupSettingsPage();
 
 addForm.addEventListener('submit', (event) => {
   event.preventDefault();
