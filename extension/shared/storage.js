@@ -1,3 +1,6 @@
+import { enqueueChange, flushPendingChanges } from './backup.js';
+import { formatTimestamp } from './utils.js';
+
 function defaultState() {
   return {
     blockedSites: [],
@@ -20,6 +23,19 @@ function todayKey() {
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function noteDay(timestamp) {
+  return formatTimestamp(timestamp).slice(0, 10);
+}
+
+async function mirror(change) {
+  try {
+    await enqueueChange(change);
+    await flushPendingChanges();
+  } catch (error) {
+    console.error('Blank Wall backup update failed:', error);
+  }
 }
 
 export async function initializeStorage() {
@@ -67,6 +83,7 @@ export async function addBlockedSite(hostname) {
       habitsEnabled: true,
     });
     await chrome.storage.local.set({ blockedSites: sites });
+    await mirror({ type: 'blocked-sites', sites });
   }
 
   await revokeAllowance(host);
@@ -83,12 +100,14 @@ export async function updateBlockedSite(hostname, patch) {
 
   sites[index] = { ...sites[index], ...patch };
   await chrome.storage.local.set({ blockedSites: sites });
+  await mirror({ type: 'blocked-sites', sites });
 }
 
 export async function removeBlockedSite(hostname) {
   const host = hostname.toLowerCase();
   const sites = (await getBlockedSites()).filter((site) => site.hostname.toLowerCase() !== host);
   await chrome.storage.local.set({ blockedSites: sites });
+  await mirror({ type: 'blocked-sites', sites });
 }
 
 export async function getTodayStats() {
@@ -99,6 +118,15 @@ export async function getTodayStats() {
 export async function getNotes() {
   const { notes = [] } = await chrome.storage.local.get('notes');
   return notes;
+}
+
+async function mirrorNotes(notes, timestamp) {
+  const day = noteDay(timestamp);
+  await mirror({
+    type: 'notes',
+    day,
+    notes: notes.filter((note) => noteDay(note.timestamp) === day),
+  });
 }
 
 export async function addNote(text, site, habitId = null) {
@@ -116,6 +144,7 @@ export async function addNote(text, site, habitId = null) {
 
   notes.push(note);
   await chrome.storage.local.set({ notes });
+  await mirrorNotes(notes, note.timestamp);
   return note;
 }
 
@@ -129,12 +158,19 @@ export async function updateNote(id, patch) {
       delete note.habitId;
     }
     await chrome.storage.local.set({ notes });
+    await mirrorNotes(notes, note.timestamp);
   }
 }
 
 export async function deleteNote(id) {
   const { notes = [] } = await chrome.storage.local.get('notes');
-  await chrome.storage.local.set({ notes: notes.filter((note) => note.id !== id) });
+  const removed = notes.find((note) => note.id === id);
+  const remaining = notes.filter((note) => note.id !== id);
+  await chrome.storage.local.set({ notes: remaining });
+
+  if (removed) {
+    await mirrorNotes(remaining, removed.timestamp);
+  }
 }
 
 export async function getHabits() {
@@ -157,6 +193,7 @@ export async function addHabit(details, occurrence = null) {
   };
   habits.push(habit);
   await chrome.storage.local.set({ habits, nextHabitNumber: nextNumber });
+  await mirror({ type: 'habit', habit });
   return habit;
 }
 
@@ -165,14 +202,17 @@ export async function updateHabit(id, patch) {
   const habit = habits.find((candidate) => candidate.id === id);
 
   if (habit) {
+    const previousTitle = habit.title;
     Object.assign(habit, patch);
     await chrome.storage.local.set({ habits });
+    await mirror({ type: 'habit', habit, previousTitle });
   }
 }
 
 export async function deleteHabit(id) {
   const habits = await getHabits();
   const { notes = [] } = await chrome.storage.local.get('notes');
+  const removed = habits.find((habit) => habit.id === id);
   const remaining = habits.filter((habit) => habit.id !== id);
   const updatedNotes = notes.map((note) => {
     if (note.habitId !== id) {
@@ -183,6 +223,16 @@ export async function deleteHabit(id) {
     return updated;
   });
   await chrome.storage.local.set({ habits: remaining, notes: updatedNotes });
+
+  if (removed) {
+    await mirror({ type: 'habit-delete', id: removed.id, title: removed.title });
+  }
+
+  for (const note of notes) {
+    if (note.habitId === id) {
+      await mirrorNotes(updatedNotes, note.timestamp);
+    }
+  }
 }
 
 export async function addOccurrence(id, occurrence) {
@@ -192,6 +242,7 @@ export async function addOccurrence(id, occurrence) {
   if (habit) {
     habit.occurrences.push(createOccurrence(occurrence));
     await chrome.storage.local.set({ habits });
+    await mirror({ type: 'habit', habit });
   }
 }
 

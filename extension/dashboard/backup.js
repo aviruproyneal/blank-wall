@@ -1,5 +1,6 @@
 import {
   chooseBackupFolder,
+  flushPendingChanges,
   getBackupStatus,
   reconnectBackupFolder,
 } from '../shared/backup.js';
@@ -44,6 +45,7 @@ export function setupBackupUI() {
   }
 
   refresh().catch(reportError('Could not check backup status.', 'backup status'));
+  flush();
 
   async function connect() {
     if (typeof window.showDirectoryPicker !== 'function') {
@@ -63,12 +65,22 @@ export function setupBackupUI() {
     onboarding.hidden = true;
     message.textContent = 'Backup folder connected.';
     await refresh();
+    await flush();
   }
 
   async function reconnectFolder() {
     const state = await reconnectBackupFolder();
     message.textContent = state === 'connected' ? 'Backup folder reconnected.' : '';
     await refresh();
+    await flush();
+  }
+
+  async function flush() {
+    try {
+      await flushPendingChanges();
+    } catch (error) {
+      console.error('Blank Wall backup flush failed:', error);
+    }
   }
 
   async function refresh() {
