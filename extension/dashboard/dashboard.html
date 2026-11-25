@@ -28,6 +28,10 @@
             Your data stays in this browser. Choose a folder to keep a Markdown copy
             of your notes and habits as a safety net.
           </p>
+          <p class="backup-message" id="onboarding-unsupported" hidden>
+            Automatic folder backup is not available in this browser. Use Export everything
+            and Import JSON file in Settings instead.
+          </p>
           <div class="form-actions">
             <button class="primary-button" id="onboarding-choose-folder" type="button">Choose backup folder</button>
             <button class="text-button" id="skip-backup" type="button">Skip for now</button>
@@ -198,6 +202,10 @@
 
           <div class="backup-settings">
             <h3>Backup folder</h3>
+            <p class="backup-message" id="backup-unsupported" hidden>
+              Automatic folder backup needs the File System Access API, which this browser
+              does not provide. Use Export everything and Import JSON file below instead.
+            </p>
             <p class="backup-status" id="backup-status">Not set</p>
             <p class="backup-message" id="backup-message" aria-live="polite"></p>
             <div class="form-actions">
@@ -209,9 +217,15 @@
           <div class="backup-settings">
             <h3>Export and import</h3>
             <p class="backup-message" id="data-transfer-message" aria-live="polite"></p>
+            <p class="backup-message" id="folder-import-unsupported" hidden>
+              Folder import is unavailable in this browser. Export a JSON backup here,
+              then use Import JSON file to restore it.
+            </p>
             <div class="form-actions">
               <button id="export-data" type="button">Export everything</button>
               <button id="import-data" type="button">Import from backup folder</button>
+              <button id="import-json" type="button">Import JSON file</button>
+              <input id="import-json-file" type="file" accept="application/json,.json" hidden>
             </div>
           </div>
         </section>

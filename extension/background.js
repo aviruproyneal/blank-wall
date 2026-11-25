@@ -1,3 +1,4 @@
+import { callChromeApi } from './shared/api.js';
 import {
   getBlockedSites,
   getSettings,
@@ -27,7 +28,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     .then(() => initializeStorage())
     .then(() => {
       if (details.reason === 'install') {
-        return chrome.tabs.create({
+        return callChromeApi('tabs.create', {
           url: chrome.runtime.getURL('dashboard/dashboard.html?welcome=1'),
         });
       }
@@ -40,7 +41,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (message?.type === 'close-tab' && sender.tab?.id !== undefined) {
-    chrome.tabs.remove(sender.tab.id).catch((error) => {
+    callChromeApi('tabs.remove', sender.tab.id).catch((error) => {
       console.error('Blank Wall tab close failed:', error);
     });
   }
@@ -82,7 +83,7 @@ async function redirectIfBlocked(details) {
   wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');
   wall.searchParams.set('habits', site.habitsEnabled ? '1' : '0');
 
-  await chrome.tabs.update(details.tabId, { url: wall.href });
+  await callChromeApi('tabs.update', details.tabId, { url: wall.href });
 }
 
 function isSubdomainOf(hostname, siteHostname) {

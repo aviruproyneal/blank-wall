@@ -23,7 +23,7 @@ Per-site `note` is a short reminder (200 characters or fewer). `counterSite` is 
 
 ## Backup state (IndexedDB)
 
-Database `blank-wall-backup`, object store `state`:
+Database `blank-wall-backup`, object store `state` (only used in browsers that provide the File System Access API):
 
 | Key | Shape |
 | --- | --- |
@@ -88,4 +88,4 @@ Front matter values are plain when they contain only word characters, spaces, or
 
 ## Export and import
 
-**Export everything** downloads all `chrome.storage.local` keys (including `schemaVersion`) as a single JSON file; it is a portable snapshot, not the folder format. **Import from backup folder** reads the Markdown/JSON files above, replaces `notes`, `habits`, and `blockedSites`, and sets `nextHabitNumber` to one past the highest imported habit ID. Habit front matter with the legacy `action:` key is mapped to `response` on import, and blocked sites without the version `3` fields get their defaults. Settings, stats, and allowances are left at their current browser values because the folder does not mirror them.
+**Export everything** downloads all `chrome.storage.local` keys (including `schemaVersion`) as a single JSON file; it is a portable snapshot, not the folder format. **Import from backup folder** reads the Markdown/JSON files above. **Import JSON file** accepts the downloaded snapshot and works in browsers without the File System Access API. Both import paths replace `notes`, `habits`, and `blockedSites`, and set `nextHabitNumber` to one past the highest imported habit ID. Habit front matter with the legacy `action:` key is mapped to `response` on import, and blocked sites without the version `3` fields get their defaults. Settings, stats, and allowances are left at their current browser values because neither import source mirrors them.

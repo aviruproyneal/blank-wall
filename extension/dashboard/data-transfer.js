@@ -1,10 +1,18 @@
-import { readBackupFolder } from '../shared/backup.js';
+import { backupFolderSupported, readBackupFolder } from '../shared/backup.js';
 import { getAllData, importBackupData } from '../shared/storage.js';
 
 export function setupDataTransferUI() {
   const exportButton = document.querySelector('#export-data');
   const importButton = document.querySelector('#import-data');
+  const importJsonButton = document.querySelector('#import-json');
+  const importJsonFileInput = document.querySelector('#import-json-file');
+  const folderImportUnsupported = document.querySelector('#folder-import-unsupported');
   const message = document.querySelector('#data-transfer-message');
+
+  if (!backupFolderSupported()) {
+    importButton.hidden = true;
+    folderImportUnsupported.hidden = false;
+  }
 
   exportButton.addEventListener('click', () => {
     exportAll().catch(reportError('Could not export data.', 'export'));
@@ -12,6 +20,14 @@ export function setupDataTransferUI() {
 
   importButton.addEventListener('click', () => {
     importFolder().catch(reportError('Could not import data.', 'import'));
+  });
+
+  importJsonButton.addEventListener('click', () => {
+    importJsonFileInput.click();
+  });
+
+  importJsonFileInput.addEventListener('change', () => {
+    importJsonFile().catch(reportError('Could not import JSON backup.', 'JSON import'));
   });
 
   async function exportAll() {
@@ -43,6 +59,39 @@ export function setupDataTransferUI() {
 
     await importBackupData(backup);
     window.location.reload();
+  }
+
+  async function importJsonFile() {
+    const file = importJsonFileInput.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    try {
+      const data = JSON.parse(await file.text());
+      const keys = ['blockedSites', 'habits', 'notes'];
+      const present = data && typeof data === 'object'
+        ? keys.filter((key) => key in data)
+        : [];
+      const hasContent = present.length > 0 && present.every((key) => Array.isArray(data[key]));
+
+      if (!hasContent) {
+        throw new Error('The selected file is not a Blank Wall backup.');
+      }
+
+      const confirmed = window.confirm(
+        'Replace the current notes, habits, and blocked sites with this JSON backup?',
+      );
+      if (!confirmed) {
+        return;
+      }
+
+      await importBackupData(data);
+      message.textContent = 'JSON backup imported.';
+      window.location.reload();
+    } finally {
+      importJsonFileInput.value = '';
+    }
   }
 
   function reportError(label, context) {

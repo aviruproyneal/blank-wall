@@ -8,6 +8,22 @@ This repository is a monorepo for the prototype. The Chrome extension lives in [
 
 The extension is built in small milestones so every change can be reviewed and committed on its own. Blocking, the basic wall, the popup, dashboard site management, wall notes and habits, the dashboard Habits/Notes pages, settings with skip rules, backup folder setup, Markdown mirroring, and JSON export/import are in place. Existing data is migrated automatically on update. Until a site is added, a temporary hard-coded `example.com` entry is used for testing.
 
+## Install
+
+Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` folder — the folder containing `manifest.json` — as an unpacked extension. There is no build step or dependency install. See [`docs/installation.md`](docs/installation.md) for per-browser steps and troubleshooting.
+
+| Browser | Status |
+| --- | --- |
+| Chrome | Supported; main test browser (121+). |
+| Edge | Expected to work; not runtime tested here. |
+| Brave | Expected to work; not runtime tested here. |
+| Opera | Expected to work; not runtime tested here. |
+| Vivaldi | Expected to work; not runtime tested here. |
+| Firefox | Best-effort temporary load; folder backup unavailable; not runtime tested here. |
+| Safari | Out of scope. |
+
+Mobile browsers are out of scope.
+
 ## Roadmap
 
 1. Repository scaffolding
@@ -23,7 +39,7 @@ The extension is built in small milestones so every change can be reviewed and c
 11. Export and import
 12. Docs and cleanup
 
-## Run the extension in Chrome
+## Chrome test walkthrough
 
 1. Open `chrome://extensions`.
 2. Enable **Developer mode**.
@@ -42,7 +58,7 @@ The extension is built in small milestones so every change can be reviewed and c
 15. In Settings → Backup folder, use **Choose backup folder** to replace the folder, or **Reconnect backup folder** if Chrome reports `Needs reconnect` after a browser restart.
 16. With a folder connected, add a note and a habit, then check the chosen folder: `BlankWall/notes/<today>.md` holds the day's notes, `BlankWall/habits/001-short-title.md` holds front matter and the occurrence log, and `BlankWall/blocked-sites.json` holds site settings. Editing or deleting an entry updates those files on the next change.
 17. To test the pending queue, disconnect the folder's permission (or make it unavailable), add a note, then restore access and reopen the dashboard. The queued change is written when access returns; nothing is lost in between.
-18. In Settings → Export and import, click **Export everything** to download a JSON snapshot of local storage. Click **Import from backup folder** to replace notes, habits, and blocked sites from the connected `BlankWall/` folder, then confirm the prompt and wait for the page to reload.
+18. In Settings → Export and import, click **Export everything** to download a JSON snapshot of local storage. Click **Import from backup folder** to replace notes, habits, and blocked sites from the connected `BlankWall/` folder, then confirm the prompt and wait for the page to reload. In browsers without folder support, use **Import JSON file** with a downloaded snapshot instead.
 19. Until a site is added from the popup, `http://example.com` is blocked through the temporary `DEV_BLOCKED_SITES` fallback with a one-minute countdown. Once any site is stored, that fallback is ignored; edit `DEV_BLOCKED_SITES` and reload the extension to test another host.
 
 There is no build step and no dependency install: the extension is plain HTML, CSS, and vanilla JavaScript ES modules.

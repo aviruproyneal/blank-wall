@@ -1,4 +1,5 @@
 import {
+  backupFolderSupported,
   chooseBackupFolder,
   flushPendingChanges,
   getBackupStatus,
@@ -12,15 +13,29 @@ const STATUS_LABELS = {
 };
 
 export function setupBackupUI() {
+  const supported = backupFolderSupported();
   const onboarding = document.querySelector('#backup-onboarding');
   const onboardingChoose = document.querySelector('#onboarding-choose-folder');
+  const onboardingUnsupported = document.querySelector('#onboarding-unsupported');
   const skipOnboarding = document.querySelector('#skip-backup');
   const reminder = document.querySelector('#backup-reminder');
   const reminderMessage = document.querySelector('#backup-reminder-message');
   const status = document.querySelector('#backup-status');
   const message = document.querySelector('#backup-message');
+  const unsupported = document.querySelector('#backup-unsupported');
   const choose = document.querySelector('#choose-backup-folder');
   const reconnect = document.querySelector('#reconnect-backup-folder');
+
+  if (!supported) {
+    onboardingChoose.hidden = true;
+    onboardingUnsupported.hidden = false;
+    unsupported.hidden = false;
+    status.hidden = true;
+    message.hidden = true;
+    choose.hidden = true;
+    reconnect.hidden = true;
+    reminder.hidden = true;
+  }
 
   onboardingChoose.addEventListener('click', () => {
     connect().catch(reportError('Could not connect the backup folder.', 'backup folder selection'));
@@ -48,7 +63,7 @@ export function setupBackupUI() {
   flush();
 
   async function connect() {
-    if (typeof window.showDirectoryPicker !== 'function') {
+    if (!supported) {
       message.textContent = 'This browser cannot choose a folder.';
       return;
     }
@@ -76,6 +91,10 @@ export function setupBackupUI() {
   }
 
   async function flush() {
+    if (!supported) {
+      return;
+    }
+
     try {
       await flushPendingChanges();
     } catch (error) {
@@ -84,6 +103,10 @@ export function setupBackupUI() {
   }
 
   async function refresh() {
+    if (!supported) {
+      return;
+    }
+
     const state = await getBackupStatus();
     status.textContent = STATUS_LABELS[state];
     reconnect.hidden = state !== 'needs-reconnect';

@@ -5,6 +5,10 @@ const STORE_NAME = 'state';
 const DIRECTORY_HANDLE_KEY = 'directoryHandle';
 const PENDING_CHANGES_KEY = 'pendingChanges';
 
+export function backupFolderSupported() {
+  return typeof window.showDirectoryPicker === 'function';
+}
+
 function openDatabase() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DATABASE_NAME, 1);
@@ -68,6 +72,10 @@ export async function getBackupStatus() {
 }
 
 export async function chooseBackupFolder() {
+  if (!backupFolderSupported()) {
+    throw new Error('Folder backup is not supported in this browser.');
+  }
+
   const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
   await writeValue(DIRECTORY_HANDLE_KEY, handle);
 }

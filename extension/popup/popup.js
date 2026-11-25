@@ -1,4 +1,5 @@
-import { getBackupStatus } from '../shared/backup.js';
+import { callChromeApi } from '../shared/api.js';
+import { backupFolderSupported, getBackupStatus } from '../shared/backup.js';
 import {
   addBlockedSite,
   getBlockedSites,
@@ -12,6 +13,12 @@ const BACKUP_LABELS = {
   'needs-reconnect': 'Backup: needs reconnect',
   'not-set': 'Backup: not set',
 };
+
+function openTab(properties) {
+  callChromeApi('tabs.create', properties).catch((error) => {
+    console.error('Blank Wall tab open failed:', error);
+  });
+}
 
 const hostname = document.querySelector('#hostname');
 const toggleButton = document.querySelector('#toggle-site');
@@ -42,12 +49,12 @@ document.querySelector('#open-dashboard').addEventListener('click', () => {
 });
 
 document.querySelector('#open-guide').addEventListener('click', () => {
-  chrome.tabs.create({ url: chrome.runtime.getURL('guide/guide.html') });
+  openTab({ url: chrome.runtime.getURL('guide/guide.html') });
 });
 
 function openDashboard(section) {
   const url = chrome.runtime.getURL('dashboard/dashboard.html');
-  chrome.tabs.create({ url: `${url}#${section}` });
+  openTab({ url: `${url}#${section}` });
 }
 
 renderStats().catch((error) => {
@@ -84,7 +91,7 @@ async function updateSiteBlock() {
 }
 
 async function renderSiteState() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await callChromeApi('tabs.query', { active: true, currentWindow: true });
   const url = parseHttpUrl(tab?.url);
   currentHostname = url?.hostname ?? null;
 
@@ -112,6 +119,11 @@ async function renderStats() {
 }
 
 async function renderBackupStatus() {
+  if (!backupFolderSupported()) {
+    backupStatus.textContent = 'Backup: export only';
+    return;
+  }
+
   const state = await getBackupStatus();
   backupStatus.textContent = BACKUP_LABELS[state];
 }

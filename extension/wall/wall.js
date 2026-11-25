@@ -1,3 +1,4 @@
+import { callChromeApi } from '../shared/api.js';
 import {
   getSettings,
   grantAllowance,
@@ -133,7 +134,7 @@ counterButton.addEventListener('click', () => {
 });
 
 leaveButton.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ type: 'close-tab' }).catch((error) => {
+  callChromeApi('runtime.sendMessage', { type: 'close-tab' }).catch((error) => {
     console.error('Blank Wall tab close failed:', error);
   });
 });
