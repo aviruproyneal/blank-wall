@@ -1,7 +1,7 @@
 import { enqueueChange, flushPendingChanges } from './backup.js';
 import { formatTimestamp } from './utils.js';
 
-const CURRENT_SCHEMA_VERSION = 2;
+const CURRENT_SCHEMA_VERSION = 3;
 let migration;
 
 function defaultState() {
@@ -15,9 +15,17 @@ function defaultState() {
     nextHabitNumber: 1,
     settings: {
       defaultDurationMinutes: 5,
-      allowanceMinutes: 15,
       skipRule: 'none',
     },
+  };
+}
+
+function defaultSiteSettings() {
+  return {
+    note: '',
+    counterSite: '',
+    allowContinue: true,
+    allowanceMinutes: 15,
   };
 }
 
@@ -30,17 +38,27 @@ export function migrateStorage() {
 }
 
 async function applyMigration() {
-  const { schemaVersion = 0, habits = [] } = await chrome.storage.local.get(['schemaVersion', 'habits']);
+  const { schemaVersion = 0, habits = [], blockedSites = [], settings = {} } =
+    await chrome.storage.local.get(['schemaVersion', 'habits', 'blockedSites', 'settings']);
 
   if (schemaVersion >= CURRENT_SCHEMA_VERSION) {
     return;
   }
 
-  const storedHabits = Array.isArray(habits) ? habits : [];
-  await chrome.storage.local.set({
-    schemaVersion: CURRENT_SCHEMA_VERSION,
-    habits: storedHabits.map(migrateHabit),
-  });
+  const patch = { schemaVersion: CURRENT_SCHEMA_VERSION };
+
+  if (schemaVersion < 2) {
+    patch.habits = (Array.isArray(habits) ? habits : []).map(migrateHabit);
+  }
+
+  if (schemaVersion < 3) {
+    const { allowanceMinutes, ...remainingSettings } = settings ?? {};
+    patch.settings = remainingSettings;
+    patch.blockedSites = (Array.isArray(blockedSites) ? blockedSites : []).map((site) =>
+      migrateSite(site, allowanceMinutes));
+  }
+
+  await chrome.storage.local.set(patch);
 }
 
 function migrateHabit(habit) {
@@ -49,6 +67,28 @@ function migrateHabit(habit) {
   }
   const { action, response, ...rest } = habit;
   return { ...rest, response: response || action || '' };
+}
+
+function migrateSite(site, legacyAllowanceMinutes) {
+  if (!site || typeof site !== 'object') {
+    return site;
+  }
+
+  const defaults = defaultSiteSettings();
+  const legacyMinutes = Number(legacyAllowanceMinutes);
+  const fallback = Number.isFinite(legacyMinutes) && legacyMinutes >= 0
+    ? Math.max(1, legacyMinutes)
+    : defaults.allowanceMinutes;
+  const minutes = Number(site.allowanceMinutes);
+
+  return {
+    ...defaults,
+    ...site,
+    note: typeof site.note === 'string' ? site.note : '',
+    counterSite: typeof site.counterSite === 'string' ? site.counterSite : '',
+    allowContinue: typeof site.allowContinue === 'boolean' ? site.allowContinue : defaults.allowContinue,
+    allowanceMinutes: Number.isFinite(minutes) && minutes >= 1 ? minutes : fallback,
+  };
 }
 
 function todayKey() {
@@ -92,7 +132,9 @@ export async function getSettings() {
   await migrateStorage();
   const defaults = defaultState();
   const { settings = {} } = await chrome.storage.local.get('settings');
-  return { ...defaults.settings, ...settings };
+  const stored = { ...settings };
+  delete stored.allowanceMinutes;
+  return { ...defaults.settings, ...stored };
 }
 
 export async function updateSettings(patch) {
@@ -117,6 +159,7 @@ export async function addBlockedSite(hostname) {
       durationMinutes: settings.defaultDurationMinutes,
       notesEnabled: true,
       habitsEnabled: true,
+      ...defaultSiteSettings(),
     });
     await chrome.storage.local.set({ blockedSites: sites });
     await mirror({ type: 'blocked-sites', sites });
@@ -375,15 +418,18 @@ export async function getAllData() {
 
 export async function importBackupData({ blockedSites, habits, notes }) {
   await migrateStorage();
-  const highest = habits.reduce((max, habit) => {
+  const sites = Array.isArray(blockedSites) ? blockedSites : [];
+  const storedHabits = Array.isArray(habits) ? habits : [];
+  const storedNotes = Array.isArray(notes) ? notes : [];
+  const highest = storedHabits.reduce((max, habit) => {
     const number = Number(habit.id);
     return Number.isInteger(number) && number > max ? number : max;
   }, 0);
 
   await chrome.storage.local.set({
-    blockedSites: blockedSites ?? [],
-    habits: habits ?? [],
-    notes: notes ?? [],
+    blockedSites: sites.map((site) => migrateSite(site, 15)),
+    habits: storedHabits,
+    notes: storedNotes,
     nextHabitNumber: highest + 1,
   });
 }

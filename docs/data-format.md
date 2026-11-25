@@ -6,18 +6,20 @@ Blank Wall keeps browser storage as the source of truth. A folder chosen by the 
 
 | Key | Shape |
 | --- | --- |
-| `schemaVersion` | Number; current version is `2` |
-| `blockedSites` | `[{ hostname, durationMinutes, notesEnabled, habitsEnabled }]` |
+| `schemaVersion` | Number; current version is `3` |
+| `blockedSites` | `[{ hostname, durationMinutes, notesEnabled, habitsEnabled, note, counterSite, allowContinue, allowanceMinutes }]` |
 | `habits` | `[{ id, title, trigger, response, reward, counterPlan, occurrences: [{ timestamp, site, counterUsed }] }]` |
 | `notes` | `[{ id, timestamp, site, text, habitId? }]` |
 | `stats` | `{ 'YYYY-MM-DD': { walls, wallSeconds, skips } }` |
 | `allowances` | `{ hostname: expiryTimestampMillis }` |
-| `settings` | `{ defaultDurationMinutes, allowanceMinutes, skipRule }` |
+| `settings` | `{ defaultDurationMinutes, skipRule }` |
 | `nextHabitNumber` | Number; the next serial habit ID |
 
 Habit IDs are zero-padded serial numbers (`001`, `002`, ...). Deleted IDs are not reused. `timestamp` values are ISO 8601 strings. `skipRule` is `none` or `after-habit`. Allowances are keyed by the matched blocked hostname and cover its subdomains.
 
-Version `2` renamed the habit field `action` to `response`. The migration runs on extension update and on first read; it renames `action` when present, keeps any existing non-empty `response`, and can be run repeatedly. Older exports with `action:` front matter remain importable.
+Version `2` renamed the habit field `action` to `response`. Version `3` added per-site `note`, `counterSite`, `allowContinue`, and `allowanceMinutes`, and removed the global `settings.allowanceMinutes`. The migration runs on extension update and on first read, preserves existing values, and can be run repeatedly. For older sites, `allowContinue` becomes `true`, `note` and `counterSite` become empty strings, and `allowanceMinutes` comes from the old global setting (minimum 1, default 15). Older backups with `action:` front matter or sites without the new fields remain importable.
+
+Per-site `note` is a short reminder (200 characters or fewer). `counterSite` is a normalized full `http:` or `https:` URL, empty when unset. `allowContinue` controls whether the wall offers a return to the blocked site, and `allowanceMinutes` is the temporary allowance granted when it does.
 
 ## Backup state (IndexedDB)
 
@@ -82,8 +84,8 @@ Front matter values are plain when they contain only word characters, spaces, or
 
 ### Blocked sites
 
-`blocked-sites.json` is the `blockedSites` array as pretty-printed JSON.
+`blocked-sites.json` is the `blockedSites` array as pretty-printed JSON, including each site's reminder note, counter site, and allowance settings. Older arrays are filled with the version `3` defaults on import.
 
 ## Export and import
 
-**Export everything** downloads all `chrome.storage.local` keys (including `schemaVersion`) as a single JSON file; it is a portable snapshot, not the folder format. **Import from backup folder** reads the Markdown/JSON files above, replaces `notes`, `habits`, and `blockedSites`, and sets `nextHabitNumber` to one past the highest imported habit ID. Habit front matter with the legacy `action:` key is mapped to `response` on import. Settings, stats, and allowances are left at their current browser values because the folder does not mirror them.
+**Export everything** downloads all `chrome.storage.local` keys (including `schemaVersion`) as a single JSON file; it is a portable snapshot, not the folder format. **Import from backup folder** reads the Markdown/JSON files above, replaces `notes`, `habits`, and `blockedSites`, and sets `nextHabitNumber` to one past the highest imported habit ID. Habit front matter with the legacy `action:` key is mapped to `response` on import, and blocked sites without the version `3` fields get their defaults. Settings, stats, and allowances are left at their current browser values because the folder does not mirror them.

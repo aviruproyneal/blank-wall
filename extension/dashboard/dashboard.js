@@ -5,7 +5,7 @@ import {
   removeBlockedSite,
   updateBlockedSite,
 } from '../shared/storage.js';
-import { normalizeHostname } from '../shared/utils.js';
+import { normalizeHostname, parseHttpUrl } from '../shared/utils.js';
 import { setupBackupUI } from './backup.js';
 import { setupDataTransferUI } from './data-transfer.js';
 import { setupHabitsPage } from './habits.js';
@@ -77,11 +77,11 @@ function renderSiteList(sites) {
   emptySites.hidden = sites.length > 0;
 
   for (const site of sites) {
-    siteList.append(createSiteElement(site));
+    siteList.append(createSiteElement(site, sites));
   }
 }
 
-function createSiteElement(site) {
+function createSiteElement(site, sites) {
   const item = document.createElement('li');
   item.className = 'site';
 
@@ -106,6 +106,13 @@ function createSiteElement(site) {
 
   header.append(hostname, remove);
 
+  const allowanceControl = createNumberControl(
+    'Allowance (min)',
+    site.allowanceMinutes ?? 15,
+    (minutes) => updateBlockedSite(site.hostname, { allowanceMinutes: minutes }),
+  );
+  allowanceControl.hidden = !(site.allowContinue ?? true);
+
   const controls = document.createElement('div');
   controls.className = 'site__controls';
   controls.append(
@@ -115,6 +122,18 @@ function createSiteElement(site) {
       updateBlockedSite(site.hostname, { notesEnabled: enabled })),
     createToggleControl('Habits', site.habitsEnabled, (enabled) =>
       updateBlockedSite(site.hostname, { habitsEnabled: enabled })),
+    createTextControl('Reminder note', site.note ?? '', 200, (note) =>
+      updateBlockedSite(site.hostname, { note })),
+    createCounterSiteControl(site, sites),
+    createToggleControl(
+      'Allow continuing to the site after the wall',
+      site.allowContinue ?? true,
+      (enabled) => updateBlockedSite(site.hostname, { allowContinue: enabled }),
+      (enabled) => {
+        allowanceControl.hidden = !enabled;
+      },
+    ),
+    allowanceControl,
   );
 
   item.append(header, controls);
@@ -155,7 +174,109 @@ function createNumberControl(label, value, save) {
   return wrapper;
 }
 
-function createToggleControl(label, checked, save) {
+function createTextControl(label, value, maxLength, save) {
+  const wrapper = document.createElement('label');
+  wrapper.className = 'control';
+
+  const text = document.createElement('span');
+  text.textContent = label;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = value;
+  input.maxLength = maxLength;
+  input.addEventListener('change', () => {
+    const next = input.value.trim();
+    save(next)
+      .then(() => {
+        value = next;
+      })
+      .catch((error) => {
+        input.value = value;
+        console.error('Blank Wall site setting update failed:', error);
+      });
+  });
+
+  wrapper.append(text, input);
+  return wrapper;
+}
+
+function createCounterSiteControl(site, sites) {
+  const wrapper = document.createElement('label');
+  wrapper.className = 'control';
+
+  const text = document.createElement('span');
+  text.textContent = 'Counter site';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = site.counterSite ?? '';
+  input.placeholder = 'example.com';
+  input.spellcheck = false;
+
+  const error = document.createElement('p');
+  error.className = 'site__error';
+  error.hidden = true;
+
+  input.addEventListener('change', () => {
+    const parsed = parseCounterSite(input.value);
+
+    if (parsed.error) {
+      error.textContent = parsed.error;
+      error.hidden = false;
+      input.value = site.counterSite ?? '';
+      return;
+    }
+
+    if (parsed.hostname && isBlockedHostname(parsed.hostname, sites)) {
+      error.textContent = 'This site is in your blocked list.';
+      error.hidden = false;
+    } else {
+      error.hidden = true;
+    }
+
+    const counterSite = parsed.url;
+    input.value = counterSite;
+    updateBlockedSite(site.hostname, { counterSite })
+      .then(() => {
+        site.counterSite = counterSite;
+      })
+      .catch((cause) => {
+        input.value = site.counterSite ?? '';
+        console.error('Blank Wall counter site update failed:', cause);
+      });
+  });
+
+  wrapper.append(text, input);
+
+  const field = document.createElement('div');
+  field.className = 'site__field';
+  field.append(wrapper, error);
+  return field;
+}
+
+function parseCounterSite(value) {
+  const raw = value.trim();
+  if (!raw) {
+    return { url: '', hostname: '' };
+  }
+
+  const url = parseHttpUrl(raw) ?? parseHttpUrl(`https://${raw}`);
+  if (!url) {
+    return { error: 'Enter a valid website address.' };
+  }
+
+  return { url: url.href, hostname: url.hostname.toLowerCase() };
+}
+
+function isBlockedHostname(hostname, sites) {
+  return sites.some((site) => {
+    const blocked = String(site.hostname ?? '').toLowerCase();
+    return Boolean(blocked) && (hostname === blocked || hostname.endsWith(`.${blocked}`));
+  });
+}
+
+function createToggleControl(label, checked, save, onChange) {
   const wrapper = document.createElement('label');
   wrapper.className = 'control';
 
@@ -163,8 +284,15 @@ function createToggleControl(label, checked, save) {
   input.type = 'checkbox';
   input.checked = Boolean(checked);
   input.addEventListener('change', () => {
+    if (onChange) {
+      onChange(input.checked);
+    }
+
     save(input.checked).catch((error) => {
       input.checked = !input.checked;
+      if (onChange) {
+        onChange(input.checked);
+      }
       console.error('Blank Wall site setting update failed:', error);
     });
   });

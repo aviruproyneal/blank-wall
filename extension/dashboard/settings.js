@@ -3,7 +3,6 @@ import { getSettings, updateSettings } from '../shared/storage.js';
 export function setupSettingsPage() {
   const form = document.querySelector('#settings-form');
   const duration = document.querySelector('#setting-duration');
-  const allowance = document.querySelector('#setting-allowance');
   const skipRule = document.querySelector('#setting-skip-rule');
   const status = document.querySelector('#settings-status');
 
@@ -23,23 +22,19 @@ export function setupSettingsPage() {
   async function load() {
     const settings = await getSettings();
     duration.value = String(settings.defaultDurationMinutes);
-    allowance.value = String(settings.allowanceMinutes);
     skipRule.value = settings.skipRule;
   }
 
   async function save() {
     const durationMinutes = Number(duration.value);
-    const allowanceMinutes = Number(allowance.value);
 
-    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0 ||
-        !Number.isFinite(allowanceMinutes) || allowanceMinutes < 0) {
-      status.textContent = 'Enter a positive duration and a non-negative allowance.';
+    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) {
+      status.textContent = 'Enter a positive duration.';
       return;
     }
 
     await updateSettings({
       defaultDurationMinutes: durationMinutes,
-      allowanceMinutes,
       skipRule: skipRule.value,
     });
     status.textContent = 'Settings saved.';

@@ -12,7 +12,8 @@ import { setupNoteBox } from './note.js';
 const params = new URLSearchParams(window.location.search);
 const target = parseHttpUrl(params.get('target'));
 const allowanceHost = (params.get('site') || target?.hostname || '').toLowerCase();
-const durationMinutes = readDuration(params.get('duration'));
+const durationMinutes = readMinutes(params.get('duration'), 5);
+const allowanceMinutes = readMinutes(params.get('allowance'), 15);
 const timer = document.querySelector('#timer');
 const decision = document.querySelector('#decision');
 const continueButton = document.querySelector('#continue');
@@ -123,14 +124,13 @@ async function continueToTarget() {
     return;
   }
 
-  const settings = await getSettings();
-  await grantAllowance(allowanceHost, settings.allowanceMinutes);
+  await grantAllowance(allowanceHost, allowanceMinutes);
   window.location.assign(target.href);
 }
 
-function readDuration(raw) {
+function readMinutes(raw, fallback) {
   const minutes = Number(raw);
-  return Number.isFinite(minutes) && minutes > 0 ? minutes : 5;
+  return Number.isFinite(minutes) && minutes > 0 ? minutes : fallback;
 }
 
 function render() {
@@ -166,7 +166,7 @@ async function skipWall() {
   await recordSkip();
 
   const settings = await getSettings();
-  await grantAllowance(allowanceHost, settings.allowanceMinutes);
+  await grantAllowance(allowanceHost, allowanceMinutes);
   window.location.assign(target.href);
 }
 

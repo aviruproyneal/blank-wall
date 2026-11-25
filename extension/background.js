@@ -13,6 +13,10 @@ const DEV_BLOCKED_SITES = [
     durationMinutes: 1,
     notesEnabled: true,
     habitsEnabled: true,
+    note: '',
+    counterSite: '',
+    allowContinue: true,
+    allowanceMinutes: 15,
   },
 ];
 
@@ -63,6 +67,7 @@ async function redirectIfBlocked(details) {
   wall.searchParams.set('target', target.href);
   wall.searchParams.set('site', site.hostname);
   wall.searchParams.set('duration', String(site.durationMinutes ?? settings.defaultDurationMinutes));
+  wall.searchParams.set('allowance', String(site.allowanceMinutes ?? 15));
   wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');
   wall.searchParams.set('habits', site.habitsEnabled ? '1' : '0');
 
