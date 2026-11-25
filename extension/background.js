@@ -15,10 +15,19 @@ const DEV_BLOCKED_SITES = [
   },
 ];
 
-chrome.runtime.onInstalled.addListener(() => {
-  initializeStorage().catch((error) => {
-    console.error('Blank Wall storage initialization failed:', error);
-  });
+chrome.runtime.onInstalled.addListener((details) => {
+  initializeStorage()
+    .then(() => {
+      if (details.reason === 'install') {
+        return chrome.tabs.create({
+          url: chrome.runtime.getURL('dashboard/dashboard.html?welcome=1'),
+        });
+      }
+      return undefined;
+    })
+    .catch((error) => {
+      console.error('Blank Wall installation setup failed:', error);
+    });
 });
 
 chrome.webNavigation.onBeforeNavigate.addListener((details) => {

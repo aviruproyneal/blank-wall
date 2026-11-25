@@ -1,3 +1,4 @@
+import { getBackupStatus } from '../shared/backup.js';
 import {
   addBlockedSite,
   getBlockedSites,
@@ -6,11 +7,18 @@ import {
 } from '../shared/storage.js';
 import { parseHttpUrl } from '../shared/utils.js';
 
+const BACKUP_LABELS = {
+  connected: 'Backup: connected',
+  'needs-reconnect': 'Backup: needs reconnect',
+  'not-set': 'Backup: not set',
+};
+
 const hostname = document.querySelector('#hostname');
 const toggleButton = document.querySelector('#toggle-site');
 const walls = document.querySelector('#walls');
 const wallTime = document.querySelector('#wall-time');
 const skips = document.querySelector('#skips');
+const backupStatus = document.querySelector('#backup-status');
 
 let currentHostname = null;
 let isBlocked = false;
@@ -44,6 +52,10 @@ renderStats().catch((error) => {
 
 renderSiteState().catch((error) => {
   console.error('Blank Wall popup site lookup failed:', error);
+});
+
+renderBackupStatus().catch((error) => {
+  console.error('Blank Wall popup backup status failed:', error);
 });
 
 async function updateSiteBlock() {
@@ -93,4 +105,9 @@ async function renderStats() {
   walls.textContent = String(stats.walls);
   wallTime.textContent = `${Math.round(stats.wallSeconds / 60)} min`;
   skips.textContent = String(stats.skips);
+}
+
+async function renderBackupStatus() {
+  const state = await getBackupStatus();
+  backupStatus.textContent = BACKUP_LABELS[state];
 }

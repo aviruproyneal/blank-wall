@@ -21,6 +21,23 @@
       </aside>
 
       <main class="content">
+        <section class="panel panel--welcome" id="backup-onboarding" hidden>
+          <h2>Welcome to Blank Wall</h2>
+          <p>
+            Your data stays in this browser. Choose a folder to keep a Markdown copy
+            of your notes and habits as a safety net.
+          </p>
+          <div class="form-actions">
+            <button class="primary-button" id="onboarding-choose-folder" type="button">Choose backup folder</button>
+            <button class="text-button" id="skip-backup" type="button">Skip for now</button>
+          </div>
+        </section>
+
+        <p class="backup-reminder" id="backup-reminder" hidden>
+          <span id="backup-reminder-message"></span>
+          <a href="#settings">Open Settings</a>
+        </p>
+
         <section class="panel" id="today">
           <h2>Today</h2>
           <dl class="stats">
@@ -191,6 +208,16 @@
             </div>
           </form>
           <p class="settings-status" id="settings-status" aria-live="polite"></p>
+
+          <div class="backup-settings">
+            <h3>Backup folder</h3>
+            <p class="backup-status" id="backup-status">Not set</p>
+            <p class="backup-message" id="backup-message" aria-live="polite"></p>
+            <div class="form-actions">
+              <button id="choose-backup-folder" type="button">Choose backup folder</button>
+              <button id="reconnect-backup-folder" type="button" hidden>Reconnect backup folder</button>
+            </div>
+          </div>
         </section>
       </main>
     </div>

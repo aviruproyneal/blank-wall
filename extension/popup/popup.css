@@ -77,3 +77,11 @@ body {
   margin: 0;
   font-size: 1rem;
 }
+
+.popup__backup {
+  margin: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
