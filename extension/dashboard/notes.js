@@ -6,6 +6,7 @@ import {
   updateNote,
 } from '../shared/storage.js';
 import { formatHabitNumber, formatTimestamp } from '../shared/utils.js';
+import { askConfirm } from '../shared/ui.js';
 
 export function setupNotesPage() {
   const listView = document.querySelector('#notes-list-view');
@@ -88,6 +89,7 @@ export function setupNotesPage() {
 
     const edit = document.createElement('button');
     edit.type = 'button';
+    edit.className = 'button button--ghost';
     edit.textContent = 'Edit';
     edit.addEventListener('click', () => {
       openEditor(note);
@@ -95,6 +97,7 @@ export function setupNotesPage() {
 
     const remove = document.createElement('button');
     remove.type = 'button';
+    remove.className = 'button button--ghost';
     remove.textContent = 'Delete';
     remove.addEventListener('click', () => {
       removeNote(note).catch(logError('delete note'));
@@ -154,7 +157,13 @@ export function setupNotesPage() {
   }
 
   async function removeNote(note) {
-    if (!window.confirm('Delete this note?')) {
+    const confirmed = await askConfirm({
+      title: 'Delete note?',
+      message: 'Delete this note? This cannot be undone.',
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (!confirmed) {
       return;
     }
 

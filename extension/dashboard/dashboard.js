@@ -109,7 +109,7 @@ function createSiteElement(site, sites) {
 
   const remove = document.createElement('button');
   remove.type = 'button';
-  remove.className = 'site__remove';
+  remove.className = 'button button--secondary site__remove';
   remove.textContent = 'Remove';
   remove.addEventListener('click', () => {
     removeBlockedSite(site.hostname)
@@ -164,6 +164,7 @@ function createNumberControl(label, value, save) {
 
   const input = document.createElement('input');
   input.type = 'number';
+  input.className = 'input';
   input.min = '0.1';
   input.step = 'any';
   input.value = String(value);
@@ -198,6 +199,7 @@ function createTextControl(label, value, maxLength, save) {
 
   const input = document.createElement('input');
   input.type = 'text';
+  input.className = 'input';
   input.value = value;
   input.maxLength = maxLength;
   input.addEventListener('change', () => {
@@ -225,6 +227,7 @@ function createCounterSiteControl(site, sites) {
 
   const input = document.createElement('input');
   input.type = 'text';
+  input.className = 'input';
   input.value = site.counterSite ?? '';
   input.placeholder = 'example.com';
   input.spellcheck = false;

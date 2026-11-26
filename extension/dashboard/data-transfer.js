@@ -1,5 +1,6 @@
 import { backupFolderSupported, readBackupFolder } from '../shared/backup.js';
 import { getAllData, importBackupData } from '../shared/storage.js';
+import { askConfirm } from '../shared/ui.js';
 
 const IMPORT_RESULT_KEY = 'blank-wall:import-result';
 
@@ -78,18 +79,24 @@ export function setupDataTransferUI() {
   }
 
   async function replaceData(label, backup) {
-    const confirmed = window.confirm(
-      `Replace the current notes, habits, and blocked sites with ${label}?`,
-    );
+    const confirmed = await askConfirm({
+      title: 'Replace data?',
+      message: `Replace the current notes, habits, and blocked sites with ${label}?`,
+      confirmLabel: 'Replace',
+      danger: true,
+    });
     if (!confirmed) {
       return;
     }
 
     const snapshotStarted = await startSafetySnapshot();
     if (!snapshotStarted) {
-      const accepted = window.confirm(
-        'The safety snapshot could not be downloaded. Replace the current data anyway?',
-      );
+      const accepted = await askConfirm({
+        title: 'Safety snapshot failed',
+        message: 'The safety snapshot could not be downloaded. Replace the current data anyway?',
+        confirmLabel: 'Replace anyway',
+        danger: true,
+      });
       if (!accepted) {
         return;
       }

@@ -5,6 +5,7 @@ import {
   updateHabit,
 } from '../shared/storage.js';
 import { formatHabitNumber, formatOccurrenceDate } from '../shared/utils.js';
+import { askConfirm } from '../shared/ui.js';
 
 export function setupHabitsPage() {
   const listView = document.querySelector('#habit-list-view');
@@ -184,7 +185,17 @@ export function setupHabitsPage() {
   }
 
   async function removeHabit() {
-    if (!currentId || !window.confirm('Delete this habit and its occurrences?')) {
+    if (!currentId) {
+      return;
+    }
+
+    const confirmed = await askConfirm({
+      title: 'Delete habit?',
+      message: 'Delete this habit and its occurrences? This cannot be undone.',
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (!confirmed) {
       return;
     }
 

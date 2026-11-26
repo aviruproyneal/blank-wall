@@ -6,7 +6,7 @@
 
 .sidebar {
   padding: var(--page-padding);
-  border-right: 1px solid var(--border);
+  border-right: var(--border-width) solid var(--border);
   background: var(--surface-raised);
 }
 
@@ -24,6 +24,9 @@
 }
 
 .sidebar__nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius);
   color: var(--text-muted);
@@ -44,7 +47,7 @@
 .panel {
   margin-bottom: var(--space-4);
   padding: var(--space-4);
-  border: 1px solid var(--border);
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
   background: var(--surface-raised);
 }
@@ -61,7 +64,7 @@
 .panel--sites h2 {
   margin: 0 0 var(--space-6);
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
 }
 
 .panel--welcome p {
@@ -74,24 +77,10 @@
   margin-top: var(--space-3);
 }
 
-.form-actions .text-button {
-  padding: var(--space-2);
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
-  text-decoration: underline;
-}
-
-.form-actions .text-button:hover {
-  border-color: transparent;
-  background: transparent;
-  color: var(--text);
-}
-
 .backup-reminder {
   margin: 0 0 var(--space-4);
   padding: var(--space-3);
-  border: 1px solid var(--border);
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
   background: var(--surface-raised);
   color: var(--text-muted);
@@ -142,33 +131,9 @@
   gap: var(--space-2);
 }
 
-.add-site input {
+.add-site .input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
-.add-site button,
-.site__remove {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  cursor: pointer;
-}
-
-.add-site button {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.add-site button:hover,
-.site__remove:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
 }
 
 .site-list {
@@ -179,7 +144,7 @@
 
 .site {
   padding: var(--space-3) 0;
-  border-top: 1px solid var(--border);
+  border-top: var(--border-width) solid var(--border);
 }
 
 .site__header {
@@ -192,10 +157,6 @@
 .site__hostname {
   font-weight: 600;
   overflow-wrap: anywhere;
-}
-
-.site__remove {
-  color: var(--text-muted);
 }
 
 .site__controls {
@@ -214,23 +175,11 @@
 }
 
 .control input[type='number'] {
-  width: 72px;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
+  width: var(--control-number-width);
 }
 
 .control input[type='text'] {
   min-width: 0;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
-.control input[type='checkbox'] {
-  accent-color: var(--accent);
 }
 
 .site__field {
@@ -241,8 +190,8 @@
 
 .site__error {
   margin: 0;
-  color: var(--accent);
-  font-size: 0.8rem;
+  color: var(--danger);
+  font-size: var(--text-12);
 }
 
 .add-site__error {
@@ -254,29 +203,6 @@
 .empty-notes {
   margin: var(--space-4) 0 0;
   color: var(--text-muted);
-}
-
-.primary-button {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.primary-button:hover {
-  background: var(--surface-hover);
-}
-
-.danger-button {
-  border-color: var(--border);
-  color: var(--text-muted);
-}
-
-.danger-button:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
 }
 
 .habit-list {
@@ -291,7 +217,7 @@
   width: 100%;
   padding: var(--space-3) 0;
   border: 0;
-  border-top: 1px solid var(--border);
+  border-top: var(--border-width) solid var(--border);
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -308,6 +234,10 @@
 .habit-list button:hover {
   background: var(--surface-hover);
   color: var(--accent);
+}
+
+.habit-list button:active {
+  background: var(--surface-active);
 }
 
 .habit-editor,
@@ -336,15 +266,6 @@
 
 .habit-detail #back-to-habits {
   margin-bottom: var(--space-4);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.habit-detail #back-to-habits:hover {
-  color: var(--text);
 }
 
 .habit-editor label {
@@ -359,36 +280,10 @@
   font-size: 0.8rem;
 }
 
-.habit-editor input[type='text'],
-.habit-editor textarea {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
-.habit-editor textarea {
-  resize: vertical;
-}
-
 .form-actions {
   display: flex;
   gap: var(--space-2);
   margin-top: var(--space-4);
-}
-
-.form-actions button {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  cursor: pointer;
-}
-
-.form-actions button:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
 }
 
 .habit-fields {
@@ -459,13 +354,10 @@
   gap: var(--space-2);
 }
 
-.notes__toolbar input {
+.notes__toolbar .input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
+  max-width: var(--control-select-width);
 }
 
 .note-list {
@@ -476,7 +368,7 @@
 
 .note {
   padding: var(--space-3) 0;
-  border-top: 1px solid var(--border);
+  border-top: var(--border-width) solid var(--border);
 }
 
 .note:first-child {
@@ -501,18 +393,8 @@
   margin-top: var(--space-2);
 }
 
-.note__actions button {
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.note__actions button:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
+.note__actions .button {
+  min-height: var(--control-height-compact);
 }
 
 .note-editor {
@@ -537,20 +419,6 @@
   font-size: 0.8rem;
 }
 
-.note-editor textarea,
-.note-editor input[type='text'],
-.note-editor select {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
-.note-editor textarea {
-  resize: vertical;
-}
-
 .settings-form label {
   display: block;
   margin-bottom: var(--space-3);
@@ -563,15 +431,6 @@
   font-size: 0.8rem;
 }
 
-.settings-form input[type='number'],
-.settings-form select {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
 .settings-status {
   min-height: 1.2em;
   margin: var(--space-3) 0 0;
@@ -582,7 +441,7 @@
 .backup-settings {
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
+  border-top: var(--border-width) solid var(--border);
 }
 
 .backup-settings h3 {
@@ -615,7 +474,7 @@
 
   .sidebar {
     border-right: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: var(--border-width) solid var(--border);
   }
 
   .sidebar__nav {

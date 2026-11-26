@@ -55,6 +55,8 @@
   --content-max: 720px;
   --measure: 65ch;
   --page-padding: var(--space-6);
+  --panel-width: 320px;
+  --note-max-width: 280px;
 
   /* Typography */
   --font-ui: system-ui, -apple-system, 'Segoe UI Variable', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
@@ -79,14 +81,29 @@
   --radius-sm: 4px;
   --radius: 6px;
   --radius-lg: 10px;
+  --radius-round: 50%;
 
   /* Controls */
   --control-height-compact: 28px;
   --control-height: 32px;
+  --control-number-width: 72px;
+  --control-select-width: 180px;
   --icon-button-size: 32px;
+  --icon-size: 18px;
+  --disabled-opacity: 0.4;
+  --action-idle-opacity: 0.6;
+  --switch-width: 36px;
+  --switch-height: 20px;
+  --switch-knob: 14px;
+  --switch-gap: 2px;
+  --switch-travel: 18px;
 
   /* Elevation */
+  --backdrop: rgba(0, 0, 0, 0.6);
   --shadow-dialog: 0 var(--space-3) var(--space-7) rgba(0, 0, 0, 0.4);
+  --dialog-width: 420px;
+  --toast-width: 320px;
+  --toast-duration: 4000ms;
 
   /* Motion */
   --duration-fast: 120ms;

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Blank Wall</title>
     <link rel="stylesheet" href="../shared/theme.css">
+    <link rel="stylesheet" href="../shared/components.css">
     <link rel="stylesheet" href="wall.css">
   </head>
   <body>
@@ -13,29 +14,17 @@
       <p class="wall__note" id="note" hidden></p>
 
       <div class="wall__tools" id="tools" hidden>
-        <button class="wall__tool" id="note-button" type="button" aria-label="Take a note" hidden>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 20h4l11-11-4-4L4 16v4z"></path>
-            <path d="M13 7l4 4"></path>
-          </svg>
-        </button>
-        <button class="wall__tool" id="habit-button" type="button" aria-label="Log habit pattern" hidden>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 12a8 8 0 0 1 14-5"></path>
-            <path d="M18 4v4h-4"></path>
-            <path d="M20 12a8 8 0 0 1-14 5"></path>
-            <path d="M6 20v-4h4"></path>
-          </svg>
-        </button>
-        <button class="wall__tool wall__tool--text" id="skip-button" type="button" hidden>Skip</button>
+        <button class="button button--secondary button--icon" id="note-button" type="button" aria-label="Take a note" title="Take a note" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg></button>
+        <button class="button button--secondary button--icon" id="habit-button" type="button" aria-label="Log habit pattern" title="Log habit pattern" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg></button>
+        <button class="button button--ghost wall__tool--text" id="skip-button" type="button" hidden>Skip</button>
       </div>
 
       <section class="wall__decision" id="decision" hidden>
         <p>Still want to go in?</p>
         <div class="wall__actions">
-          <button id="continue" type="button">Continue</button>
-          <button id="counter-site" type="button" hidden>Counter site</button>
-          <button id="leave" type="button">Leave</button>
+          <button class="button button--primary" id="continue" type="button">Continue</button>
+          <button class="button button--secondary" id="counter-site" type="button" hidden>Counter site</button>
+          <button class="button button--secondary" id="leave" type="button">Leave</button>
         </div>
       </section>
     </main>
@@ -45,10 +34,10 @@
         <span>Quick note</span>
         <span id="note-countdown">01:00</span>
       </div>
-      <textarea id="note-text" rows="5" placeholder="What are you reaching for?" spellcheck="true"></textarea>
+      <textarea class="textarea" id="note-text" rows="5" placeholder="What are you reaching for?" spellcheck="true"></textarea>
       <div class="note-box__actions">
-        <button id="cancel-note" type="button">Cancel</button>
-        <button id="save-note" type="button" disabled>Save</button>
+        <button class="button button--secondary" id="cancel-note" type="button">Cancel</button>
+        <button class="button button--primary" id="save-note" type="button" disabled>Save</button>
       </div>
     </section>
 
@@ -56,29 +45,29 @@
       <form id="habit-form">
         <div class="habit-box__header">
           <span>Log habit pattern</span>
-          <select id="habit-select" aria-label="Habit"></select>
+          <select class="select" id="habit-select" aria-label="Habit"></select>
         </div>
 
         <div class="habit-box__fields" id="habit-fields">
           <label>
             <span>Title</span>
-            <input id="habit-title" type="text" placeholder="Short title" required>
+            <input class="input" id="habit-title" type="text" placeholder="Short title" required>
           </label>
           <label>
             <span>Trigger</span>
-            <input id="habit-trigger" type="text" required>
+            <input class="input" id="habit-trigger" type="text" required>
           </label>
           <label>
             <span>Response</span>
-            <input id="habit-response" type="text" required>
+            <input class="input" id="habit-response" type="text" required>
           </label>
           <label>
             <span>Reward</span>
-            <input id="habit-reward" type="text" required>
+            <input class="input" id="habit-reward" type="text" required>
           </label>
           <label>
             <span>Counter-plan</span>
-            <textarea id="habit-counter" rows="2" required></textarea>
+            <textarea class="textarea" id="habit-counter" rows="2" required></textarea>
           </label>
         </div>
 
@@ -90,8 +79,8 @@
         </label>
 
         <div class="habit-box__actions">
-          <button id="cancel-habit" type="button">Cancel</button>
-          <button id="save-habit" type="submit">Save</button>
+          <button class="button button--secondary" id="cancel-habit" type="button">Cancel</button>
+          <button class="button button--primary" id="save-habit" type="submit">Save</button>
         </div>
       </form>
     </section>

@@ -22,10 +22,10 @@
   position: fixed;
   top: var(--page-padding);
   left: var(--page-padding);
-  max-width: 280px;
+  max-width: var(--note-max-width);
   margin: 0;
   padding-left: var(--space-2);
-  border-left: 1px solid var(--border);
+  border-left: var(--border-width) solid var(--border);
   color: var(--text-muted);
   font-size: 0.8rem;
   line-height: 1.5;
@@ -52,22 +52,8 @@
   gap: var(--space-2);
 }
 
-.wall__actions button {
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  cursor: pointer;
-}
-
-.wall__actions button:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
-}
-
-.wall__actions #continue {
-  border-color: var(--accent);
-  color: var(--accent);
+.wall__actions .button {
+  padding: 0 var(--space-4);
 }
 
 .wall__tools {
@@ -78,34 +64,9 @@
   gap: var(--space-2);
 }
 
-.wall__tool {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.wall__tool:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: var(--surface-hover);
-  color: var(--accent);
-}
-
-.wall__tool:disabled {
-  cursor: default;
-  opacity: 0.4;
-}
-
 .wall__tool--text {
   width: auto;
   padding: 0 var(--space-3);
-  border-radius: var(--radius);
-  font-size: 0.8rem;
 }
 
 .note-box,
@@ -113,10 +74,10 @@
   position: fixed;
   right: var(--page-padding);
   bottom: var(--page-padding);
-  z-index: 1;
-  width: min(320px, calc(100vw - 2 * var(--page-padding)));
+  z-index: var(--z-dialog);
+  width: min(var(--panel-width), calc(100vw - 2 * var(--page-padding)));
   padding: var(--space-4);
-  border: 1px solid var(--border);
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
   background: var(--surface-raised);
   box-shadow: var(--shadow-dialog);
@@ -131,17 +92,6 @@
   font-size: 0.8rem;
 }
 
-.note-box textarea,
-.habit-box textarea {
-  width: 100%;
-  min-height: 120px;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-  resize: vertical;
-}
-
 .note-box__actions,
 .habit-box__actions {
   display: flex;
@@ -150,41 +100,8 @@
   margin-top: var(--space-3);
 }
 
-.note-box__actions button,
-.habit-box__actions button {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.note-box__actions #cancel-note,
-.habit-box__actions #cancel-habit {
-  border-color: var(--border);
-  color: var(--text-muted);
-}
-
-.note-box__actions #cancel-note:hover,
-.habit-box__actions #cancel-habit:hover {
-  border-color: var(--accent);
-  color: var(--text);
-}
-
-.note-box__actions button:disabled,
-.habit-box__actions button:disabled {
-  cursor: default;
-  opacity: 0.4;
-}
-
-.habit-box__header select {
-  max-width: 180px;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-  color: var(--text);
+.habit-box__header .select {
+  max-width: var(--control-select-width);
 }
 
 .habit-box form {
@@ -206,19 +123,6 @@
   font-size: 0.75rem;
 }
 
-.habit-box input[type='text'],
-.habit-box textarea {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-base);
-}
-
-.habit-box textarea {
-  min-height: 56px;
-  resize: vertical;
-}
-
 .habit-box__checkbox,
 .habit-box__checkbox span {
   display: inline;
@@ -233,10 +137,6 @@
   gap: var(--space-2);
 }
 
-.habit-box__checkbox input {
-  accent-color: var(--accent);
-}
-
 .habit-box__counter-plan {
   margin: 0;
   color: var(--text-muted);
@@ -244,11 +144,6 @@
   line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-}
-
-.habit-box__actions #save-habit {
-  border-color: var(--accent);
-  color: var(--accent);
 }
 
 [hidden] {

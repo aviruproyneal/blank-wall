@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Blank Wall</title>
     <link rel="stylesheet" href="../shared/theme.css">
+    <link rel="stylesheet" href="../shared/components.css">
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
@@ -14,7 +15,7 @@
         <p class="popup__hostname" id="hostname">Reading this tab…</p>
       </header>
 
-      <button id="toggle-site" type="button" disabled>Block this site</button>
+      <button class="button button--primary" id="toggle-site" type="button" disabled>Block this site</button>
 
       <section class="popup__section">
         <h2>Today</h2>
@@ -37,10 +38,10 @@
       <p class="popup__backup" id="backup-status">Backup: not set</p>
 
       <div class="popup__nav">
-        <button id="quick-note" type="button">Quick note</button>
-        <button id="log-habit" type="button">Log habit</button>
-        <button id="open-dashboard" type="button">Open dashboard</button>
-        <button id="open-guide" type="button">Guide</button>
+        <button class="button button--secondary" id="quick-note" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg>Quick note</button>
+        <button class="button button--secondary" id="log-habit" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Log habit</button>
+        <button class="button button--secondary" id="open-dashboard" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-dashboard"></use></svg>Open dashboard</button>
+        <button class="button button--secondary" id="open-guide" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg>Guide</button>
       </div>
     </main>
 

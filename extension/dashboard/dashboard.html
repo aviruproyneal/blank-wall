@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Blank Wall Dashboard</title>
     <link rel="stylesheet" href="../shared/theme.css">
+    <link rel="stylesheet" href="../shared/components.css">
     <link rel="stylesheet" href="dashboard.css">
   </head>
   <body>
@@ -12,12 +13,12 @@
       <aside class="sidebar">
         <h1>Blank Wall</h1>
         <nav class="sidebar__nav" aria-label="Dashboard sections">
-          <a href="#today">Today</a>
-          <a href="#blocked-sites" class="is-active">Blocked sites</a>
-          <a href="#habits">Habits</a>
-          <a href="#notes">Notes</a>
-          <a href="#settings">Settings</a>
-          <a href="../guide/guide.html">Guide</a>
+          <a href="#today"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-today"></use></svg>Today</a>
+          <a href="#blocked-sites" class="is-active"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-sites"></use></svg>Blocked sites</a>
+          <a href="#habits"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Habits</a>
+          <a href="#notes"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-notes"></use></svg>Notes</a>
+          <a href="#settings"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-settings"></use></svg>Settings</a>
+          <a href="../guide/guide.html"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg>Guide</a>
         </nav>
       </aside>
 
@@ -33,9 +34,9 @@
             and Import JSON file in Settings instead.
           </p>
           <div class="form-actions">
-            <button class="primary-button" id="onboarding-choose-folder" type="button">Choose backup folder</button>
-            <button class="text-button" id="skip-backup" type="button">Skip for now</button>
-            <a class="text-button" href="../guide/guide.html">Read the Guide</a>
+            <button class="button button--primary" id="onboarding-choose-folder" type="button">Choose backup folder</button>
+            <button class="button button--ghost" id="skip-backup" type="button">Skip for now</button>
+            <a class="button button--ghost" href="../guide/guide.html">Read the Guide</a>
           </div>
         </section>
 
@@ -69,13 +70,14 @@
             <label for="new-hostname">Add a site</label>
             <div class="add-site__row">
               <input
+                class="input"
                 id="new-hostname"
                 type="text"
                 placeholder="example.com"
                 autocomplete="off"
                 spellcheck="false"
                 required>
-              <button type="submit">Add</button>
+              <button class="button button--secondary" type="submit">Add</button>
             </div>
             <p class="site__error add-site__error" id="add-site-error" hidden></p>
           </form>
@@ -88,7 +90,7 @@
           <h2>Habits</h2>
 
           <div id="habit-list-view">
-            <button class="primary-button" id="new-habit" type="button">New habit</button>
+            <button class="button button--primary" id="new-habit" type="button">New habit</button>
             <p class="empty-habits" id="empty-habits">No habits yet.</p>
             <ul class="habit-list" id="habit-list"></ul>
           </div>
@@ -97,32 +99,32 @@
             <h3 id="habit-editor-title">New habit</h3>
             <label>
               <span>Title</span>
-              <input id="habit-title" type="text" placeholder="Short title" required>
+              <input class="input" id="habit-title" type="text" placeholder="Short title" required>
             </label>
             <label>
               <span>Trigger</span>
-              <input id="habit-trigger" type="text" required>
+              <input class="input" id="habit-trigger" type="text" required>
             </label>
             <label>
               <span>Response</span>
-              <input id="habit-response" type="text" required>
+              <input class="input" id="habit-response" type="text" required>
             </label>
             <label>
               <span>Reward</span>
-              <input id="habit-reward" type="text" required>
+              <input class="input" id="habit-reward" type="text" required>
             </label>
             <label>
               <span>Counter-plan</span>
-              <textarea id="habit-counter" rows="2" required></textarea>
+              <textarea class="textarea" id="habit-counter" rows="2" required></textarea>
             </label>
             <div class="form-actions">
-              <button id="cancel-habit-editor" type="button">Cancel</button>
-              <button class="primary-button" type="submit">Save habit</button>
+              <button class="button button--secondary" id="cancel-habit-editor" type="button">Cancel</button>
+              <button class="button button--primary" type="submit">Save habit</button>
             </div>
           </form>
 
           <div class="habit-detail" id="habit-detail" hidden>
-            <button id="back-to-habits" type="button">← All habits</button>
+            <button class="button button--ghost" id="back-to-habits" type="button">← All habits</button>
             <h3 id="habit-detail-title"></h3>
 
             <dl class="habit-fields" id="habit-detail-fields"></dl>
@@ -141,8 +143,8 @@
             <ol class="occurrence-list" id="occurrence-list"></ol>
 
             <div class="form-actions">
-              <button id="edit-habit" type="button">Edit</button>
-              <button class="danger-button" id="delete-habit" type="button">Delete</button>
+              <button class="button button--secondary" id="edit-habit" type="button">Edit</button>
+              <button class="button button--danger" id="delete-habit" type="button">Delete</button>
             </div>
           </div>
         </section>
@@ -152,8 +154,8 @@
 
           <div id="notes-list-view">
             <div class="notes__toolbar">
-              <input id="note-search" type="search" placeholder="Search notes" aria-label="Search notes">
-              <button class="primary-button" id="new-note" type="button">New note</button>
+              <input class="input" id="note-search" type="search" placeholder="Search notes" aria-label="Search notes">
+              <button class="button button--primary" id="new-note" type="button">New note</button>
             </div>
             <p class="empty-notes" id="empty-notes">No notes yet.</p>
             <p class="empty-notes" id="no-note-results" hidden>No matching notes.</p>
@@ -164,19 +166,19 @@
             <h3 id="note-editor-title">New note</h3>
             <label>
               <span>Note</span>
-              <textarea id="note-editor-text" rows="5" required></textarea>
+              <textarea class="textarea" id="note-editor-text" rows="5" required></textarea>
             </label>
             <label>
               <span>Site</span>
-              <input id="note-editor-site" type="text">
+              <input class="input" id="note-editor-site" type="text">
             </label>
             <label>
               <span>Linked habit</span>
-              <select id="note-editor-habit"></select>
+              <select class="select" id="note-editor-habit"></select>
             </label>
             <div class="form-actions">
-              <button id="cancel-note-editor" type="button">Cancel</button>
-              <button class="primary-button" type="submit">Save note</button>
+              <button class="button button--secondary" id="cancel-note-editor" type="button">Cancel</button>
+              <button class="button button--primary" type="submit">Save note</button>
             </div>
           </form>
         </section>
@@ -186,17 +188,17 @@
           <form class="settings-form" id="settings-form">
             <label>
               <span>Default wall duration (minutes)</span>
-              <input id="setting-duration" type="number" min="0.1" step="any" required>
+              <input class="input" id="setting-duration" type="number" min="0.1" step="any" required>
             </label>
             <label>
               <span>Skip rule</span>
-              <select id="setting-skip-rule">
+              <select class="select" id="setting-skip-rule">
                 <option value="none">No skipping</option>
                 <option value="after-habit">Allow skip after a habit entry</option>
               </select>
             </label>
             <div class="form-actions">
-              <button class="primary-button" type="submit">Save settings</button>
+              <button class="button button--primary" type="submit">Save settings</button>
             </div>
           </form>
           <p class="settings-status" id="settings-status" aria-live="polite"></p>
@@ -210,8 +212,8 @@
             <p class="backup-status" id="backup-status">Not set</p>
             <p class="backup-message" id="backup-message" aria-live="polite"></p>
             <div class="form-actions">
-              <button id="choose-backup-folder" type="button">Choose backup folder</button>
-              <button id="reconnect-backup-folder" type="button" hidden>Reconnect backup folder</button>
+              <button class="button button--secondary" id="choose-backup-folder" type="button">Choose backup folder</button>
+              <button class="button button--secondary" id="reconnect-backup-folder" type="button" hidden>Reconnect backup folder</button>
             </div>
           </div>
 
@@ -223,9 +225,9 @@
               then use Import JSON file to restore it.
             </p>
             <div class="form-actions">
-              <button id="export-data" type="button">Export everything</button>
-              <button id="import-data" type="button">Import from backup folder</button>
-              <button id="import-json" type="button">Import JSON file</button>
+              <button class="button button--secondary" id="export-data" type="button">Export everything</button>
+              <button class="button button--secondary" id="import-data" type="button">Import from backup folder</button>
+              <button class="button button--secondary" id="import-json" type="button">Import JSON file</button>
               <input id="import-json-file" type="file" accept="application/json,.json" hidden>
             </div>
           </div>
