@@ -21,6 +21,8 @@ Version `2` renamed the habit field `action` to `response`. Version `3` added pe
 
 Per-site `note` is a short reminder (200 characters or fewer). `counterSite` is a normalized full `http:` or `https:` URL, empty when unset. `allowContinue` controls whether the wall offers a return to the blocked site, and `allowanceMinutes` is the temporary allowance granted when it does.
 
+The background passes only `target` (the original URL) and `site` (the matched hostname) to the wall. The wall reads duration, reminder note, counter site, continue rule, allowance, and note/habit toggles from `blockedSites` when it opens. If that site can no longer be found, it uses the global default duration and the per-site defaults: no note or counter site, continuing allowed with a 15-minute allowance, and both wall tools shown.
+
 ## Backup state (IndexedDB)
 
 Database `blank-wall-backup`, object store `state` (only used in browsers that provide the File System Access API):

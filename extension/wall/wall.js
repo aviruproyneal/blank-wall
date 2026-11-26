@@ -1,6 +1,7 @@
 import { callChromeApi } from '../shared/api.js';
 import {
   getSettings,
+  getWallSiteSettings,
   grantAllowance,
   recordSkip,
   recordWallSeconds,
@@ -13,11 +14,24 @@ import { setupNoteBox } from './note.js';
 const params = new URLSearchParams(window.location.search);
 const target = parseHttpUrl(params.get('target'));
 const allowanceHost = (params.get('site') || target?.hostname || '').toLowerCase();
-const durationMinutes = readMinutes(params.get('duration'), 5);
-const allowanceMinutes = readMinutes(params.get('allowance'), 15);
-const allowContinue = params.get('allow') !== '0';
-const counterSite = parseHttpUrl(params.get('counter'));
-const reminderNote = (params.get('note') ?? '').trim().slice(0, 200);
+const fallbackSiteSettings = {
+  durationMinutes: 5,
+  allowContinue: true,
+  counterSite: '',
+  note: '',
+  allowanceMinutes: 15,
+  notesEnabled: true,
+  habitsEnabled: true,
+};
+const siteSettings = await getWallSiteSettings(allowanceHost).catch((error) => {
+  console.error('Blank Wall site settings load failed:', error);
+  return fallbackSiteSettings;
+});
+const durationMinutes = readMinutes(siteSettings.durationMinutes, 5);
+const allowanceMinutes = readMinutes(siteSettings.allowanceMinutes, 15);
+const allowContinue = siteSettings.allowContinue !== false;
+const counterSite = parseHttpUrl(siteSettings.counterSite);
+const reminderNote = String(siteSettings.note ?? '').trim().slice(0, 200);
 const timer = document.querySelector('#timer');
 const note = document.querySelector('#note');
 const decision = document.querySelector('#decision');
@@ -64,7 +78,7 @@ if (reminderNote) {
 continueButton.hidden = !(target && allowContinue);
 counterButton.hidden = counterSite === null;
 
-if (target && params.get('notes') === '1') {
+if (target && siteSettings.notesEnabled) {
   tools.hidden = false;
   noteButton.hidden = false;
   setupNoteBox({
@@ -78,7 +92,7 @@ if (target && params.get('notes') === '1') {
   });
 }
 
-if (target && params.get('habits') === '1') {
+if (target && siteSettings.habitsEnabled) {
   tools.hidden = false;
   habitButton.hidden = false;
   setupHabitBox({

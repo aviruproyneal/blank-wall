@@ -1,7 +1,6 @@
 import { callChromeApi } from './shared/api.js';
 import {
   getBlockedSites,
-  getSettings,
   hasAllowance,
   initializeStorage,
   migrateStorage,
@@ -57,17 +56,9 @@ async function redirectIfBlocked(details) {
     return;
   }
 
-  const settings = await getSettings();
   const wall = new URL(chrome.runtime.getURL('wall/wall.html'));
   wall.searchParams.set('target', target.href);
   wall.searchParams.set('site', site.hostname);
-  wall.searchParams.set('allow', site.allowContinue === false ? '0' : '1');
-  wall.searchParams.set('counter', parseHttpUrl(site.counterSite ?? '')?.href ?? '');
-  wall.searchParams.set('note', typeof site.note === 'string' ? site.note.slice(0, 200) : '');
-  wall.searchParams.set('duration', String(site.durationMinutes ?? settings.defaultDurationMinutes));
-  wall.searchParams.set('allowance', String(site.allowanceMinutes ?? 15));
-  wall.searchParams.set('notes', site.notesEnabled ? '1' : '0');
-  wall.searchParams.set('habits', site.habitsEnabled ? '1' : '0');
 
   await callChromeApi('tabs.update', details.tabId, { url: wall.href });
 }

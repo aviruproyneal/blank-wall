@@ -152,6 +152,36 @@ export async function getBlockedSites() {
   return blockedSites;
 }
 
+export async function getWallSiteSettings(hostname) {
+  await migrateStorage();
+  const [sites, settings] = await Promise.all([getBlockedSites(), getSettings()]);
+  const host = hostname.toLowerCase();
+  const site = sites.find((candidate) =>
+    candidate && typeof candidate.hostname === 'string' && candidate.hostname.toLowerCase() === host);
+
+  if (!site) {
+    return {
+      durationMinutes: settings.defaultDurationMinutes,
+      allowContinue: true,
+      counterSite: '',
+      note: '',
+      allowanceMinutes: 15,
+      notesEnabled: true,
+      habitsEnabled: true,
+    };
+  }
+
+  return {
+    durationMinutes: site.durationMinutes ?? settings.defaultDurationMinutes,
+    allowContinue: site.allowContinue !== false,
+    counterSite: typeof site.counterSite === 'string' ? site.counterSite : '',
+    note: typeof site.note === 'string' ? site.note : '',
+    allowanceMinutes: site.allowanceMinutes ?? 15,
+    notesEnabled: Boolean(site.notesEnabled),
+    habitsEnabled: Boolean(site.habitsEnabled),
+  };
+}
+
 export async function addBlockedSite(hostname) {
   const host = hostname.toLowerCase();
   const sites = await getBlockedSites();

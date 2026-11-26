@@ -24,7 +24,7 @@ On first install, the dashboard opens with a short welcome step. Where the File 
 
 - **Popup:** current hostname, block/unblock, today's stats, backup status, and links to the dashboard.
 - **Dashboard:** blocked sites with per-site duration, reminder note, counter site, continue/allowance settings, and note/habit toggles; habits with Trigger/Response/Reward/Counter-plan details and occurrence logs; searchable notes; settings; backup folder controls; export; and import.
-- **Wall:** a countdown shown instead of a blocked site. Notes and habits can be opened while it runs, and an optional skip appears after a habit entry.
+- **Wall:** a countdown shown instead of a blocked site. It reads the saved site settings when it opens. Notes and habits can be opened while it runs, and an optional skip appears after a habit entry.
 - **Guide:** a short explanation linked from the popup, dashboard sidebar, and first-run welcome step.
 
 See the [root README](../README.md) for a feature-by-feature test walkthrough.
