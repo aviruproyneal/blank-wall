@@ -199,41 +199,56 @@
 
         <section class="panel" id="settings">
           <h2>Settings</h2>
-          <form class="settings-form" id="settings-form">
-            <label>
-              <span>Default wall duration (minutes)</span>
-              <input class="input" id="setting-duration" type="number" min="0.1" step="any" required>
-            </label>
-            <label>
-              <span>Skip rule</span>
-              <select class="select" id="setting-skip-rule">
-                <option value="none">No skipping</option>
-                <option value="after-habit">Allow skip after a habit entry</option>
-              </select>
-            </label>
-            <div class="form-actions">
-              <button class="button button--primary" type="submit">Save settings</button>
-            </div>
-          </form>
-          <p class="settings-status" id="settings-status" aria-live="polite"></p>
 
-          <div class="backup-settings">
+          <div class="settings-group">
+            <h3>Wall defaults</h3>
+            <form class="settings-form" id="settings-form">
+              <div class="settings-field">
+                <label class="settings-field__label" for="setting-duration">
+                  <span>Default wall duration</span>
+                  <span class="field-help">Minutes to wait before deciding what to do next.</span>
+                </label>
+                <div class="settings-field__control">
+                  <input class="input" id="setting-duration" type="number" min="0.1" step="any" required>
+                </div>
+              </div>
+              <div class="settings-field">
+                <label class="settings-field__label" for="setting-skip-rule">
+                  <span>Skip rule</span>
+                  <span class="field-help">Choose when a wall can be skipped.</span>
+                </label>
+                <div class="settings-field__control">
+                  <select class="select" id="setting-skip-rule">
+                    <option value="none">No skipping</option>
+                    <option value="after-habit">Allow skip after a habit entry</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="button button--primary" type="submit">Save settings</button>
+              </div>
+            </form>
+            <p class="settings-status" id="settings-status" aria-live="polite"></p>
+          </div>
+
+          <div class="settings-group">
             <h3>Backup folder</h3>
             <p class="backup-message" id="backup-unsupported" hidden>
               Automatic folder backup needs the File System Access API, which this browser
               does not provide. Use Export everything and Import JSON file below instead.
             </p>
-            <p class="backup-status" id="backup-status">Not set</p>
-            <p class="backup-message" id="backup-message" aria-live="polite"></p>
+            <p class="status-line backup-status" id="backup-status" data-state="not-set">
+              <span class="status-line__dot" aria-hidden="true"></span>
+              <span id="backup-status-text">Not set</span>
+            </p>
             <div class="form-actions">
               <button class="button button--secondary" id="choose-backup-folder" type="button">Choose backup folder</button>
               <button class="button button--secondary" id="reconnect-backup-folder" type="button" hidden>Reconnect backup folder</button>
             </div>
           </div>
 
-          <div class="backup-settings">
+          <div class="settings-group">
             <h3>Export and import</h3>
-            <p class="backup-message" id="data-transfer-message" aria-live="polite"></p>
             <p class="backup-message" id="folder-import-unsupported" hidden>
               Folder import is unavailable in this browser. Export a JSON backup here,
               then use Import JSON file to restore it.

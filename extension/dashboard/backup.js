@@ -5,6 +5,7 @@ import {
   getBackupStatus,
   reconnectBackupFolder,
 } from '../shared/backup.js';
+import { showToast } from '../shared/ui.js';
 
 const STATUS_LABELS = {
   connected: 'Connected',
@@ -21,7 +22,7 @@ export function setupBackupUI() {
   const reminder = document.querySelector('#backup-reminder');
   const reminderMessage = document.querySelector('#backup-reminder-message');
   const status = document.querySelector('#backup-status');
-  const message = document.querySelector('#backup-message');
+  const statusText = document.querySelector('#backup-status-text');
   const unsupported = document.querySelector('#backup-unsupported');
   const choose = document.querySelector('#choose-backup-folder');
   const reconnect = document.querySelector('#reconnect-backup-folder');
@@ -31,7 +32,6 @@ export function setupBackupUI() {
     onboardingUnsupported.hidden = false;
     unsupported.hidden = false;
     status.hidden = true;
-    message.hidden = true;
     choose.hidden = true;
     reconnect.hidden = true;
     reminder.hidden = true;
@@ -64,7 +64,7 @@ export function setupBackupUI() {
 
   async function connect() {
     if (!supported) {
-      message.textContent = 'This browser cannot choose a folder.';
+      showToast('This browser cannot choose a folder.', 'danger');
       return;
     }
 
@@ -78,14 +78,16 @@ export function setupBackupUI() {
     }
 
     onboarding.hidden = true;
-    message.textContent = 'Backup folder connected.';
+    showToast('Backup folder connected.', 'success');
     await refresh();
     await flush();
   }
 
   async function reconnectFolder() {
     const state = await reconnectBackupFolder();
-    message.textContent = state === 'connected' ? 'Backup folder reconnected.' : '';
+    if (state === 'connected') {
+      showToast('Backup folder reconnected.', 'success');
+    }
     await refresh();
     await flush();
   }
@@ -108,7 +110,8 @@ export function setupBackupUI() {
     }
 
     const state = await getBackupStatus();
-    status.textContent = STATUS_LABELS[state];
+    status.dataset.state = state;
+    statusText.textContent = STATUS_LABELS[state];
     reconnect.hidden = state !== 'needs-reconnect';
     reminder.hidden = !onboarding.hidden || state === 'connected';
     reminderMessage.textContent = state === 'not-set'
@@ -118,7 +121,7 @@ export function setupBackupUI() {
 
   function reportError(label, context) {
     return (error) => {
-      message.textContent = label;
+      showToast(label, 'danger');
       console.error(`Blank Wall ${context} failed:`, error);
     };
   }

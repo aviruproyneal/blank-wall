@@ -1,6 +1,6 @@
 import { backupFolderSupported, readBackupFolder } from '../shared/backup.js';
 import { getAllData, importBackupData } from '../shared/storage.js';
-import { askConfirm } from '../shared/ui.js';
+import { askConfirm, showToast } from '../shared/ui.js';
 
 const IMPORT_RESULT_KEY = 'blank-wall:import-result';
 
@@ -10,7 +10,6 @@ export function setupDataTransferUI() {
   const importJsonButton = document.querySelector('#import-json');
   const importJsonFileInput = document.querySelector('#import-json-file');
   const folderImportUnsupported = document.querySelector('#folder-import-unsupported');
-  const message = document.querySelector('#data-transfer-message');
 
   if (!backupFolderSupported()) {
     importButton.hidden = true;
@@ -19,7 +18,7 @@ export function setupDataTransferUI() {
 
   const savedMessage = consumeImportMessage();
   if (savedMessage) {
-    message.textContent = savedMessage;
+    showToast(savedMessage, 'success');
   }
 
   exportButton.addEventListener('click', () => {
@@ -40,14 +39,14 @@ export function setupDataTransferUI() {
 
   async function exportAll() {
     await downloadSnapshot();
-    message.textContent = 'Export downloaded.';
+    showToast('Export downloaded.', 'success');
   }
 
   async function importFolder() {
     const backup = await readBackupFolder();
 
     if (!backup) {
-      message.textContent = 'No backup data found in the connected folder.';
+      showToast('No backup data found in the connected folder.', 'danger');
       return;
     }
 
@@ -137,12 +136,12 @@ export function setupDataTransferUI() {
       window.location.reload();
       return;
     }
-    message.textContent = text;
+    showToast(text, 'success');
   }
 
   function reportError(label, context) {
     return (error) => {
-      message.textContent = label;
+      showToast(label, 'danger');
       console.error(`Blank Wall ${context} failed:`, error);
     };
   }

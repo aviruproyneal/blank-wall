@@ -10,89 +10,115 @@
   </head>
   <body>
     <main class="guide">
-      <h1>Guide</h1>
+      <header class="guide__header">
+        <h1>Guide</h1>
+        <p class="guide__intro">A short tour of the wall, your patterns, and your data.</p>
+      </header>
 
-      <section>
-        <h2>What Blank Wall is</h2>
-        <p>
-          Blank Wall gives you a quiet pause before a site you have blocked. When you open
-          that site, the wall appears instead. You can wait, write a short note, or record
-          a habit pattern, then decide what to do next.
-        </p>
-      </section>
-
-      <section>
-        <h2>Quick start</h2>
+      <nav class="guide__contents" aria-label="On this page">
+        <p class="guide__contents-title">On this page</p>
         <ol>
-          <li>Open the popup and click <strong>Block this site</strong> on a page you want to pause before opening.</li>
-          <li>Open the dashboard to set a wall duration and, if you want, a reminder note or counter site.</li>
-          <li>Visit the blocked site. The wall appears with a countdown.</li>
-          <li>When the countdown ends, choose Continue, Counter site, or Leave.</li>
+          <li><a href="#what-blank-wall-is">What Blank Wall is</a></li>
+          <li><a href="#quick-start">Quick start</a></li>
+          <li><a href="#the-wall">The wall</a></li>
+          <li><a href="#per-site-settings">Per-site settings</a></li>
+          <li><a href="#notes">Notes</a></li>
+          <li><a href="#habit-patterns">Habit patterns</a></li>
+          <li><a href="#data-and-backup">Your data and backup</a></li>
+          <li><a href="#tips">Tips</a></li>
         </ol>
-      </section>
+      </nav>
 
-      <section>
-        <h2>The wall</h2>
-        <p>
-          The timer sits in the top-right. Any reminder note sits in the top-left. The note
-          and habit icons sit at the bottom-left while the timer is running. When time is up,
-          Continue returns to the site and grants the allowance set for it. Counter site opens
-          your chosen alternative instead. Leave closes the tab. The wall reads its settings from
-          the saved site, not the wall URL. Reloading the wall resumes the same countdown; it does
-          not start a second wall.
-        </p>
-      </section>
+      <article class="guide__article">
+        <section id="what-blank-wall-is">
+          <h2>What Blank Wall is</h2>
+          <p>
+            Blank Wall gives you a quiet pause before a site you have blocked. When you open
+            that site, the wall appears instead. You can wait, write a short note, or record
+            a habit pattern, then decide what to do next.
+          </p>
+        </section>
 
-      <section>
-        <h2>Per-site settings</h2>
-        <p>
-          On the Blocked sites page, edit any site. Set the wall duration, a short reminder
-          note, and a counter site. Choose whether Continue is available and, when it is,
-          how many minutes its allowance lasts. Blocking a hostname also covers its subdomains;
-          the popup shows which entry applies.
-        </p>
-      </section>
+        <section id="quick-start">
+          <h2>Quick start</h2>
+          <ol class="guide__steps">
+            <li>Open the popup and click <strong>Block this site</strong> on a page you want to pause before opening.</li>
+            <li>Open the dashboard to set a wall duration and, if you want, a reminder note or counter site.</li>
+            <li>Visit the blocked site. The wall appears with a countdown.</li>
+            <li>When the countdown ends, choose Continue, Counter site, or Leave.</li>
+          </ol>
+        </section>
 
-      <section>
-        <h2>Notes</h2>
-        <p>
-          Use Quick note on the wall for what you were about to do or how you felt. Notes are
-          saved with a time and site. Review, edit, search, and delete them on the Notes page.
-        </p>
-      </section>
+        <section id="the-wall">
+          <h2>The wall</h2>
+          <p>
+            The timer sits in the top-right. Any reminder note sits in the top-left. The note
+            and habit icons sit at the bottom-left while the timer is running. When time is up,
+            Continue returns to the site and grants the allowance set for it. Counter site opens
+            your chosen alternative instead. Leave closes the tab. The wall reads its settings from
+            the saved site, not the wall URL. Reloading the wall resumes the same countdown; it does
+            not start a second wall.
+          </p>
+        </section>
 
-      <section>
-        <h2>Habit patterns</h2>
-        <p>
-          A pattern has four parts: Trigger (what happened first), Response (what you did),
-          Reward (what you got from it), and Counter-plan (what you could do instead). For
-          example: Trigger: bored at my desk. Response: opened Instagram. Reward: quick
-          distraction. Counter-plan: stand up and stretch for two minutes. When you use an
-          existing pattern on the wall, you can check “I used my counter-plan” and the
-          occurrence records it.
-        </p>
-      </section>
+        <section id="per-site-settings">
+          <h2>Per-site settings</h2>
+          <p>
+            On the Blocked sites page, edit any site. Set the wall duration, a short reminder
+            note, and a counter site. Choose whether Continue is available and, when it is,
+            how many minutes its allowance lasts. Blocking a hostname also covers its subdomains;
+            the popup shows which entry applies.
+          </p>
+        </section>
 
-      <section>
-        <h2>Your data and backup</h2>
-        <p>
-          Everything stays in this browser. Where supported, you can connect a backup folder
-          to keep Markdown copies of notes and habits. Export everything saves a JSON snapshot,
-          and Import restores notes, habits, and sites from the folder or the JSON file. Import
-          skips malformed records and reports how many were imported and skipped. Before it
-          replaces anything, it downloads a JSON safety snapshot.
-        </p>
-      </section>
+        <section id="notes">
+          <h2>Notes</h2>
+          <p>
+            Use Quick note on the wall for what you were about to do or how you felt. Notes are
+            saved with a time and site. Review, edit, search, and delete them on the Notes page.
+          </p>
+        </section>
 
-      <section>
-        <h2>Tips</h2>
-        <p>
-          Start with short walls and raise them slowly. Pick a counter site you actually want
-          to visit. Review your patterns once a week.
-        </p>
-      </section>
+        <section id="habit-patterns">
+          <h2>Habit patterns</h2>
+          <p>
+            A pattern has four parts: Trigger (what happened first), Response (what you did),
+            Reward (what you got from it), and Counter-plan (what you could do instead). For
+            example:
+          </p>
+          <div class="guide__example">
+            <p><strong>Trigger:</strong> bored at my desk.</p>
+            <p><strong>Response:</strong> opened Instagram.</p>
+            <p><strong>Reward:</strong> quick distraction.</p>
+            <p><strong>Counter-plan:</strong> stand up and stretch for two minutes.</p>
+          </div>
+          <p>
+            When you use an existing pattern on the wall, you can check “I used my counter-plan”
+            and the occurrence records it.
+          </p>
+        </section>
 
-      <a class="guide__back" href="../dashboard/dashboard.html">Back to dashboard</a>
+        <section id="data-and-backup">
+          <h2>Your data and backup</h2>
+          <p>
+            Everything stays in this browser. Where supported, you can connect a backup folder
+            to keep Markdown copies of notes and habits. Export everything saves a JSON snapshot,
+            and Import restores notes, habits, and sites from the folder or the JSON file. Import
+            skips malformed records and reports how many were imported and skipped. Before it
+            replaces anything, it downloads a JSON safety snapshot.
+          </p>
+        </section>
+
+        <section id="tips">
+          <h2>Tips</h2>
+          <p>
+            Start with short walls and raise them slowly. Pick a counter site you actually want
+            to visit. Review your patterns once a week.
+          </p>
+        </section>
+      </article>
+
+      <a class="guide__back" href="../dashboard/dashboard.html"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-back"></use></svg>Back to dashboard</a>
     </main>
   </body>
 </html>

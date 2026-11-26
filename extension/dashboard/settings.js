@@ -1,4 +1,5 @@
 import { getSettings, updateSettings } from '../shared/storage.js';
+import { showToast } from '../shared/ui.js';
 
 export function setupSettingsPage() {
   const form = document.querySelector('#settings-form');
@@ -9,13 +10,13 @@ export function setupSettingsPage() {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     save().catch((error) => {
-      status.textContent = 'Could not save settings.';
+      showToast('Could not save settings.', 'danger');
       console.error('Blank Wall settings save failed:', error);
     });
   });
 
   load().catch((error) => {
-    status.textContent = 'Could not load settings.';
+    showToast('Could not load settings.', 'danger');
     console.error('Blank Wall settings load failed:', error);
   });
 
@@ -37,6 +38,7 @@ export function setupSettingsPage() {
       defaultDurationMinutes: durationMinutes,
       skipRule: skipRule.value,
     });
-    status.textContent = 'Settings saved.';
+    status.textContent = '';
+    showToast('Settings saved.', 'success');
   }
 }
