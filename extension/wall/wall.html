@@ -14,41 +14,41 @@
       <p class="wall__note" id="note" hidden></p>
 
       <div class="wall__tools" id="tools" hidden>
-        <button class="button button--secondary button--icon" id="note-button" type="button" aria-label="Take a note" title="Take a note" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg></button>
-        <button class="button button--secondary button--icon" id="habit-button" type="button" aria-label="Log habit pattern" title="Log habit pattern" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg></button>
+        <button class="button button--ghost button--icon wall__tool" id="note-button" type="button" aria-label="Take a note" title="Take a note" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg></button>
+        <button class="button button--ghost button--icon wall__tool" id="habit-button" type="button" aria-label="Log habit pattern" title="Log habit pattern" hidden><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg></button>
         <button class="button button--ghost wall__tool--text" id="skip-button" type="button" hidden>Skip</button>
       </div>
 
       <section class="wall__decision" id="decision" hidden>
-        <p>Still want to go in?</p>
+        <p class="wall__prompt">Still want to go in?</p>
         <div class="wall__actions">
-          <button class="button button--primary" id="continue" type="button">Continue</button>
+          <button class="button button--ghost" id="continue" type="button">Continue</button>
           <button class="button button--secondary" id="counter-site" type="button" hidden>Counter site</button>
-          <button class="button button--secondary" id="leave" type="button">Leave</button>
+          <button class="button button--primary" id="leave" type="button">Leave</button>
         </div>
       </section>
     </main>
 
-    <section class="note-box" id="note-box" aria-label="Quick note" hidden>
-      <div class="note-box__header">
-        <span>Quick note</span>
-        <span id="note-countdown">01:00</span>
+    <section class="dialog wall__panel" id="note-box" aria-label="Quick note" hidden>
+      <div class="wall__panel__header">
+        <span class="wall__panel__title">Quick note</span>
+        <span class="wall__panel__timer" id="note-countdown">01:00</span>
       </div>
       <textarea class="textarea" id="note-text" rows="5" placeholder="What are you reaching for?" spellcheck="true"></textarea>
-      <div class="note-box__actions">
+      <div class="dialog__footer">
         <button class="button button--secondary" id="cancel-note" type="button">Cancel</button>
         <button class="button button--primary" id="save-note" type="button" disabled>Save</button>
       </div>
     </section>
 
-    <section class="habit-box" id="habit-box" aria-label="Log habit pattern" hidden>
+    <section class="dialog wall__panel" id="habit-box" aria-label="Log habit pattern" hidden>
       <form id="habit-form">
-        <div class="habit-box__header">
-          <span>Log habit pattern</span>
+        <div class="wall__panel__header">
+          <span class="wall__panel__title">Log habit pattern</span>
           <select class="select" id="habit-select" aria-label="Habit"></select>
         </div>
 
-        <div class="habit-box__fields" id="habit-fields">
+        <div class="wall__panel__fields" id="habit-fields">
           <label>
             <span>Title</span>
             <input class="input" id="habit-title" type="text" placeholder="Short title" required>
@@ -71,14 +71,14 @@
           </label>
         </div>
 
-        <p class="habit-box__counter-plan" id="habit-counter-plan-text" hidden></p>
+        <p class="wall__panel__counter-plan" id="habit-counter-plan-text" hidden></p>
 
-        <label class="habit-box__checkbox" id="habit-counter-used-label">
+        <label class="wall__panel__checkbox" id="habit-counter-used-label">
           <input id="habit-counter-used" type="checkbox">
           <span>I used my counter-plan</span>
         </label>
 
-        <div class="habit-box__actions">
+        <div class="dialog__footer">
           <button class="button button--secondary" id="cancel-habit" type="button">Cancel</button>
           <button class="button button--primary" id="save-habit" type="submit">Save</button>
         </div>
