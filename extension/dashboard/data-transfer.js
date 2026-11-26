@@ -1,6 +1,8 @@
 import { backupFolderSupported, readBackupFolder } from '../shared/backup.js';
 import { getAllData, importBackupData } from '../shared/storage.js';
 
+const IMPORT_RESULT_KEY = 'blank-wall:import-result';
+
 export function setupDataTransferUI() {
   const exportButton = document.querySelector('#export-data');
   const importButton = document.querySelector('#import-data');
@@ -12,6 +14,11 @@ export function setupDataTransferUI() {
   if (!backupFolderSupported()) {
     importButton.hidden = true;
     folderImportUnsupported.hidden = false;
+  }
+
+  const savedMessage = consumeImportMessage();
+  if (savedMessage) {
+    message.textContent = savedMessage;
   }
 
   exportButton.addEventListener('click', () => {
@@ -31,14 +38,7 @@ export function setupDataTransferUI() {
   });
 
   async function exportAll() {
-    const data = await getAllData();
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `blank-wall-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    await downloadSnapshot();
     message.textContent = 'Export downloaded.';
   }
 
@@ -50,15 +50,7 @@ export function setupDataTransferUI() {
       return;
     }
 
-    const confirmed = window.confirm(
-      'Replace the current notes, habits, and blocked sites with the backup folder data?',
-    );
-    if (!confirmed) {
-      return;
-    }
-
-    await importBackupData(backup);
-    window.location.reload();
+    await replaceData('the backup folder data', backup);
   }
 
   async function importJsonFile() {
@@ -79,19 +71,66 @@ export function setupDataTransferUI() {
         throw new Error('The selected file is not a Blank Wall backup.');
       }
 
-      const confirmed = window.confirm(
-        'Replace the current notes, habits, and blocked sites with this JSON backup?',
-      );
-      if (!confirmed) {
-        return;
-      }
-
-      await importBackupData(data);
-      message.textContent = 'JSON backup imported.';
-      window.location.reload();
+      await replaceData('this JSON backup', data);
     } finally {
       importJsonFileInput.value = '';
     }
+  }
+
+  async function replaceData(label, backup) {
+    const confirmed = window.confirm(
+      `Replace the current notes, habits, and blocked sites with ${label}?`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    const snapshotStarted = await startSafetySnapshot();
+    if (!snapshotStarted) {
+      const accepted = window.confirm(
+        'The safety snapshot could not be downloaded. Replace the current data anyway?',
+      );
+      if (!accepted) {
+        return;
+      }
+    }
+
+    const counts = await importBackupData(backup);
+    finishImport(counts);
+  }
+
+  async function startSafetySnapshot() {
+    try {
+      await downloadSnapshot();
+      return true;
+    } catch (error) {
+      console.error('Blank Wall safety snapshot failed:', error);
+      return false;
+    }
+  }
+
+  async function downloadSnapshot() {
+    const data = await getAllData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    try {
+      link.href = url;
+      link.download = `blank-wall-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+  }
+
+  function finishImport(counts) {
+    const text = formatImportResult(counts);
+    if (rememberImportMessage(text)) {
+      window.location.reload();
+      return;
+    }
+    message.textContent = text;
   }
 
   function reportError(label, context) {
@@ -99,5 +138,31 @@ export function setupDataTransferUI() {
       message.textContent = label;
       console.error(`Blank Wall ${context} failed:`, error);
     };
+  }
+}
+
+function formatImportResult(counts) {
+  const part = (label, result) => `${result.imported} ${label} (${result.skipped} skipped)`;
+  return `Imported ${part('sites', counts.sites)}, ${part('habits', counts.habits)}, ${part('notes', counts.notes)}.`;
+}
+
+function consumeImportMessage() {
+  try {
+    const text = window.sessionStorage.getItem(IMPORT_RESULT_KEY);
+    if (text) {
+      window.sessionStorage.removeItem(IMPORT_RESULT_KEY);
+    }
+    return text;
+  } catch {
+    return null;
+  }
+}
+
+function rememberImportMessage(text) {
+  try {
+    window.sessionStorage.setItem(IMPORT_RESULT_KEY, text);
+    return true;
+  } catch {
+    return false;
   }
 }

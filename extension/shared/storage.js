@@ -1,5 +1,6 @@
 import { callChromeApi } from './api.js';
 import { enqueueChange, flushPendingChanges } from './backup.js';
+import { normalizeImportData } from './import-data.js';
 import { findBlockedSite, formatTimestamp } from './utils.js';
 
 const CURRENT_SCHEMA_VERSION = 3;
@@ -448,20 +449,17 @@ export async function getAllData() {
   return storageGet(null);
 }
 
-export async function importBackupData({ blockedSites, habits, notes }) {
+export async function importBackupData(backup) {
   await migrateStorage();
-  const sites = Array.isArray(blockedSites) ? blockedSites : [];
-  const storedHabits = Array.isArray(habits) ? habits : [];
-  const storedNotes = Array.isArray(notes) ? notes : [];
-  const highest = storedHabits.reduce((max, habit) => {
+  const { data, counts } = normalizeImportData(backup);
+  const highest = data.habits.reduce((max, habit) => {
     const number = Number(habit.id);
-    return Number.isInteger(number) && number > max ? number : max;
+    return number > max ? number : max;
   }, 0);
 
   await storageSet({
-    blockedSites: sites.map((site) => migrateSite(site, 15)),
-    habits: storedHabits.map(migrateHabit),
-    notes: storedNotes,
+    ...data,
     nextHabitNumber: highest + 1,
   });
+  return counts;
 }
