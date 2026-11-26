@@ -194,6 +194,10 @@ input[type='radio'] {
   outline-offset: var(--focus-offset);
 }
 
+html [hidden] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

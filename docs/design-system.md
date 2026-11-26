@@ -33,7 +33,7 @@ Contrast ratios, computed against the darkest-to-lightest surfaces:
 | `--text-faint` | 6.96 | 6.53 | 5.93 | 5.32 | 4.73 |
 | `--accent` | 7.41 | 6.96 | 6.31 | 5.67 | 5.04 |
 
-`--text-on-accent` reaches 7.62:1 on `--accent`, 9.86:1 on `--accent-hover`, and 5.55:1 on `--accent-active`. Status colors are worst-case 5.35:1 (success), 5.72:1 (warning), and 4.76:1 (danger) on `--surface-active`. The wall timer uses `--text-faint` at full opacity, giving 6.53:1 on the wall background; this exceeds the 3:1 minimum for deliberately quiet numerals.
+`--text-on-accent` reaches 7.62:1 on `--accent`, 9.86:1 on `--accent-hover`, and 5.55:1 on `--accent-active`. Status colors are worst-case 5.35:1 (success), 5.72:1 (warning), and 4.76:1 (danger) on `--surface-active`. The wall uses `--surface-sunken`; its timer uses `--text-muted` at full opacity, giving 8.19:1 there and exceeding the 3:1 minimum for deliberately quiet numerals.
 
 ## Spacing and layout
 
@@ -70,7 +70,7 @@ The base layer sets body text to `--text-14`; the popup will use `--text-13` as 
 
 ## Base layer
 
-`theme.css` provides the global reset and defaults: `box-sizing`, zeroed margins, scrollbar colors, body typography, heading defaults, link colors, inherited form-control typography, `accent-color` for checkboxes/radios, themed placeholders and selection, a `:focus-visible` ring, and a `prefers-reduced-motion` rule. Page-specific layout stays in the page stylesheet.
+`theme.css` provides the global reset and defaults: `box-sizing`, zeroed margins, scrollbar colors, body typography, heading defaults, link colors, inherited form-control typography, `accent-color` for checkboxes/radios, themed placeholders and selection, a `:focus-visible` ring, a single `html [hidden]` rule, and a `prefers-reduced-motion` rule. Page-specific layout stays in the page stylesheet. The global attribute rule keeps `hidden` working over component `display` values without `!important`.
 
 ## Components
 
@@ -98,4 +98,4 @@ The base layer sets body text to `--text-14`; the popup will use `--text-13` as 
 4. Keep user-entered text as `textContent`; avoid `innerHTML`, inline styles, and `!important`.
 5. Add default, hover, active, focus-visible, and disabled states to new controls.
 6. Use `askConfirm` and `showToast` for confirmations and transient status, and `icon()` or the sprite for icons.
-7. Run `node --test tests/` from the repository root; no install step is needed.
+7. Run `node --test tests/` from the repository root; no install step is needed. `tests/styles.test.js` enforces token-only colors, no `!important`, no inline styles or `innerHTML`, no native dialog calls, and AA text contrast.

@@ -63,6 +63,10 @@ Mobile browsers are out of scope.
 
 There is no build step and no dependency install: the extension is plain HTML, CSS, and vanilla JavaScript ES modules.
 
+## UI changes
+
+Use the tokens in [`extension/shared/theme.css`](extension/shared/theme.css) and the shared components in [`extension/shared/components.css`](extension/shared/components.css). Do not add hard-coded colors, spacing, or `!important`. Run `node --test tests/` after a UI change; the style tests check token-only colors, `!important`, inline styles, `innerHTML`, native dialog calls, and text contrast. The short contributor reference is [`docs/design-system.md`](docs/design-system.md).
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for setup, code style, commit style, test instructions (`node --test tests/`, Node 22+), and pull request notes. Data-format decisions are recorded in [`docs/`](docs/) so other platforms can follow the same spec later.

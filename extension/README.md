@@ -29,6 +29,10 @@ On first install, the dashboard opens with a short welcome step. Where the File 
 
 See the [root README](../README.md) for a feature-by-feature test walkthrough.
 
+## UI changes
+
+Use the tokens in `shared/theme.css` and the shared components in `shared/components.css` instead of page-local visual values. Add icons to `shared/icons.svg`; use `shared/ui.js` for confirmations and toasts. Avoid `!important`, inline styles, and `innerHTML`. Run `node --test tests/` from the repository root after a UI change; the style tests enforce these rules and AA text contrast. Details are in [`docs/design-system.md`](../docs/design-system.md).
+
 ## Permissions
 
 | Permission | Why it is needed |

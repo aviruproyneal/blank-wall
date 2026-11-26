@@ -38,6 +38,12 @@ node --test tests/
 - CSS colors and spacing come from `extension/shared/theme.css`.
 - No dead code, placeholders, or unrelated reformatting.
 
+## UI changes
+
+- Use tokens from `extension/shared/theme.css` for every visual value and shared classes from `extension/shared/components.css` for controls, dialogs, toasts, chips, and empty states.
+- Add new icons to `extension/shared/icons.svg` and use `shared/ui.js` for confirmations, toasts, and icon creation. Do not use `!important`, inline styles, or `innerHTML`.
+- Run `node --test tests/` after the change. `tests/styles.test.js` checks token-only colors, no `!important`, no inline styles or `innerHTML`, no native dialog calls, and AA text contrast. See [`docs/design-system.md`](docs/design-system.md) for the full reference.
+
 ## Commit messages
 
 Use Conventional Commits with a short imperative subject:
