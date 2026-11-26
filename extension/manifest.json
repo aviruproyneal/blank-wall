@@ -8,12 +8,6 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "@blank-wall",
-      "strict_min_version": "121.0"
-    }
-  },
   "options_page": "dashboard/dashboard.html",
   "action": {
     "default_title": "Blank Wall",

@@ -47,7 +47,7 @@ Use the same unpacked `extension/` folder in Chrome, Edge, Brave, Opera, and Viv
 
 ## Firefox
 
-Firefox uses an event page instead of a service worker for this Manifest V3 extension. Use `manifest.firefox.json` there; it differs from `manifest.json` only in the background declaration. Firefox needs version 121 or newer.
+Firefox uses an event page instead of a service worker for this Manifest V3 extension. Use `manifest.firefox.json` there; it differs from `manifest.json` only in the background declaration and the Firefox add-on ID. Firefox needs version 121 or newer.
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Select **This Firefox**.
@@ -60,7 +60,7 @@ A temporary add-on stays installed only until you remove it or restart Firefox. 
 
 ### Permanent installation
 
-Release and beta Firefox do not install unsigned add-ons. A permanent install needs a Mozilla-signed build, either distributed through addons.mozilla.org (AMO) or self-distributed after signing through AMO. The manifest already includes the Firefox add-on ID `@blank-wall` needed for signing. New AMO submissions also need a `data_collection_permissions` declaration; this project collects no data, so the signed build would declare `none`.
+Release and beta Firefox do not install unsigned add-ons. A permanent install needs a Mozilla-signed build, either distributed through addons.mozilla.org (AMO) or self-distributed after signing through AMO. The Firefox manifest already includes the add-on ID `@blank-wall` needed for signing. New AMO submissions also need a `data_collection_permissions` declaration; this project collects no data, so the signed build would declare `none`.
 
 Unsigned installs are limited to Firefox Developer Edition, Nightly, and ESR with `xpinstall.signatures.required` changed to `false` and an add-on ID present. That is a developer workflow, not an end-user installation method. This repository does not ship a signed build.
 
@@ -70,7 +70,7 @@ Unsigned installs are limited to Firefox Developer Edition, Nightly, and ESR wit
 | --- | --- |
 | Folder backup | Automatic Markdown mirroring needs the File System Access API. Firefox does not provide it, so the folder controls are hidden and the popup reads `Backup: export only`. Use **Export everything** and **Import JSON file** there. |
 | Firefox installation | Temporary add-ons disappear on restart. There is no signed build in this repository. |
-| Manifest split | Chrome warns about `background.scripts` in Manifest V3, so Chromium uses `manifest.json` with `service_worker` only. Firefox uses `manifest.firefox.json` with `scripts` only. |
+| Manifest split | Chrome warns about `background.scripts` in Manifest V3, so Chromium uses `manifest.json` with `service_worker` only and no Firefox-only keys. Firefox uses `manifest.firefox.json` with `scripts` only and the add-on ID. |
 | Folder permission | Chromium can lapse folder access after a restart. The dashboard then shows `Needs reconnect` and offers **Reconnect backup folder**. |
 | Runtime verification | Chrome was used for development checks. Edge, Brave, Opera, Vivaldi, and Firefox were checked against official documentation and code only; they have not been run here. |
 
