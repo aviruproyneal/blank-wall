@@ -5,7 +5,7 @@ import {
   removeBlockedSite,
   updateBlockedSite,
 } from '../shared/storage.js';
-import { normalizeHostname, parseHttpUrl } from '../shared/utils.js';
+import { findBlockedSite, normalizeHostname, parseHttpUrl } from '../shared/utils.js';
 import { setupBackupUI } from './backup.js';
 import { setupDataTransferUI } from './data-transfer.js';
 import { setupHabitsPage } from './habits.js';
@@ -14,6 +14,7 @@ import { setupSettingsPage } from './settings.js';
 
 const addForm = document.querySelector('#add-site');
 const hostnameInput = document.querySelector('#new-hostname');
+const addSiteError = document.querySelector('#add-site-error');
 const siteList = document.querySelector('#site-list');
 const emptySites = document.querySelector('#empty-sites');
 const walls = document.querySelector('#walls');
@@ -35,6 +36,7 @@ addForm.addEventListener('submit', (event) => {
 
 hostnameInput.addEventListener('input', () => {
   hostnameInput.setCustomValidity('');
+  addSiteError.hidden = true;
 });
 
 render().catch((error) => {
@@ -56,9 +58,22 @@ async function addSite() {
     return;
   }
 
+  const sites = await getBlockedSites();
+  const coveredBy = findBlockedSite(hostname, sites);
+  const coveredEntry = sites.find((site) => findBlockedSite(site.hostname, [{ hostname }]));
+
+  if (coveredBy || coveredEntry) {
+    addSiteError.textContent = coveredBy
+      ? `Already covered by ${coveredBy.hostname}.`
+      : `This would also cover ${coveredEntry.hostname}. Edit that site instead.`;
+    addSiteError.hidden = false;
+    return;
+  }
+
   await addBlockedSite(hostname);
   hostnameInput.value = '';
   hostnameInput.setCustomValidity('');
+  addSiteError.hidden = true;
   await refreshSiteList();
 }
 
@@ -228,7 +243,7 @@ function createCounterSiteControl(site, sites) {
       return;
     }
 
-    if (parsed.hostname && isBlockedHostname(parsed.hostname, sites)) {
+    if (parsed.hostname && findBlockedSite(parsed.hostname, sites)) {
       error.textContent = 'This site is in your blocked list.';
       error.hidden = false;
     } else {
@@ -267,13 +282,6 @@ function parseCounterSite(value) {
   }
 
   return { url: url.href, hostname: url.hostname.toLowerCase() };
-}
-
-function isBlockedHostname(hostname, sites) {
-  return sites.some((site) => {
-    const blocked = String(site.hostname ?? '').toLowerCase();
-    return Boolean(blocked) && (hostname === blocked || hostname.endsWith(`.${blocked}`));
-  });
 }
 
 function createToggleControl(label, checked, save, onChange) {

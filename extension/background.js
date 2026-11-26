@@ -5,7 +5,7 @@ import {
   initializeStorage,
   migrateStorage,
 } from './shared/storage.js';
-import { parseHttpUrl } from './shared/utils.js';
+import { findBlockedSite, parseHttpUrl } from './shared/utils.js';
 
 chrome.runtime.onInstalled.addListener((details) => {
   const ready = details.reason === 'update' ? migrateStorage() : Promise.resolve();
@@ -50,7 +50,7 @@ async function redirectIfBlocked(details) {
   }
 
   const sites = await getBlockedSites();
-  const site = sites.find((candidate) => isSubdomainOf(target.hostname, candidate.hostname));
+  const site = findBlockedSite(target.hostname, sites);
 
   if (!site || (await hasAllowance(site.hostname))) {
     return;
@@ -61,10 +61,4 @@ async function redirectIfBlocked(details) {
   wall.searchParams.set('site', site.hostname);
 
   await callChromeApi('tabs.update', details.tabId, { url: wall.href });
-}
-
-function isSubdomainOf(hostname, siteHostname) {
-  const host = hostname.toLowerCase();
-  const site = siteHostname.toLowerCase();
-  return host === site || host.endsWith(`.${site}`);
 }

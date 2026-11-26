@@ -6,7 +6,7 @@ import {
   getTodayStats,
   removeBlockedSite,
 } from '../shared/storage.js';
-import { parseHttpUrl } from '../shared/utils.js';
+import { findBlockedSite, parseHttpUrl } from '../shared/utils.js';
 
 const BACKUP_LABELS = {
   connected: 'Backup: connected',
@@ -28,7 +28,7 @@ const skips = document.querySelector('#skips');
 const backupStatus = document.querySelector('#backup-status');
 
 let currentHostname = null;
-let isBlocked = false;
+let matchingSite = null;
 
 toggleButton.addEventListener('click', () => {
   updateSiteBlock().catch((error) => {
@@ -77,8 +77,8 @@ async function updateSiteBlock() {
   toggleButton.disabled = true;
 
   try {
-    if (isBlocked) {
-      await removeBlockedSite(currentHostname);
+    if (matchingSite) {
+      await removeBlockedSite(matchingSite.hostname);
     } else {
       await addBlockedSite(currentHostname);
     }
@@ -97,17 +97,17 @@ async function renderSiteState() {
 
   if (!currentHostname) {
     hostname.textContent = 'This page cannot be blocked';
-    isBlocked = false;
+    matchingSite = null;
     toggleButton.textContent = 'Block this site';
     toggleButton.disabled = true;
     return;
   }
 
   const sites = await getBlockedSites();
-  isBlocked = sites.some((site) => site.hostname.toLowerCase() === currentHostname);
+  matchingSite = findBlockedSite(currentHostname, sites);
 
-  hostname.textContent = currentHostname;
-  toggleButton.textContent = isBlocked ? 'Unblock this site' : 'Block this site';
+  hostname.textContent = matchingSite ? `Blocked via ${matchingSite.hostname}` : currentHostname;
+  toggleButton.textContent = matchingSite ? 'Unblock' : 'Block this site';
   toggleButton.disabled = false;
 }
 

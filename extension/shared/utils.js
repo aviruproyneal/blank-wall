@@ -18,6 +18,18 @@ export function normalizeHostname(value) {
   return url.hostname.replace(/^\.+|\.+$/g, '') || null;
 }
 
+export function findBlockedSite(hostname, sites) {
+  if (typeof hostname !== 'string') {
+    return null;
+  }
+
+  const host = hostname.toLowerCase();
+  return sites.find((site) => {
+    const blocked = typeof site?.hostname === 'string' ? site.hostname.toLowerCase() : '';
+    return Boolean(blocked) && (host === blocked || host.endsWith(`.${blocked}`));
+  }) ?? null;
+}
+
 export function formatClock(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainder = seconds % 60;

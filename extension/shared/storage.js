@@ -1,6 +1,6 @@
 import { callChromeApi } from './api.js';
 import { enqueueChange, flushPendingChanges } from './backup.js';
-import { formatTimestamp } from './utils.js';
+import { findBlockedSite, formatTimestamp } from './utils.js';
 
 const CURRENT_SCHEMA_VERSION = 3;
 let migration;
@@ -155,9 +155,7 @@ export async function getBlockedSites() {
 export async function getWallSiteSettings(hostname) {
   await migrateStorage();
   const [sites, settings] = await Promise.all([getBlockedSites(), getSettings()]);
-  const host = hostname.toLowerCase();
-  const site = sites.find((candidate) =>
-    candidate && typeof candidate.hostname === 'string' && candidate.hostname.toLowerCase() === host);
+  const site = findBlockedSite(hostname, sites);
 
   if (!site) {
     return {
