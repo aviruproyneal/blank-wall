@@ -1,4 +1,4 @@
-import { normalizeHostname, parseHttpUrl } from './utils.js';
+import { normalizeCounterSite, normalizeHostname, parseHttpUrl } from './utils.js';
 
 const NOTE_LIMIT = 200;
 const HABIT_TITLE_LIMIT = 80;
@@ -148,19 +148,6 @@ function normalizeImportedHostname(value) {
     return null;
   }
   return normalizeHostname(raw);
-}
-
-function normalizeCounterSite(value) {
-  if (typeof value !== 'string') {
-    return '';
-  }
-  const raw = value.trim();
-  if (!raw) {
-    return '';
-  }
-  const url = parseHttpUrl(raw)
-    ?? (hasExplicitScheme(raw) ? null : parseHttpUrl(`https://${raw}`));
-  return url ? url.href : '';
 }
 
 function hasExplicitScheme(value) {

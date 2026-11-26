@@ -30,6 +30,34 @@ export function findBlockedSite(hostname, sites) {
   }) ?? null;
 }
 
+export function parseCounterSite(value) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) {
+    return { url: '', hostname: '' };
+  }
+  const url = parseCounterUrl(raw);
+  if (!url) {
+    return { error: 'Enter a valid website address.' };
+  }
+  return { url: url.href, hostname: url.hostname.toLowerCase() };
+}
+
+export function normalizeCounterSite(value) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  const url = raw ? parseCounterUrl(raw) : null;
+  return url ? url.href : '';
+}
+
+function parseCounterUrl(raw) {
+  // Bare input is assumed to be https, so reject other explicit schemes first.
+  return parseHttpUrl(raw)
+    ?? (hasExplicitScheme(raw) ? null : parseHttpUrl(`https://${raw}`));
+}
+
+function hasExplicitScheme(value) {
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(value);
+}
+
 export function formatClock(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainder = seconds % 60;

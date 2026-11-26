@@ -184,7 +184,7 @@ function habitFileName(habit) {
   return `${habit.id}-${slug || 'untitled'}.md`;
 }
 
-function renderNotes(day, notes) {
+export function renderNotes(day, notes) {
   const lines = [`# ${day}`, ''];
 
   for (const note of notes) {
@@ -196,7 +196,7 @@ function renderNotes(day, notes) {
   return lines.join('\n');
 }
 
-function renderHabit(habit) {
+export function renderHabit(habit) {
   const lines = [
     '---',
     `id: ${frontMatterValue(habit.id)}`,
@@ -324,7 +324,7 @@ async function readNotes(root) {
   return notes.sort((first, second) => new Date(first.timestamp) - new Date(second.timestamp));
 }
 
-function parseHabit(text, fileName) {
+export function parseHabit(text, fileName) {
   const lines = text.split(/\r?\n/);
   if (lines[0] !== '---') {
     return null;
@@ -369,7 +369,7 @@ function parseHabit(text, fileName) {
   };
 }
 
-function parseNotes(text) {
+export function parseNotes(text) {
   const lines = text.split(/\r?\n/);
   const notes = [];
   let current = null;

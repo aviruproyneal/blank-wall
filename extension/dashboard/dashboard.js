@@ -5,7 +5,7 @@ import {
   removeBlockedSite,
   updateBlockedSite,
 } from '../shared/storage.js';
-import { findBlockedSite, normalizeHostname, parseHttpUrl } from '../shared/utils.js';
+import { findBlockedSite, normalizeHostname, parseCounterSite } from '../shared/utils.js';
 import { setupBackupUI } from './backup.js';
 import { setupDataTransferUI } from './data-transfer.js';
 import { setupHabitsPage } from './habits.js';
@@ -268,20 +268,6 @@ function createCounterSiteControl(site, sites) {
   field.className = 'site__field';
   field.append(wrapper, error);
   return field;
-}
-
-function parseCounterSite(value) {
-  const raw = value.trim();
-  if (!raw) {
-    return { url: '', hostname: '' };
-  }
-
-  const url = parseHttpUrl(raw) ?? parseHttpUrl(`https://${raw}`);
-  if (!url) {
-    return { error: 'Enter a valid website address.' };
-  }
-
-  return { url: url.href, hostname: url.hostname.toLowerCase() };
 }
 
 function createToggleControl(label, checked, save, onChange) {

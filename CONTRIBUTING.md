@@ -11,6 +11,18 @@ Clone the repository and load `extension/` as an unpacked extension in Chrome:
 
 No build step, package manager, or external dependency is required. Pages use plain HTML, CSS, and vanilla JavaScript ES modules. Icons are simple local files and icons in the UI are inline SVG.
 
+## Tests
+
+Tests use Node's built-in test runner and require Node 22 or newer. The root `package.json` only marks `.js` files as ES modules for Node and provides the `test` script; browsers ignore it.
+
+Run all tests from the repository root:
+
+```sh
+node --test tests/
+```
+
+`npm test` runs the same command. A tiny `tests/package.json` points that directory command at `tests/index.js`, which imports the test files; it declares no packages. The tests are deterministic and use small mocks for browser APIs; no install step or dependency is needed.
+
 ## Making a change
 
 - Keep each change to one small feature or fix that can be reviewed in a few minutes.
