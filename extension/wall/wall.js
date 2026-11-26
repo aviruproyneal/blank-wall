@@ -14,6 +14,8 @@ import { setupNoteBox } from './note.js';
 const params = new URLSearchParams(window.location.search);
 const target = parseHttpUrl(params.get('target'));
 const allowanceHost = (params.get('site') || target?.hostname || '').toLowerCase();
+const sessionKey = `blank-wall:${allowanceHost}:${target?.href ?? ''}`;
+const session = readSession(sessionKey);
 const fallbackSiteSettings = {
   durationMinutes: 5,
   allowContinue: true,
@@ -62,13 +64,21 @@ const habitCounterUsedLabel = document.querySelector('#habit-counter-used-label'
 const cancelHabit = document.querySelector('#cancel-habit');
 
 const durationSeconds = durationMinutes * 60;
-const startedAt = Date.now();
-const deadline = startedAt + durationSeconds * 1000;
+const now = Date.now();
+const savedStart = Number(session?.startedAt);
+const startedAt = Number.isFinite(savedStart) && savedStart <= now ? savedStart : now;
+const savedDeadline = Number(session?.deadline);
+const deadline = Number.isFinite(savedDeadline) && savedDeadline > startedAt
+  ? savedDeadline
+  : startedAt + durationSeconds * 1000;
+let startRecorded = session?.startRecorded === true;
 let finished = false;
 let intervalId;
 let skipRule = 'none';
 let habitLogged = false;
-let secondsRecorded = false;
+let secondsRecorded = session?.secondsRecorded === true;
+
+writeSession();
 
 if (reminderNote) {
   note.textContent = reminderNote;
@@ -128,9 +138,14 @@ skipButton.addEventListener('click', () => {
   });
 });
 
-recordWallStart().catch((error) => {
-  console.error('Blank Wall wall statistics failed:', error);
-});
+if (!startRecorded) {
+  recordWallStart().then(() => {
+    startRecorded = true;
+    writeSession();
+  }).catch((error) => {
+    console.error('Blank Wall wall statistics failed:', error);
+  });
+}
 
 render();
 intervalId = window.setInterval(render, 250);
@@ -143,11 +158,13 @@ continueButton.addEventListener('click', () => {
 
 counterButton.addEventListener('click', () => {
   if (counterSite) {
+    clearSession();
     window.location.assign(counterSite.href);
   }
 });
 
 leaveButton.addEventListener('click', () => {
+  clearSession();
   callChromeApi('runtime.sendMessage', { type: 'close-tab' }).catch((error) => {
     console.error('Blank Wall tab close failed:', error);
   });
@@ -159,6 +176,7 @@ async function continueToTarget() {
   }
 
   await grantAllowance(allowanceHost, allowanceMinutes);
+  clearSession();
   window.location.assign(target.href);
 }
 
@@ -201,6 +219,7 @@ async function skipWall() {
 
   const settings = await getSettings();
   await grantAllowance(allowanceHost, allowanceMinutes);
+  clearSession();
   window.location.assign(target.href);
 }
 
@@ -220,5 +239,42 @@ async function recordElapsedOnce() {
 
   secondsRecorded = true;
   const elapsed = Math.min(durationSeconds, Math.floor((Date.now() - startedAt) / 1000));
-  await recordWallSeconds(elapsed);
+
+  try {
+    await recordWallSeconds(elapsed);
+    writeSession();
+  } catch (error) {
+    secondsRecorded = false;
+    throw error;
+  }
+}
+
+function readSession(key) {
+  try {
+    const raw = window.sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSession() {
+  try {
+    window.sessionStorage.setItem(sessionKey, JSON.stringify({
+      startedAt,
+      deadline,
+      startRecorded,
+      secondsRecorded,
+    }));
+  } catch {
+    // Storage access can be blocked; this wall still runs from memory.
+  }
+}
+
+function clearSession() {
+  try {
+    window.sessionStorage.removeItem(sessionKey);
+  } catch {
+    return;
+  }
 }
