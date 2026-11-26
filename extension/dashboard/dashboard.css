@@ -288,85 +288,87 @@
   grid-column: 1 / -1;
 }
 
-.empty-habits,
-.empty-notes {
-  margin: var(--space-4) 0 0;
-  color: var(--text-muted);
-}
-
 .habit-list {
-  margin: var(--space-4) 0 0;
+  margin: var(--space-5) 0 0;
   padding: 0;
   list-style: none;
 }
 
-.habit-list button {
-  display: flex;
-  gap: var(--space-2);
+.habit-list__button {
   width: 100%;
-  padding: var(--space-3) 0;
   border: 0;
-  border-top: var(--border-width) solid var(--border);
+  border-top: var(--border-width) solid var(--border-subtle);
   background: transparent;
+  color: inherit;
   text-align: left;
   cursor: pointer;
 }
 
-.habit-list__number {
-  color: var(--text-muted);
-}
-
-.habit-list li:first-child button {
+.habit-list li:first-child .habit-list__button {
   border-top: 0;
 }
 
-.habit-list button:hover {
-  background: var(--surface-hover);
-  color: var(--accent);
+.habit-list__button:active {
+  background: var(--surface-active);
 }
 
-.habit-list button:active {
-  background: var(--surface-active);
+.habit-list__number {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.habit-list__title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.habit-list__count {
+  color: var(--text-faint);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .habit-editor,
 .habit-detail {
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
 }
 
 .habit-editor h3,
 .habit-detail h3 {
-  margin: 0 0 var(--space-3);
-  font-size: 1rem;
-  font-weight: 600;
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-20);
 }
 
 .habit-detail h3 {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  margin-bottom: var(--space-4);
 }
 
 .habit-detail__number {
-  color: var(--text-muted);
-  font-weight: 400;
+  color: var(--text-faint);
+  font-size: var(--text-16);
+  font-weight: var(--weight-regular);
+  font-variant-numeric: tabular-nums;
 }
 
-.habit-detail #back-to-habits {
-  margin-bottom: var(--space-4);
+.habit-detail__back {
+  margin-bottom: var(--space-5);
 }
 
 .habit-editor label {
   display: block;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .habit-editor label > span {
   display: block;
   margin-bottom: var(--space-1);
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-13);
+  font-weight: var(--weight-medium);
 }
 
 .form-actions {
@@ -376,30 +378,33 @@
 }
 
 .habit-fields {
-  margin: 0 0 var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-6);
+  margin: 0 0 var(--space-6);
 }
 
 .habit-fields div {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-2) 0;
+  min-width: 0;
 }
 
 .habit-fields dt {
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  color: var(--text-faint);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
 }
 
 .habit-fields dd {
-  margin: 0;
+  margin: var(--space-1) 0 0;
   overflow-wrap: anywhere;
 }
 
 .habit-counts {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-6);
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-6);
 }
 
 .habit-counts div {
@@ -409,55 +414,103 @@
 }
 
 .habit-counts dt {
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  color: var(--text-faint);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
 }
 
 .habit-counts dd {
   margin: 0;
-  font-size: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-20);
+  font-variant-numeric: tabular-nums;
 }
 
 .occurrence-list {
-  margin: var(--space-4) 0 0;
-  padding: 0;
+  margin: var(--space-3) 0 0;
+  padding: 0 0 0 var(--space-4);
+  border-left: var(--border-width) solid var(--border-subtle);
   list-style: none;
-  color: var(--text-muted);
-  font-size: 0.85rem;
 }
 
-.occurrence-list li {
+.occurrence {
+  position: relative;
+  padding-bottom: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-13);
+}
+
+.occurrence:last-child {
+  padding-bottom: 0;
+}
+
+.occurrence::before {
+  content: '';
+  position: absolute;
+  top: var(--space-2);
+  left: calc(-1 * var(--space-1));
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-round);
+  background: var(--border-strong);
+}
+
+.occurrence__heading {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) 0;
+}
+
+.occurrence__date {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.occurrence__time {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.occurrence__site {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .occurrence__counter {
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--text-faint);
+  font-size: var(--text-12);
+}
+
+.occurrence-empty {
+  margin-top: var(--space-3);
 }
 
 .notes__toolbar {
   display: flex;
+  align-items: center;
   gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .notes__toolbar .input {
   flex: 1;
   min-width: 0;
-  max-width: var(--control-select-width);
+  max-width: var(--panel-width);
 }
 
 .note-list {
-  margin: var(--space-4) 0 0;
+  margin: var(--space-5) 0 0;
   padding: 0;
   list-style: none;
 }
 
 .note {
-  padding: var(--space-3) 0;
-  border-top: var(--border-width) solid var(--border);
+  padding: var(--space-4) 0;
+  border-top: var(--border-width) solid var(--border-subtle);
 }
 
 .note:first-child {
@@ -465,21 +518,41 @@
   padding-top: 0;
 }
 
+.note__head {
+  align-items: flex-start;
+  border-top: 0;
+  padding: 0;
+}
+
 .note__meta {
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--text-faint);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+}
+
+.note__meta .chip {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note__text {
-  margin: var(--space-2) 0 0;
+  max-width: var(--measure);
+  margin: var(--space-3) 0 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.note__actions {
+.note__chips {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .note__actions .button {
@@ -487,25 +560,25 @@
 }
 
 .note-editor {
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
 }
 
 .note-editor h3 {
-  margin: 0 0 var(--space-3);
-  font-size: 1rem;
-  font-weight: 600;
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-20);
 }
 
 .note-editor label {
   display: block;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .note-editor label > span {
   display: block;
   margin-bottom: var(--space-1);
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-13);
+  font-weight: var(--weight-medium);
 }
 
 .settings-form label {
@@ -584,6 +657,18 @@
     padding-left: var(--space-3);
     border-top: 0;
     border-left: var(--border-width) solid var(--border-subtle);
+  }
+
+  .habit-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notes__toolbar {
+    flex-wrap: wrap;
+  }
+
+  .notes__toolbar .input {
+    max-width: none;
   }
 
   .settings-field {

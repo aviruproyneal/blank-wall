@@ -104,7 +104,7 @@
 
           <div id="habit-list-view">
             <button class="button button--primary" id="new-habit" type="button">New habit</button>
-            <p class="empty-habits" id="empty-habits">No habits yet.</p>
+            <p class="empty-state" id="empty-habits">No habits yet.</p>
             <ul class="habit-list" id="habit-list"></ul>
           </div>
 
@@ -137,7 +137,7 @@
           </form>
 
           <div class="habit-detail" id="habit-detail" hidden>
-            <button class="button button--ghost" id="back-to-habits" type="button">← All habits</button>
+            <button class="button button--ghost habit-detail__back" id="back-to-habits" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-back"></use></svg>All habits</button>
             <h3 id="habit-detail-title"></h3>
 
             <dl class="habit-fields" id="habit-detail-fields"></dl>
@@ -153,6 +153,7 @@
               </div>
             </dl>
 
+            <p class="empty-state occurrence-empty" id="empty-occurrences" hidden>No occurrences yet.</p>
             <ol class="occurrence-list" id="occurrence-list"></ol>
 
             <div class="form-actions">
@@ -170,8 +171,8 @@
               <input class="input" id="note-search" type="search" placeholder="Search notes" aria-label="Search notes">
               <button class="button button--primary" id="new-note" type="button">New note</button>
             </div>
-            <p class="empty-notes" id="empty-notes">No notes yet.</p>
-            <p class="empty-notes" id="no-note-results" hidden>No matching notes.</p>
+            <p class="empty-state" id="empty-notes">No notes yet.</p>
+            <p class="empty-state" id="no-note-results" hidden>No matching notes.</p>
             <ul class="note-list" id="note-list"></ul>
           </div>
 

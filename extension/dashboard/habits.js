@@ -21,6 +21,7 @@ export function setupHabitsPage() {
   const occurrenceCount = document.querySelector('#habit-occurrences');
   const counterCount = document.querySelector('#habit-counter-used-count');
   const occurrenceList = document.querySelector('#occurrence-list');
+  const emptyOccurrences = document.querySelector('#empty-occurrences');
   const backButton = document.querySelector('#back-to-habits');
   const editButton = document.querySelector('#edit-habit');
   const deleteButton = document.querySelector('#delete-habit');
@@ -67,13 +68,22 @@ export function setupHabitsPage() {
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
+      button.className = 'list-row habit-list__button';
 
       const number = document.createElement('span');
       number.className = 'habit-list__number';
       number.textContent = `${formatHabitNumber(habit.id)}.`;
+
       const title = document.createElement('span');
+      title.className = 'habit-list__title';
       title.textContent = habit.title;
-      button.append(number, title);
+
+      const count = (habit.occurrences ?? []).length;
+      const countLabel = document.createElement('span');
+      countLabel.className = 'habit-list__count';
+      countLabel.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+
+      button.append(number, title, countLabel);
 
       button.addEventListener('click', () => {
         openDetail(habit.id).catch(logError('open habit'));
@@ -160,14 +170,44 @@ export function setupHabitsPage() {
 
     occurrenceCount.textContent = String(habit.occurrences.length);
     counterCount.textContent = String(habit.occurrences.filter((entry) => entry.counterUsed).length);
+    emptyOccurrences.hidden = habit.occurrences.length > 0;
 
     occurrenceList.replaceChildren();
     for (const occurrence of [...habit.occurrences].reverse()) {
       const item = document.createElement('li');
-      const source = occurrence.site ? ` · ${occurrence.site}` : '';
-      const stamp = document.createElement('span');
-      stamp.textContent = `${formatOccurrenceDate(occurrence.timestamp)}${source}`;
-      item.append(stamp);
+      item.className = 'occurrence';
+
+      const heading = document.createElement('div');
+      heading.className = 'occurrence__heading';
+
+      const formatted = formatOccurrenceDate(occurrence.timestamp);
+      const separator = formatted.lastIndexOf(', ');
+      const dateText = separator === -1 ? formatted : formatted.slice(0, separator);
+      const timeText = separator === -1 ? '' : formatted.slice(separator + 2);
+
+      if (dateText) {
+        const date = document.createElement('span');
+        date.className = 'occurrence__date';
+        date.textContent = dateText;
+        heading.append(date);
+      }
+
+      if (timeText) {
+        const time = document.createElement('span');
+        time.className = 'occurrence__time';
+        time.textContent = timeText;
+        heading.append(time);
+      }
+
+      if (occurrence.site) {
+        const site = document.createElement('span');
+        site.className = 'chip occurrence__site';
+        site.textContent = occurrence.site;
+        site.title = occurrence.site;
+        heading.append(site);
+      }
+
+      item.append(heading);
 
       if (occurrence.counterUsed) {
         const counter = document.createElement('span');

@@ -72,20 +72,24 @@ export function setupNotesPage() {
     const item = document.createElement('li');
     item.className = 'note';
 
+    const head = document.createElement('div');
+    head.className = 'list-row note__head';
+
     const meta = document.createElement('div');
     meta.className = 'note__meta';
-    const parts = [formatTimestamp(note.timestamp), note.site || 'Wall'];
-    if (note.habitId && habitTitles.has(note.habitId)) {
-      parts.push(`${formatHabitNumber(note.habitId)}. ${habitTitles.get(note.habitId)}`);
-    }
-    meta.textContent = parts.join(' · ');
 
-    const text = document.createElement('p');
-    text.className = 'note__text';
-    text.textContent = note.text;
+    const timestamp = document.createElement('span');
+    timestamp.textContent = formatTimestamp(note.timestamp);
+
+    const site = document.createElement('span');
+    site.className = 'chip';
+    site.textContent = note.site || 'Wall';
+    site.title = note.site || 'Wall';
+
+    meta.append(timestamp, site);
 
     const actions = document.createElement('div');
-    actions.className = 'note__actions';
+    actions.className = 'list-row__actions note__actions';
 
     const edit = document.createElement('button');
     edit.type = 'button';
@@ -104,7 +108,27 @@ export function setupNotesPage() {
     });
 
     actions.append(edit, remove);
-    item.append(meta, text, actions);
+    head.append(meta, actions);
+    item.append(head);
+
+    const text = document.createElement('p');
+    text.className = 'note__text';
+    text.textContent = note.text;
+    item.append(text);
+
+    if (note.habitId && habitTitles.has(note.habitId)) {
+      const chips = document.createElement('div');
+      chips.className = 'note__chips';
+
+      const habit = document.createElement('span');
+      habit.className = 'chip';
+      habit.textContent = `${formatHabitNumber(note.habitId)}. ${habitTitles.get(note.habitId)}`;
+      habit.title = habit.textContent;
+
+      chips.append(habit);
+      item.append(chips);
+    }
+
     return item;
   }
 
