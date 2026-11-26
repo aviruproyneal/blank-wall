@@ -21,6 +21,8 @@ const walls = document.querySelector('#walls');
 const wallTime = document.querySelector('#wall-time');
 const skips = document.querySelector('#skips');
 
+let fieldSequence = 0;
+
 setupBackupUI();
 setupDataTransferUI();
 setupHabitsPage();
@@ -34,9 +36,10 @@ addForm.addEventListener('submit', (event) => {
   });
 });
 
-hostnameInput.addEventListener('input', () => {
-  hostnameInput.setCustomValidity('');
-  addSiteError.hidden = true;
+hostnameInput.addEventListener('input', clearAddSiteError);
+
+hostnameInput.addEventListener('invalid', () => {
+  showAddSiteError('Enter a hostname like example.com');
 });
 
 render().catch((error) => {
@@ -53,7 +56,9 @@ async function addSite() {
   const hostname = normalizeHostname(hostnameInput.value);
 
   if (!hostname) {
-    hostnameInput.setCustomValidity('Enter a hostname like example.com');
+    const message = 'Enter a hostname like example.com';
+    hostnameInput.setCustomValidity(message);
+    showAddSiteError(message);
     hostnameInput.reportValidity();
     return;
   }
@@ -63,18 +68,28 @@ async function addSite() {
   const coveredEntry = sites.find((site) => findBlockedSite(site.hostname, [{ hostname }]));
 
   if (coveredBy || coveredEntry) {
-    addSiteError.textContent = coveredBy
+    showAddSiteError(coveredBy
       ? `Already covered by ${coveredBy.hostname}.`
-      : `This would also cover ${coveredEntry.hostname}. Edit that site instead.`;
-    addSiteError.hidden = false;
+      : `This would also cover ${coveredEntry.hostname}. Edit that site instead.`);
     return;
   }
 
   await addBlockedSite(hostname);
   hostnameInput.value = '';
-  hostnameInput.setCustomValidity('');
-  addSiteError.hidden = true;
+  clearAddSiteError();
   await refreshSiteList();
+}
+
+function showAddSiteError(message) {
+  addSiteError.textContent = message;
+  addSiteError.hidden = false;
+  hostnameInput.setAttribute('aria-invalid', 'true');
+}
+
+function clearAddSiteError() {
+  hostnameInput.setCustomValidity('');
+  hostnameInput.removeAttribute('aria-invalid');
+  addSiteError.hidden = true;
 }
 
 async function refreshSiteList() {
@@ -89,6 +104,7 @@ function renderStats(stats) {
 
 function renderSiteList(sites) {
   siteList.replaceChildren();
+  fieldSequence = 0;
   emptySites.hidden = sites.length > 0;
 
   for (const site of sites) {
@@ -100,16 +116,45 @@ function createSiteElement(site, sites) {
   const item = document.createElement('li');
   item.className = 'site';
 
-  const header = document.createElement('div');
-  header.className = 'site__header';
+  const row = document.createElement('div');
+  row.className = 'list-row site__row';
+
+  const primary = document.createElement('div');
+  primary.className = 'site__primary';
 
   const hostname = document.createElement('span');
   hostname.className = 'site__hostname';
   hostname.textContent = site.hostname;
 
+  let durationMinutes = site.durationMinutes ?? 5;
+  let allowanceMinutes = site.allowanceMinutes ?? 15;
+  let allowContinue = site.allowContinue ?? true;
+  let noteValue = site.note ?? '';
+  let counterSite = site.counterSite ?? '';
+
+  function continueLabel() {
+    return allowContinue ? `continue ${allowanceMinutes} min` : 'continue off';
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'site__meta';
+  const durationMeta = createMetaItem(`${durationMinutes} min wall`);
+  const continueMeta = createMetaItem(continueLabel());
+  const notesMeta = createMetaItem(site.notesEnabled ? 'notes on' : 'notes off');
+  const habitsMeta = createMetaItem(site.habitsEnabled ? 'habits on' : 'habits off');
+  const noteMeta = createMetaItem(`note: ${noteValue}`);
+  noteMeta.hidden = !noteValue;
+  const counterMeta = createMetaItem(`counter: ${counterSite}`);
+  counterMeta.hidden = !counterSite;
+  meta.append(durationMeta, continueMeta, notesMeta, habitsMeta, noteMeta, counterMeta);
+  primary.append(hostname, meta);
+
+  const actions = document.createElement('div');
+  actions.className = 'list-row__actions';
+
   const remove = document.createElement('button');
   remove.type = 'button';
-  remove.className = 'button button--secondary site__remove';
+  remove.className = 'button button--ghost site__remove';
   remove.textContent = 'Remove';
   remove.addEventListener('click', () => {
     removeBlockedSite(site.hostname)
@@ -119,94 +164,197 @@ function createSiteElement(site, sites) {
       });
   });
 
-  header.append(hostname, remove);
+  actions.append(remove);
+  row.append(primary, actions);
 
   const allowanceControl = createNumberControl(
-    'Allowance (min)',
-    site.allowanceMinutes ?? 15,
-    (minutes) => updateBlockedSite(site.hostname, { allowanceMinutes: minutes }),
+    'Allowance',
+    allowanceMinutes,
+    (minutes) => updateBlockedSite(site.hostname, { allowanceMinutes: minutes })
+      .then(() => {
+        allowanceMinutes = minutes;
+        continueMeta.textContent = continueLabel();
+      }),
+    'Minutes available after the wall.',
   );
-  allowanceControl.hidden = !(site.allowContinue ?? true);
+  allowanceControl.hidden = !allowContinue;
 
-  const controls = document.createElement('div');
-  controls.className = 'site__controls';
-  controls.append(
-    createNumberControl('Wall (min)', site.durationMinutes ?? 5, (minutes) =>
-      updateBlockedSite(site.hostname, { durationMinutes: minutes })),
-    createToggleControl('Notes', site.notesEnabled, (enabled) =>
-      updateBlockedSite(site.hostname, { notesEnabled: enabled })),
-    createToggleControl('Habits', site.habitsEnabled, (enabled) =>
-      updateBlockedSite(site.hostname, { habitsEnabled: enabled })),
-    createTextControl('Reminder note', site.note ?? '', 200, (note) =>
-      updateBlockedSite(site.hostname, { note })),
-    createCounterSiteControl(site, sites),
+  const settings = document.createElement('div');
+  settings.className = 'site__settings';
+  settings.append(
+    createNumberControl(
+      'Wall duration',
+      durationMinutes,
+      (minutes) => updateBlockedSite(site.hostname, { durationMinutes: minutes })
+        .then(() => {
+          durationMinutes = minutes;
+          durationMeta.textContent = `${durationMinutes} min wall`;
+        }),
+      'Minutes before the wall ends.',
+    ),
     createToggleControl(
-      'Allow continuing to the site after the wall',
-      site.allowContinue ?? true,
+      'Notes',
+      site.notesEnabled,
+      (enabled) => updateBlockedSite(site.hostname, { notesEnabled: enabled }),
+      (enabled) => {
+        notesMeta.textContent = enabled ? 'notes on' : 'notes off';
+      },
+      'Allow quick notes from the wall.',
+    ),
+    createToggleControl(
+      'Habits',
+      site.habitsEnabled,
+      (enabled) => updateBlockedSite(site.hostname, { habitsEnabled: enabled }),
+      (enabled) => {
+        habitsMeta.textContent = enabled ? 'habits on' : 'habits off';
+      },
+      'Allow habit entries from the wall.',
+    ),
+    createTextControl(
+      'Reminder note',
+      noteValue,
+      200,
+      (note) => updateBlockedSite(site.hostname, { note })
+        .then(() => {
+          noteValue = note;
+          noteMeta.textContent = `note: ${noteValue}`;
+          noteMeta.hidden = !noteValue;
+        }),
+      'Shown on the wall while you decide.',
+    ),
+    createCounterSiteControl(site, sites, (next) => {
+      counterSite = next;
+      counterMeta.textContent = `counter: ${counterSite}`;
+      counterMeta.hidden = !counterSite;
+    }),
+    createToggleControl(
+      'Allow continuing',
+      allowContinue,
       (enabled) => updateBlockedSite(site.hostname, { allowContinue: enabled }),
       (enabled) => {
+        allowContinue = enabled;
         allowanceControl.hidden = !enabled;
+        continueMeta.textContent = continueLabel();
       },
+      'Let you enter the site after the wall.',
     ),
     allowanceControl,
   );
 
-  item.append(header, controls);
+  item.append(row, settings);
   return item;
 }
 
-function createNumberControl(label, value, save) {
-  const wrapper = document.createElement('label');
-  wrapper.className = 'control';
+function createMetaItem(text) {
+  const item = document.createElement('span');
+  item.textContent = text;
+  return item;
+}
+
+function nextFieldId() {
+  fieldSequence += 1;
+  return `site-field-${fieldSequence}`;
+}
+
+function createField(labelText, helpText, id) {
+  const field = document.createElement('div');
+  field.className = 'settings-field';
+
+  const label = document.createElement('label');
+  label.className = 'settings-field__label';
+  label.htmlFor = id;
 
   const text = document.createElement('span');
-  text.textContent = label;
+  text.textContent = labelText;
+
+  const help = document.createElement('p');
+  help.className = 'field-help';
+  help.id = `${id}-help`;
+  help.textContent = helpText;
+
+  label.append(text, help);
+
+  const control = document.createElement('div');
+  control.className = 'settings-field__control';
+
+  field.append(label, control);
+  return { field, control, helpId: help.id };
+}
+
+function createNumberControl(label, value, save, help) {
+  const id = nextFieldId();
+  const { field, control, helpId } = createField(label, help, id);
+  const errorId = `${id}-error`;
 
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'input';
+  input.id = id;
   input.min = '0.1';
   input.step = 'any';
   input.value = String(value);
+  input.setAttribute('aria-describedby', `${helpId} ${errorId}`);
+
+  const error = document.createElement('p');
+  error.className = 'field-error';
+  error.id = errorId;
+  error.hidden = true;
+  error.setAttribute('role', 'alert');
+
+  input.addEventListener('input', () => {
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
+  });
+
   input.addEventListener('change', () => {
     const minutes = Number(input.value);
 
     if (!Number.isFinite(minutes) || minutes <= 0) {
       input.value = String(value);
+      error.textContent = 'Enter a number greater than 0.';
+      error.hidden = false;
+      input.setAttribute('aria-invalid', 'true');
       return;
     }
+
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
 
     save(minutes)
       .then(() => {
         value = minutes;
       })
-      .catch((error) => {
+      .catch((failure) => {
         input.value = String(value);
-        console.error('Blank Wall duration update failed:', error);
+        console.error('Blank Wall duration update failed:', failure);
       });
   });
 
-  wrapper.append(text, input);
-  return wrapper;
+  control.append(input);
+  field.append(error);
+  return field;
 }
 
-function createTextControl(label, value, maxLength, save) {
-  const wrapper = document.createElement('label');
-  wrapper.className = 'control';
-
-  const text = document.createElement('span');
-  text.textContent = label;
+function createTextControl(label, value, maxLength, save, help, onSaved) {
+  const id = nextFieldId();
+  const { field, control, helpId } = createField(label, help, id);
 
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'input';
+  input.id = id;
   input.value = value;
   input.maxLength = maxLength;
+  input.setAttribute('aria-describedby', helpId);
+
   input.addEventListener('change', () => {
     const next = input.value.trim();
     save(next)
       .then(() => {
         value = next;
+        if (onSaved) {
+          onSaved(next);
+        }
       })
       .catch((error) => {
         input.value = value;
@@ -214,43 +362,60 @@ function createTextControl(label, value, maxLength, save) {
       });
   });
 
-  wrapper.append(text, input);
-  return wrapper;
+  control.append(input);
+  return field;
 }
 
-function createCounterSiteControl(site, sites) {
-  const wrapper = document.createElement('label');
-  wrapper.className = 'control';
-
-  const text = document.createElement('span');
-  text.textContent = 'Counter site';
+function createCounterSiteControl(site, sites, onSaved) {
+  const id = nextFieldId();
+  const { field, control, helpId } = createField(
+    'Counter site',
+    'A page to open when you choose a counter-plan.',
+    id,
+  );
+  const errorId = `${id}-error`;
 
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'input';
+  input.id = id;
   input.value = site.counterSite ?? '';
   input.placeholder = 'example.com';
   input.spellcheck = false;
+  input.setAttribute('aria-describedby', `${helpId} ${errorId}`);
 
   const error = document.createElement('p');
-  error.className = 'site__error';
+  error.className = 'field-error';
+  error.id = errorId;
   error.hidden = true;
+  error.setAttribute('role', 'alert');
+
+  function showError(message) {
+    error.textContent = message;
+    error.hidden = false;
+    input.setAttribute('aria-invalid', 'true');
+  }
+
+  function clearError() {
+    error.hidden = true;
+    input.removeAttribute('aria-invalid');
+  }
+
+  input.addEventListener('input', clearError);
 
   input.addEventListener('change', () => {
     const parsed = parseCounterSite(input.value);
 
     if (parsed.error) {
-      error.textContent = parsed.error;
-      error.hidden = false;
+      showError(parsed.error);
       input.value = site.counterSite ?? '';
       return;
     }
 
     if (parsed.hostname && findBlockedSite(parsed.hostname, sites)) {
-      error.textContent = 'This site is in your blocked list.';
-      error.hidden = false;
+      showError('This site is in your blocked list.');
     } else {
-      error.hidden = true;
+      clearError();
     }
 
     const counterSite = parsed.url;
@@ -258,6 +423,9 @@ function createCounterSiteControl(site, sites) {
     updateBlockedSite(site.hostname, { counterSite })
       .then(() => {
         site.counterSite = counterSite;
+        if (onSaved) {
+          onSaved(counterSite);
+        }
       })
       .catch((cause) => {
         input.value = site.counterSite ?? '';
@@ -265,21 +433,30 @@ function createCounterSiteControl(site, sites) {
       });
   });
 
-  wrapper.append(text, input);
-
-  const field = document.createElement('div');
-  field.className = 'site__field';
-  field.append(wrapper, error);
+  control.append(input);
+  field.append(error);
   return field;
 }
 
-function createToggleControl(label, checked, save, onChange) {
-  const wrapper = document.createElement('label');
-  wrapper.className = 'control';
+function createToggleControl(label, checked, save, onChange, help) {
+  const id = nextFieldId();
+  const { field, control, helpId } = createField(label, help, id);
+  field.classList.add('settings-field--switch');
+
+  const wrapper = document.createElement('span');
+  wrapper.className = 'switch';
 
   const input = document.createElement('input');
   input.type = 'checkbox';
+  input.className = 'switch__input';
+  input.id = id;
   input.checked = Boolean(checked);
+  input.setAttribute('role', 'switch');
+  input.setAttribute('aria-describedby', helpId);
+
+  const track = document.createElement('span');
+  track.className = 'switch__track';
+
   input.addEventListener('change', () => {
     if (onChange) {
       onChange(input.checked);
@@ -294,9 +471,7 @@ function createToggleControl(label, checked, save, onChange) {
     });
   });
 
-  const text = document.createElement('span');
-  text.textContent = label;
-
-  wrapper.append(input, text);
-  return wrapper;
+  wrapper.append(input, track);
+  control.append(wrapper);
+  return field;
 }

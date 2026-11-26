@@ -11,18 +11,30 @@
   <body>
     <div class="dashboard">
       <aside class="sidebar">
-        <h1>Blank Wall</h1>
+        <div class="sidebar__brand">
+          <span class="sidebar__mark"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-mark"></use></svg></span>
+          <p class="sidebar__name">Blank Wall</p>
+        </div>
         <nav class="sidebar__nav" aria-label="Dashboard sections">
-          <a href="#today"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-today"></use></svg>Today</a>
-          <a href="#blocked-sites" class="is-active"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-sites"></use></svg>Blocked sites</a>
-          <a href="#habits"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Habits</a>
-          <a href="#notes"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-notes"></use></svg>Notes</a>
-          <a href="#settings"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-settings"></use></svg>Settings</a>
-          <a href="../guide/guide.html"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg>Guide</a>
+          <div class="sidebar__group">
+            <a href="#today"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-today"></use></svg>Today</a>
+            <a href="#blocked-sites" class="is-active" aria-current="location"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-sites"></use></svg>Blocked sites</a>
+            <a href="#habits"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Habits</a>
+            <a href="#notes"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-notes"></use></svg>Notes</a>
+          </div>
+          <div class="sidebar__group">
+            <a href="#settings"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-settings"></use></svg>Settings</a>
+            <a href="../guide/guide.html"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg>Guide</a>
+          </div>
         </nav>
       </aside>
 
       <main class="content">
+        <header class="page-header">
+          <h1 class="page-header__title">Dashboard</h1>
+          <p class="page-header__description">Manage your blocked sites, habits, notes, and daily walls.</p>
+        </header>
+
         <section class="panel panel--welcome" id="backup-onboarding" hidden>
           <h2>Welcome to Blank Wall</h2>
           <p>
@@ -76,13 +88,14 @@
                 placeholder="example.com"
                 autocomplete="off"
                 spellcheck="false"
+                aria-describedby="add-site-error"
                 required>
               <button class="button button--secondary" type="submit">Add</button>
             </div>
-            <p class="site__error add-site__error" id="add-site-error" hidden></p>
+            <p class="field-error add-site__error" id="add-site-error" role="alert" hidden></p>
           </form>
 
-          <p class="empty-sites" id="empty-sites">No blocked sites yet.</p>
+          <p class="empty-state" id="empty-sites">No blocked sites yet.</p>
           <ul class="site-list" id="site-list"></ul>
         </section>
 

@@ -42,7 +42,7 @@ Contrast ratios, computed against the darkest-to-lightest surfaces:
 | Spacing | `--space-1` 4px, `--space-2` 8px, `--space-3` 12px, `--space-4` 16px, `--space-5` 20px, `--space-6` 24px, `--space-7` 32px, `--space-8` 40px, `--space-9` 48px |
 | Layout | `--popup-width` 320px, `--sidebar-width` 220px, `--content-max` 720px, `--measure` 65ch, `--page-padding` `var(--space-6)`, `--panel-width` 320px, `--note-max-width` 280px |
 | Radius | `--radius-sm` 4px, `--radius` 6px, `--radius-lg` 10px, `--radius-round` 50% |
-| Controls | `--control-height-compact` 28px, `--control-height` 32px, `--control-number-width` 72px, `--control-select-width` 180px, `--icon-button-size` 32px, `--icon-size` 18px, `--disabled-opacity` 0.4, `--action-idle-opacity` 0.6 |
+| Controls | `--control-height-compact` 28px, `--control-height` 32px, `--control-number-width` 72px, `--control-select-width` 180px, `--icon-button-size` 32px, `--icon-size` 18px, `--nav-indicator-width` 2px, `--disabled-opacity` 0.4, `--action-idle-opacity` 0.6 |
 | Switch | `--switch-width` 36px, `--switch-height` 20px, `--switch-knob` 14px, `--switch-gap` 2px, `--switch-travel` 18px |
 
 Spacing remap from the previous theme: old `--space-5` (24px) is now `--space-6`; old `--space-6` (32px) is now `--space-7`. `--space-5` is now 20px.
