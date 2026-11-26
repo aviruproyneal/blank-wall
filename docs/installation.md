@@ -80,7 +80,7 @@ Unsigned installs are limited to Firefox Developer Edition, Nightly, and ESR wit
 - **The extension does not appear after loading it:** make sure **Developer mode** is on, then try **Load unpacked** again.
 - **"Manifest file is missing or unreadable":** select `extension/`, the folder containing `manifest.json` directly. Unzip the archive first; browsers do not load a ZIP in place.
 - **Nothing changes after editing files:** reload the extension from its extensions page. In Firefox, use **Reload** on the temporary add-on card.
-- **The wall does not appear:** add the site from the popup and reload that tab. Until a site is added, the temporary `example.com` fallback is used for testing.
+- **The wall does not appear:** add the site from the popup or dashboard first, for example `example.com`, then reload that tab. With no sites stored, nothing is blocked.
 - **Backup folder buttons are missing:** expected in Firefox and any other browser without `window.showDirectoryPicker`. Use **Export everything** and **Import JSON file** on the dashboard Settings page.
 - **The Firefox add-on disappeared:** temporary add-ons are removed when Firefox restarts. Load it again with **Load Temporary Add-on**.
 

@@ -8,19 +8,6 @@ import {
 } from './shared/storage.js';
 import { parseHttpUrl } from './shared/utils.js';
 
-const DEV_BLOCKED_SITES = [
-  {
-    hostname: 'example.com',
-    durationMinutes: 1,
-    notesEnabled: true,
-    habitsEnabled: true,
-    note: '',
-    counterSite: '',
-    allowContinue: true,
-    allowanceMinutes: 15,
-  },
-];
-
 chrome.runtime.onInstalled.addListener((details) => {
   const ready = details.reason === 'update' ? migrateStorage() : Promise.resolve();
 
@@ -63,8 +50,7 @@ async function redirectIfBlocked(details) {
     return;
   }
 
-  const configuredSites = await getBlockedSites();
-  const sites = configuredSites.length > 0 ? configuredSites : DEV_BLOCKED_SITES;
+  const sites = await getBlockedSites();
   const site = sites.find((candidate) => isSubdomainOf(target.hostname, candidate.hostname));
 
   if (!site || (await hasAllowance(site.hostname))) {
