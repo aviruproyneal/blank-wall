@@ -65,7 +65,11 @@ There is no build step and no dependency install: the extension is plain HTML, C
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for setup, code style, commit style, and pull request notes. Data-format decisions are recorded in [`docs/`](docs/) so other platforms can follow the same spec later.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for setup, code style, commit style, test instructions (`node --test tests/`, Node 22+), and pull request notes. Data-format decisions are recorded in [`docs/`](docs/) so other platforms can follow the same spec later.
+
+## Permissions
+
+Chrome shows a **Read your browsing history** warning when you install Blank Wall because the extension uses `tabs` and `webNavigation` to notice navigation to a site you blocked and redirect that tab to the wall. The popup also uses `tabs` to show the current page's hostname. Blank Wall does not keep a browsing history or send page data anywhere. It stores only your blocked sites and their settings, notes, habits, daily counts, and temporary allowances on this device.
 
 ## Privacy
 

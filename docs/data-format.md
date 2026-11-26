@@ -15,7 +15,7 @@ Blank Wall keeps browser storage as the source of truth. A folder chosen by the 
 | `settings` | `{ defaultDurationMinutes, skipRule }` |
 | `nextHabitNumber` | Number; the next serial habit ID |
 
-Habit IDs are zero-padded serial numbers (`001`, `002`, ...). Deleted IDs are not reused. `timestamp` values are ISO 8601 strings. `skipRule` is `none` or `after-habit`. Allowances are keyed by the matched blocked hostname and cover its subdomains. A wall reload resumes its per-tab timer and does not add another wall or duplicate wall seconds.
+Habit IDs are zero-padded serial numbers (`001`, `002`, ...). Deleted IDs are not reused. `timestamp` values are ISO 8601 strings. `skipRule` is `none` or `after-habit`. A blocked site covers its exact hostname and subdomains case-insensitively; the popup, background, and dashboard use that same rule. Allowances are keyed by the matched blocked hostname and cover its subdomains. A wall reload resumes its per-tab timer and does not add another wall or duplicate wall seconds.
 
 Version `2` renamed the habit field `action` to `response`. Version `3` added per-site `note`, `counterSite`, `allowContinue`, and `allowanceMinutes`, and removed the global `settings.allowanceMinutes`. The migration runs on extension update and on first read, preserves existing values, and can be run repeatedly. For older sites, `allowContinue` becomes `true`, `note` and `counterSite` become empty strings, and `allowanceMinutes` comes from the old global setting (minimum 1, default 15). Older backups with `action:` front matter or sites without the new fields remain importable.
 

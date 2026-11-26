@@ -12,6 +12,8 @@ Use a current desktop browser. Chromium browsers use `manifest.json`; Firefox us
 
 If you cloned the repository instead, select the repository's `extension/` folder.
 
+Developers can run the dependency-free tests from the repository root with `node --test tests/` on Node 22 or newer (`npm test` runs the same command). The extension itself still needs no build step.
+
 ## Browser support
 
 | Browser | Status | Notes |
@@ -82,6 +84,7 @@ Unsigned installs are limited to Firefox Developer Edition, Nightly, and ESR wit
 - **Nothing changes after editing files:** reload the extension from its extensions page. In Firefox, use **Reload** on the temporary add-on card.
 - **The wall does not appear:** add the site from the popup or dashboard first, for example `example.com`, then reload that tab. With no sites stored, nothing is blocked.
 - **Backup folder buttons are missing:** expected in Firefox and any other browser without `window.showDirectoryPicker`. Use **Export everything** and **Import JSON file** on the dashboard Settings page.
+- **An import skipped records or changed data:** malformed records are skipped, and the page reports imported and skipped counts for sites, habits, and notes. A `blank-wall-backup-<date>.json` safety snapshot downloads before replacement; use the newest one to undo an unwanted import.
 - **The Firefox add-on disappeared:** temporary add-ons are removed when Firefox restarts. Load it again with **Load Temporary Add-on**.
 
 ## Documentation sources

@@ -36,8 +36,9 @@
           The timer sits in the top-right. Any reminder note sits in the top-left. The note
           and habit icons sit at the bottom-left while the timer is running. When time is up,
           Continue returns to the site and grants the allowance set for it. Counter site opens
-          your chosen alternative instead. Leave closes the tab. Reloading the wall resumes the
-          same countdown; it does not start a second wall.
+          your chosen alternative instead. Leave closes the tab. The wall reads its settings from
+          the saved site, not the wall URL. Reloading the wall resumes the same countdown; it does
+          not start a second wall.
         </p>
       </section>
 
@@ -46,7 +47,8 @@
         <p>
           On the Blocked sites page, edit any site. Set the wall duration, a short reminder
           note, and a counter site. Choose whether Continue is available and, when it is,
-          how many minutes its allowance lasts.
+          how many minutes its allowance lasts. Blocking a hostname also covers its subdomains;
+          the popup shows which entry applies.
         </p>
       </section>
 
@@ -75,7 +77,9 @@
         <p>
           Everything stays in this browser. Where supported, you can connect a backup folder
           to keep Markdown copies of notes and habits. Export everything saves a JSON snapshot,
-          and Import restores notes, habits, and sites from the folder or the JSON file.
+          and Import restores notes, habits, and sites from the folder or the JSON file. Import
+          skips malformed records and reports how many were imported and skipped. Before it
+          replaces anything, it downloads a JSON safety snapshot.
         </p>
       </section>
 

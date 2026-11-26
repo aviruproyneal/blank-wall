@@ -4,7 +4,7 @@ A Manifest V3 browser extension that replaces a blocked site with a quiet countd
 
 ## Install
 
-Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` directory — the folder containing `manifest.json` — as an unpacked extension. Firefox needs the documented `manifest.firefox.json` copy step instead; that file carries Firefox's event-page declaration and add-on ID, while `manifest.json` has no browser-specific keys. There is no build step or dependency install. Full per-browser steps are in [`docs/installation.md`](../docs/installation.md).
+Blank Wall is not published in an extension store. Download the ZIP from GitHub Releases or the repository, extract it, and load the `extension/` directory — the folder containing `manifest.json` — as an unpacked extension. Firefox needs the documented `manifest.firefox.json` copy step instead; that file carries Firefox's event-page declaration and add-on ID, while `manifest.json` has no browser-specific keys. There is no build step or dependency install. Developers can run the dependency-free tests from the repository root with `node --test tests/` on Node 22 or newer. Full per-browser steps are in [`docs/installation.md`](../docs/installation.md).
 
 | Browser | Status |
 | --- | --- |
@@ -37,6 +37,8 @@ See the [root README](../README.md) for a feature-by-feature test walkthrough.
 | `unlimitedStorage` | Lets the note and habit history grow without hitting the small default storage quota. |
 | `tabs` | Creates the dashboard tab on install and from the popup, and redirects a tab to the wall. |
 | `webNavigation` | Detects navigation to a blocked hostname so it can be redirected before the site loads. |
+
+Chrome shows a **Read your browsing history** warning because `tabs` and `webNavigation` let Blank Wall notice navigation to a blocked site and redirect the tab to the wall. The popup also uses `tabs` to show the current hostname. Blank Wall does not keep a browsing history or send page data anywhere. It stores only your blocked sites and their settings, notes, habits, daily counts, and temporary allowances on this device.
 
 No host permissions, accounts, analytics, or network access are requested. Where available, the File System Access API is called from the dashboard after a button click; it does not need a manifest permission. The directory handle and queued changes are kept in IndexedDB, not in a remote service.
 
