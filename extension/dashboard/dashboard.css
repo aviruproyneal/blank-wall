@@ -7,7 +7,7 @@
 .sidebar {
   padding: var(--page-padding);
   border-right: 1px solid var(--border);
-  background: var(--bg-raised);
+  background: var(--surface-raised);
 }
 
 .sidebar h1 {
@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  margin-top: var(--space-5);
+  margin-top: var(--space-6);
 }
 
 .sidebar__nav a {
@@ -32,12 +32,12 @@
 
 .sidebar__nav a:hover,
 .sidebar__nav a.is-active {
-  background: var(--bg-hover);
+  background: var(--surface-hover);
   color: var(--text);
 }
 
 .content {
-  max-width: var(--content-width);
+  max-width: var(--content-max);
   padding: var(--page-padding);
 }
 
@@ -46,7 +46,7 @@
   padding: var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--surface-raised);
 }
 
 .panel h2 {
@@ -59,7 +59,7 @@
 }
 
 .panel--sites h2 {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--border);
 }
@@ -93,7 +93,7 @@
   padding: var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--surface-raised);
   color: var(--text-muted);
   font-size: 0.85rem;
 }
@@ -105,7 +105,7 @@
 .stats {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-5);
+  gap: var(--space-6);
   margin: 0;
 }
 
@@ -148,7 +148,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .add-site button,
@@ -168,7 +168,7 @@
 .add-site button:hover,
 .site__remove:hover {
   border-color: var(--accent);
-  background: var(--bg-hover);
+  background: var(--surface-hover);
 }
 
 .site-list {
@@ -218,7 +218,7 @@
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .control input[type='text'] {
@@ -226,7 +226,7 @@
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .control input[type='checkbox'] {
@@ -266,7 +266,7 @@
 }
 
 .primary-button:hover {
-  background: var(--bg-hover);
+  background: var(--surface-hover);
 }
 
 .danger-button {
@@ -276,7 +276,7 @@
 
 .danger-button:hover {
   border-color: var(--accent);
-  background: var(--bg-hover);
+  background: var(--surface-hover);
 }
 
 .habit-list {
@@ -306,7 +306,7 @@
 }
 
 .habit-list button:hover {
-  background: var(--bg-hover);
+  background: var(--surface-hover);
   color: var(--accent);
 }
 
@@ -365,7 +365,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .habit-editor textarea {
@@ -388,7 +388,7 @@
 
 .form-actions button:hover {
   border-color: var(--accent);
-  background: var(--bg-hover);
+  background: var(--surface-hover);
 }
 
 .habit-fields {
@@ -414,7 +414,7 @@
 
 .habit-counts {
   display: flex;
-  gap: var(--space-5);
+  gap: var(--space-6);
   margin: 0 0 var(--space-4);
 }
 
@@ -465,7 +465,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .note-list {
@@ -512,7 +512,7 @@
 
 .note__actions button:hover {
   border-color: var(--accent);
-  background: var(--bg-hover);
+  background: var(--surface-hover);
 }
 
 .note-editor {
@@ -544,7 +544,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .note-editor textarea {
@@ -569,7 +569,7 @@
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .settings-status {

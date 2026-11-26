@@ -1,16 +1,16 @@
 .guide {
-  max-width: var(--content-width);
+  max-width: var(--content-max);
   margin: 0 auto;
   padding: var(--page-padding);
 }
 
 .guide h1 {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   font-size: 1.25rem;
 }
 
 .guide section {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
 }
 
 .guide h2 {
