@@ -11,11 +11,19 @@
   <body>
     <main class="popup">
       <header class="popup__header">
-        <h1>Blank Wall</h1>
-        <p class="popup__hostname" id="hostname">Reading this tab…</p>
+        <div class="popup__brand">
+          <span class="popup__mark"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-mark"></use></svg></span>
+          <h1>Blank Wall</h1>
+        </div>
+        <button class="button button--ghost button--icon" id="open-guide" type="button" aria-label="Open Guide" title="Guide"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg></button>
       </header>
 
-      <button class="button button--primary" id="toggle-site" type="button" disabled>Block this site</button>
+      <div class="popup__site">
+        <span class="chip" id="hostname">Reading this tab…</span>
+        <span class="popup__site-state" id="site-state">Checking this tab</span>
+      </div>
+
+      <button class="button button--primary popup__block" id="toggle-site" type="button" disabled>Block this site</button>
 
       <section class="popup__section">
         <h2>Today</h2>
@@ -35,13 +43,15 @@
         </dl>
       </section>
 
-      <p class="popup__backup" id="backup-status">Backup: not set</p>
+      <p class="popup__backup" id="backup-status" data-state="not-set">
+        <span class="popup__dot" aria-hidden="true"></span>
+        <span id="backup-status-text">Backup: not set</span>
+      </p>
 
       <div class="popup__nav">
-        <button class="button button--secondary" id="quick-note" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg>Quick note</button>
-        <button class="button button--secondary" id="log-habit" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Log habit</button>
-        <button class="button button--secondary" id="open-dashboard" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-dashboard"></use></svg>Open dashboard</button>
-        <button class="button button--secondary" id="open-guide" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-guide"></use></svg>Guide</button>
+        <button class="button button--ghost" id="quick-note" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-note"></use></svg>Quick note</button>
+        <button class="button button--ghost" id="log-habit" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-habit"></use></svg>Log habit</button>
+        <button class="button button--ghost" id="open-dashboard" type="button"><svg class="icon" aria-hidden="true"><use href="../shared/icons.svg#icon-dashboard"></use></svg>Open dashboard</button>
       </div>
     </main>
 

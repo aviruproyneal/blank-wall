@@ -21,11 +21,13 @@ function openTab(properties) {
 }
 
 const hostname = document.querySelector('#hostname');
+const siteState = document.querySelector('#site-state');
 const toggleButton = document.querySelector('#toggle-site');
 const walls = document.querySelector('#walls');
 const wallTime = document.querySelector('#wall-time');
 const skips = document.querySelector('#skips');
 const backupStatus = document.querySelector('#backup-status');
+const backupStatusText = document.querySelector('#backup-status-text');
 
 let currentHostname = null;
 let matchingSite = null;
@@ -55,6 +57,12 @@ document.querySelector('#open-guide').addEventListener('click', () => {
 function openDashboard(section) {
   const url = chrome.runtime.getURL('dashboard/dashboard.html');
   openTab({ url: `${url}#${section}` });
+}
+
+function setToggleLabel(blocked) {
+  toggleButton.textContent = blocked ? 'Unblock' : 'Block this site';
+  toggleButton.classList.toggle('button--primary', !blocked);
+  toggleButton.classList.toggle('button--secondary', blocked);
 }
 
 renderStats().catch((error) => {
@@ -97,8 +105,9 @@ async function renderSiteState() {
 
   if (!currentHostname) {
     hostname.textContent = 'This page cannot be blocked';
+    siteState.textContent = 'Unavailable';
     matchingSite = null;
-    toggleButton.textContent = 'Block this site';
+    setToggleLabel(false);
     toggleButton.disabled = true;
     return;
   }
@@ -106,8 +115,9 @@ async function renderSiteState() {
   const sites = await getBlockedSites();
   matchingSite = findBlockedSite(currentHostname, sites);
 
-  hostname.textContent = matchingSite ? `Blocked via ${matchingSite.hostname}` : currentHostname;
-  toggleButton.textContent = matchingSite ? 'Unblock' : 'Block this site';
+  hostname.textContent = currentHostname;
+  siteState.textContent = matchingSite ? `Blocked via ${matchingSite.hostname}` : 'Not blocked';
+  setToggleLabel(Boolean(matchingSite));
   toggleButton.disabled = false;
 }
 
@@ -120,10 +130,12 @@ async function renderStats() {
 
 async function renderBackupStatus() {
   if (!backupFolderSupported()) {
-    backupStatus.textContent = 'Backup: export only';
+    backupStatus.dataset.state = 'muted';
+    backupStatusText.textContent = 'Backup: export only';
     return;
   }
 
   const state = await getBackupStatus();
-  backupStatus.textContent = BACKUP_LABELS[state];
+  backupStatus.dataset.state = state;
+  backupStatusText.textContent = BACKUP_LABELS[state];
 }

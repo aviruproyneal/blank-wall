@@ -1,4 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="icon-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+    <path d="M4 10h16M4 15h16M10 4v6m4 5v5"></path>
+  </symbol>
   <symbol id="icon-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M5 19h4l10-10-4-4L5 15v4z"></path>
     <path d="M14 6l4 4"></path>
